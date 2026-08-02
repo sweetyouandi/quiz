@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffb52e" />
+  <title>망고 퀴즈 10문제</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+      background: linear-gradient(180deg, #fff8df 0%, #fffdf7 100%);
+      color: #2f2a22;
+    }
+    .wrap {
+      width: min(100%, 680px);
+      margin: 0 auto;
+      padding: 20px 16px 44px;
+    }
+    .hero {
+      background: #ffffff;
+      border: 2px solid #ffd66b;
+      border-radius: 24px;
+      padding: 24px 18px;
+      text-align: center;
+      box-shadow: 0 10px 28px rgba(151, 104, 0, 0.10);
+    }
+    .hero .emoji { font-size: 58px; line-height: 1; }
+    h1 {
+      margin: 12px 0 6px;
+      font-size: 28px;
+      color: #9b5b00;
+    }
+    .subtitle {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #66533a;
+    }
+    .progress-wrap {
+      margin: 22px 0 16px;
+    }
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 14px;
+      color: #7b5b25;
+      margin-bottom: 8px;
+    }
+    .progress {
+      height: 12px;
+      background: #f3ead4;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 10%;
+      background: linear-gradient(90deg, #ffbe31, #ff8a2a);
+      transition: width .3s ease;
+    }
+    .card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 24px 18px;
+      box-shadow: 0 10px 28px rgba(82, 57, 0, 0.10);
+      border: 1px solid #f5dfaa;
+    }
+    .question {
+      font-size: 22px;
+      line-height: 1.5;
+      font-weight: 800;
+      margin: 0 0 20px;
+      word-break: keep-all;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice {
+      width: 100%;
+      border: 2px solid #ead9b2;
+      background: #fffdf8;
+      border-radius: 16px;
+      padding: 15px 14px;
+      text-align: left;
+      font-size: 17px;
+      line-height: 1.45;
+      cursor: pointer;
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    }
+    .choice:active { transform: scale(.99); }
+    .choice:hover { border-color: #ffb52e; }
+    .choice.correct {
+      background: #ecfff0;
+      border-color: #42b95c;
+      color: #176d28;
+      font-weight: 800;
+    }
+    .choice.wrong {
+      background: #fff0ef;
+      border-color: #ef6a5e;
+      color: #9b2e26;
+      font-weight: 800;
+    }
+    .choice:disabled { cursor: default; }
+    .feedback {
+      min-height: 30px;
+      margin: 18px 2px 2px;
+      font-size: 17px;
+      font-weight: 800;
+      text-align: center;
+    }
+    .next-btn, .restart-btn {
+      display: none;
+      width: 100%;
+      margin-top: 16px;
+      border: 0;
+      border-radius: 16px;
+      padding: 16px;
+      background: linear-gradient(90deg, #ffb52e, #ff8b2f);
+      color: white;
+      font-size: 18px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(255, 139, 47, .25);
+    }
+    .result {
+      display: none;
+      background: #fff;
+      border-radius: 24px;
+      padding: 30px 20px;
+      text-align: center;
+      border: 2px solid #ffd66b;
+      box-shadow: 0 10px 28px rgba(82, 57, 0, 0.10);
+    }
+    .result-emoji { font-size: 64px; }
+    .score {
+      margin: 10px 0 8px;
+      font-size: 30px;
+      font-weight: 900;
+      color: #9b5b00;
+    }
+    .message {
+      font-size: 18px;
+      line-height: 1.6;
+      color: #5f4a2e;
+      margin: 0;
+    }
+    .footer {
+      text-align: center;
+      color: #8a755a;
+      font-size: 13px;
+      margin-top: 20px;
+    }
+    @media (max-width: 420px) {
+      h1 { font-size: 25px; }
+      .question { font-size: 20px; }
+      .choice { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="emoji">🥭</div>
+      <h1>망고 퀴즈</h1>
+      <p class="subtitle">망고에 대해 얼마나 알고 있나요?<br>10문제에 도전해 보세요!</p>
+    </section>
+
+    <section id="quizArea">
+      <div class="progress-wrap">
+        <div class="progress-text">
+          <span id="countText">1 / 10</span>
+          <span id="scoreText">점수 0</span>
+        </div>
+        <div class="progress">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="question" id="question"></p>
+        <div class="choices" id="choices"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="next-btn" id="nextBtn">다음 문제</button>
+      </div>
+    </section>
+
+    <section class="result" id="result">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="score" id="finalScore"></div>
+      <p class="message" id="resultMessage"></p>
+      <button class="restart-btn" id="restartBtn">다시 풀기</button>
+    </section>
+
+    <p class="footer">🔎 아이의 1분 상식 · 망고 편</p>
+  </main>
+
+  <script>
+    const quizData = [
+      {
+        q: "망고는 왜 후숙해서 먹을까요?",
+        choices: ["냉장고에서 얼리려고", "딴 뒤에도 익으면서 더 달고 부드러워지기 때문에", "껍질 색만 바꾸려고"],
+        answer: 1
+      },
+      {
+        q: "애플망고에는 정말 사과가 들어 있을까요?",
+        choices: ["사과가 들어 있어요", "사과와 망고를 섞어 만들어요", "사과는 들어 있지 않고 망고의 한 종류예요"],
+        answer: 2
+      },
+      {
+        q: "망고 가운데에는 무엇이 있을까요?",
+        choices: ["작은 씨 여러 개", "납작하고 큰 씨 하나", "씨가 없어요"],
+        answer: 1
+      },
+      {
+        q: "망고 껍질을 벗겨 먹는 주된 이유는 무엇일까요?",
+        choices: ["껍질이 질기고 맛이 떫을 수 있어서", "껍질이 너무 달아서", "씨가 껍질에 붙어 있어서"],
+        answer: 0
+      },
+      {
+        q: "후숙이란 무엇일까요?",
+        choices: ["과일을 냉동실에 넣는 것", "과일을 딴 뒤에 더 익히는 것", "과일을 물에 오래 담가 두는 것"],
+        answer: 1
+      },
+      {
+        q: "망고가 잘 익으면 어떻게 변할까요?",
+        choices: ["더 달고 부드러워져요", "더 단단하고 시어져요", "파란색으로 변해요"],
+        answer: 0
+      },
+      {
+        q: "애플망고라는 이름이 붙은 까닭은 무엇일까요?",
+        choices: ["사과가 들어 있어서", "붉은빛과 둥근 모양이 사과를 떠올리게 해서", "사과나무에서 자라서"],
+        answer: 1
+      },
+      {
+        q: "망고의 큰 씨는 어떤 역할을 할까요?",
+        choices: ["새로운 망고나무가 자랄 수 있게 해요", "망고를 차갑게 만들어요", "껍질을 빨갛게 만들어요"],
+        answer: 0
+      },
+      {
+        q: "다음 중 딴 뒤에도 익을 수 있는 후숙 과일은 무엇일까요?",
+        choices: ["망고", "수박", "딸기"],
+        answer: 0
+      },
+      {
+        q: "망고를 맛있게 먹기 좋은 때는 언제일까요?",
+        choices: ["아주 딱딱하고 향이 없을 때", "적당히 부드럽고 달콤한 향이 날 때", "껍질이 완전히 말랐을 때"],
+        answer: 1
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+    let answered = false;
+
+    const questionEl = document.getElementById("question");
+    const choicesEl = document.getElementById("choices");
+    const feedbackEl = document.getElementById("feedback");
+    const nextBtn = document.getElementById("nextBtn");
+    const countText = document.getElementById("countText");
+    const scoreText = document.getElementById("scoreText");
+    const progressBar = document.getElementById("progressBar");
+    const quizArea = document.getElementById("quizArea");
+    const result = document.getElementById("result");
+    const finalScore = document.getElementById("finalScore");
+    const resultMessage = document.getElementById("resultMessage");
+    const resultEmoji = document.getElementById("resultEmoji");
+    const restartBtn = document.getElementById("restartBtn");
+
+    function renderQuestion() {
+      answered = false;
+      feedbackEl.textContent = "";
+      nextBtn.style.display = "none";
+      questionEl.textContent = quizData[current].q;
+      choicesEl.innerHTML = "";
+
+      quizData[current].choices.forEach((text, index) => {
+        const btn = document.createElement("button");
+        btn.className = "choice";
+        btn.textContent = `${index + 1}. ${text}`;
+        btn.addEventListener("click", () => selectAnswer(index));
+        choicesEl.appendChild(btn);
+      });
+
+      countText.textContent = `${current + 1} / ${quizData.length}`;
+      scoreText.textContent = `점수 ${score}`;
+      progressBar.style.width = `${((current + 1) / quizData.length) * 100}%`;
+    }
+
+    function selectAnswer(selectedIndex) {
+      if (answered) return;
+      answered = true;
+
+      const correctIndex = quizData[current].answer;
+      const buttons = [...document.querySelectorAll(".choice")];
+
+      buttons.forEach((button, index) => {
+        button.disabled = true;
+        if (index === correctIndex) button.classList.add("correct");
+      });
+
+      if (selectedIndex === correctIndex) {
+        score++;
+        feedbackEl.textContent = "정답이에요! 참 잘했어요. 👏";
+        feedbackEl.style.color = "#21823a";
+      } else {
+        buttons[selectedIndex].classList.add("wrong");
+        feedbackEl.textContent = "괜찮아요! 초록색 정답을 확인해 보세요. 😊";
+        feedbackEl.style.color = "#b04438";
+      }
+
+      scoreText.textContent = `점수 ${score}`;
+      nextBtn.textContent = current === quizData.length - 1 ? "결과 보기" : "다음 문제";
+      nextBtn.style.display = "block";
+    }
+
+    function showResult() {
+      quizArea.style.display = "none";
+      result.style.display = "block";
+      restartBtn.style.display = "block";
+      finalScore.textContent = `10문제 중 ${score}문제 정답!`;
+
+      if (score === 10) {
+        resultEmoji.textContent = "🏆";
+        resultMessage.textContent = "망고 박사예요! 모든 문제를 맞혔어요.";
+      } else if (score >= 8) {
+        resultEmoji.textContent = "🌟";
+        resultMessage.textContent = "정말 잘했어요! 망고에 대해 아주 많이 알고 있네요.";
+      } else if (score >= 5) {
+        resultEmoji.textContent = "👏";
+        resultMessage.textContent = "잘했어요! 다시 풀면 더 많은 문제를 맞힐 수 있어요.";
+      } else {
+        resultEmoji.textContent = "🥭";
+        resultMessage.textContent = "망고 이야기를 다시 읽고 한 번 더 도전해 보세요!";
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (current < quizData.length - 1) {
+        current++;
+        renderQuestion();
+        window.scrollTo({ top: 150, behavior: "smooth" });
+      } else {
+        showResult();
+      }
+    });
+
+    restartBtn.addEventListener("click", () => {
+      current = 0;
+      score = 0;
+      result.style.display = "none";
+      quizArea.style.display = "block";
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    renderQuestion();
+  </script>
+</body>
+</html>

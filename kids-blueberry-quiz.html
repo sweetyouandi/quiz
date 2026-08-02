@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#6f67c8" />
+  <title>블루베리 퀴즈 10문제</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+      background: linear-gradient(180deg, #f5f2ff 0%, #fff 100%);
+      color: #2c2940;
+    }
+    .wrap {
+      width: min(100%, 680px);
+      margin: 0 auto;
+      padding: 20px 16px 44px;
+    }
+    .hero {
+      background: #fff;
+      border: 2px solid #c9c3ff;
+      border-radius: 24px;
+      padding: 24px 18px;
+      text-align: center;
+      box-shadow: 0 10px 28px rgba(61, 48, 128, 0.10);
+    }
+    .hero .emoji { font-size: 58px; line-height: 1; }
+    h1 {
+      margin: 12px 0 6px;
+      font-size: 28px;
+      color: #5147a8;
+    }
+    .subtitle {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #5f597c;
+    }
+    .progress-wrap { margin: 22px 0 16px; }
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 14px;
+      color: #554f75;
+      margin-bottom: 8px;
+    }
+    .progress {
+      height: 12px;
+      background: #e8e4f7;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 10%;
+      background: linear-gradient(90deg, #8478dd, #5850b8);
+      transition: width .3s ease;
+    }
+    .card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 24px 18px;
+      box-shadow: 0 10px 28px rgba(61, 48, 128, 0.10);
+      border: 1px solid #ded9ff;
+    }
+    .question {
+      font-size: 22px;
+      line-height: 1.5;
+      font-weight: 800;
+      margin: 0 0 20px;
+      word-break: keep-all;
+    }
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+    .choice {
+      width: 100%;
+      border: 2px solid #dcd7f2;
+      background: #fcfbff;
+      border-radius: 16px;
+      padding: 15px 14px;
+      text-align: left;
+      font-size: 17px;
+      line-height: 1.45;
+      cursor: pointer;
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    }
+    .choice:active { transform: scale(.99); }
+    .choice:hover { border-color: #8478dd; }
+    .choice.correct {
+      background: #ecfff0;
+      border-color: #42b95c;
+      color: #176d28;
+      font-weight: 800;
+    }
+    .choice.wrong {
+      background: #fff0ef;
+      border-color: #ef6a5e;
+      color: #9b2e26;
+      font-weight: 800;
+    }
+    .choice:disabled { cursor: default; }
+    .feedback {
+      min-height: 30px;
+      margin: 18px 2px 2px;
+      font-size: 17px;
+      font-weight: 800;
+      text-align: center;
+    }
+    .next-btn, .restart-btn {
+      display: none;
+      width: 100%;
+      margin-top: 16px;
+      border: 0;
+      border-radius: 16px;
+      padding: 16px;
+      background: linear-gradient(90deg, #8478dd, #5850b8);
+      color: white;
+      font-size: 18px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(88, 80, 184, .22);
+    }
+    .result {
+      display: none;
+      background: #fff;
+      border-radius: 24px;
+      padding: 30px 20px;
+      text-align: center;
+      border: 2px solid #c9c3ff;
+      box-shadow: 0 10px 28px rgba(61, 48, 128, 0.10);
+    }
+    .result-emoji { font-size: 64px; }
+    .score {
+      margin: 10px 0 8px;
+      font-size: 30px;
+      font-weight: 900;
+      color: #5147a8;
+    }
+    .message {
+      font-size: 18px;
+      line-height: 1.6;
+      color: #5f597c;
+      margin: 0;
+    }
+    .footer {
+      text-align: center;
+      color: #776f96;
+      font-size: 13px;
+      margin-top: 20px;
+    }
+    @media (max-width: 420px) {
+      h1 { font-size: 25px; }
+      .question { font-size: 20px; }
+      .choice { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="emoji">🫐</div>
+      <h1>블루베리 퀴즈</h1>
+      <p class="subtitle">블루베리에 대해 얼마나 알고 있나요?<br>10문제에 도전해 보세요!</p>
+    </section>
+
+    <section id="quizArea">
+      <div class="progress-wrap">
+        <div class="progress-text">
+          <span id="countText">1 / 10</span>
+          <span id="scoreText">점수 0</span>
+        </div>
+        <div class="progress">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="question" id="question"></p>
+        <div class="choices" id="choices"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="next-btn" id="nextBtn">다음 문제</button>
+      </div>
+    </section>
+
+    <section class="result" id="result">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="score" id="finalScore"></div>
+      <p class="message" id="resultMessage"></p>
+      <button class="restart-btn" id="restartBtn">다시 풀기</button>
+    </section>
+
+    <p class="footer">🔎 아이의 1분 상식 · 블루베리 편</p>
+  </main>
+
+  <script>
+    const quizData = [
+      {
+        q: "블루베리 끝에 있는 작은 왕관처럼 보이는 부분은 무엇일까요?",
+        choices: ["씨앗이 나온 자리", "꽃이 피었던 흔적", "새잎이 돋는 자리"],
+        answer: 1
+      },
+      {
+        q: "블루베리의 작은 왕관은 언제 생길까요?",
+        choices: ["꽃이 열매로 변하면서", "열매를 씻을 때", "냉장고에 넣을 때"],
+        answer: 0
+      },
+      {
+        q: "많은 블루베리 나무는 어떤 모습으로 자랄까요?",
+        choices: ["아주 높은 큰 나무", "땅속에서 자라는 풀", "키가 아주 크지 않은 관목"],
+        answer: 2
+      },
+      {
+        q: "블루베리 나무가 키가 작아도 열매를 많이 맺을 수 있는 이유는 무엇일까요?",
+        choices: ["한 열매가 여러 개로 갈라져서", "가지마다 꽃과 열매가 달릴 수 있어서", "열매가 땅속에서 자라서"],
+        answer: 1
+      },
+      {
+        q: "블루베리 껍질이 하얗게 보이는 까닭은 무엇일까요?",
+        choices: ["껍질 표면에 얇은 왁스층이 있어서", "밀가루가 묻어서", "열매가 상해서"],
+        answer: 0
+      },
+      {
+        q: "블루베리 표면의 하얀 가루 같은 것을 무엇이라고 부를까요?",
+        choices: ["꽃가루", "거품", "블룸"],
+        answer: 2
+      },
+      {
+        q: "블루베리의 블룸은 어떤 일을 할까요?",
+        choices: ["열매를 뜨겁게 만들어요", "열매의 수분이 빠지는 것을 줄이고 보호해요", "씨를 없애 줘요"],
+        answer: 1
+      },
+      {
+        q: "블루베리가 파란색이나 보랏빛으로 보이는 데 도움을 주는 색소는 무엇일까요?",
+        choices: ["안토시아닌", "엽록소", "카로틴"],
+        answer: 0
+      },
+      {
+        q: "덜 익은 블루베리는 보통 어떤 색에 가까울까요?",
+        choices: ["검은색", "진한 파란색", "초록색"],
+        answer: 2
+      },
+      {
+        q: "블루베리가 익어가면 어떻게 변할까요?",
+        choices: ["흰색으로 변하고 맛이 짜져요", "파란색이나 보랏빛이 짙어지고 맛이 달아져요", "점점 투명해지고 딱딱해져요"],
+        answer: 1
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+    let answered = false;
+
+    const questionEl = document.getElementById("question");
+    const choicesEl = document.getElementById("choices");
+    const feedbackEl = document.getElementById("feedback");
+    const nextBtn = document.getElementById("nextBtn");
+    const countText = document.getElementById("countText");
+    const scoreText = document.getElementById("scoreText");
+    const progressBar = document.getElementById("progressBar");
+    const quizArea = document.getElementById("quizArea");
+    const result = document.getElementById("result");
+    const finalScore = document.getElementById("finalScore");
+    const resultMessage = document.getElementById("resultMessage");
+    const resultEmoji = document.getElementById("resultEmoji");
+    const restartBtn = document.getElementById("restartBtn");
+
+    function renderQuestion() {
+      answered = false;
+      feedbackEl.textContent = "";
+      nextBtn.style.display = "none";
+      questionEl.textContent = quizData[current].q;
+      choicesEl.innerHTML = "";
+
+      quizData[current].choices.forEach((text, index) => {
+        const btn = document.createElement("button");
+        btn.className = "choice";
+        btn.textContent = `${index + 1}. ${text}`;
+        btn.addEventListener("click", () => selectAnswer(index));
+        choicesEl.appendChild(btn);
+      });
+
+      countText.textContent = `${current + 1} / ${quizData.length}`;
+      scoreText.textContent = `점수 ${score}`;
+      progressBar.style.width = `${((current + 1) / quizData.length) * 100}%`;
+    }
+
+    function selectAnswer(selectedIndex) {
+      if (answered) return;
+      answered = true;
+
+      const correctIndex = quizData[current].answer;
+      const buttons = [...document.querySelectorAll(".choice")];
+
+      buttons.forEach((button, index) => {
+        button.disabled = true;
+        if (index === correctIndex) button.classList.add("correct");
+      });
+
+      if (selectedIndex === correctIndex) {
+        score++;
+        feedbackEl.textContent = "정답이에요! 참 잘했어요. 👏";
+        feedbackEl.style.color = "#21823a";
+      } else {
+        buttons[selectedIndex].classList.add("wrong");
+        feedbackEl.textContent = "괜찮아요! 초록색 정답을 확인해 보세요. 😊";
+        feedbackEl.style.color = "#b04438";
+      }
+
+      scoreText.textContent = `점수 ${score}`;
+      nextBtn.textContent = current === quizData.length - 1 ? "결과 보기" : "다음 문제";
+      nextBtn.style.display = "block";
+    }
+
+    function showResult() {
+      quizArea.style.display = "none";
+      result.style.display = "block";
+      restartBtn.style.display = "block";
+      finalScore.textContent = `10문제 중 ${score}문제 정답!`;
+
+      if (score === 10) {
+        resultEmoji.textContent = "🏆";
+        resultMessage.textContent = "블루베리 박사예요! 모든 문제를 맞혔어요.";
+      } else if (score >= 8) {
+        resultEmoji.textContent = "🌟";
+        resultMessage.textContent = "정말 잘했어요! 블루베리에 대해 아주 많이 알고 있네요.";
+      } else if (score >= 5) {
+        resultEmoji.textContent = "👏";
+        resultMessage.textContent = "잘했어요! 다시 풀면 더 많은 문제를 맞힐 수 있어요.";
+      } else {
+        resultEmoji.textContent = "🫐";
+        resultMessage.textContent = "블루베리 이야기를 다시 읽고 한 번 더 도전해 보세요!";
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (current < quizData.length - 1) {
+        current++;
+        renderQuestion();
+        window.scrollTo({ top: 150, behavior: "smooth" });
+      } else {
+        showResult();
+      }
+    });
+
+    restartBtn.addEventListener("click", () => {
+      current = 0;
+      score = 0;
+      result.style.display = "none";
+      quizArea.style.display = "block";
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    renderQuestion();
+  </script>
+</body>
+</html>
