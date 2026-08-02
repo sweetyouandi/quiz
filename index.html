@@ -1,57 +1,62 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>엄마의 1분 상식 퀴즈</title>
-<link rel="stylesheet" href="style.css">
+<style>
+:root{--bg:#fffaf5;--card:#fff;--text:#273238;--muted:#697386;--green:#20a36b;--dark:#14794f;--soft:#eaf8f1;--line:#e5e7eb}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:linear-gradient(#fff4ea,#f8fff9);color:var(--text);min-height:100vh}
+.wrap{width:min(850px,calc(100% - 24px));margin:auto;padding:25px 0 45px}.hero{text-align:center;padding:20px 8px 28px}.eyebrow{font-size:14px;font-weight:900;color:var(--dark);margin-bottom:9px}
+h1{font-size:clamp(32px,8vw,52px);margin:0}.sub{color:var(--muted);line-height:1.7}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:23px;padding:24px;box-shadow:0 15px 38px rgba(30,40,50,.08)}
+.pick{cursor:pointer;text-align:left;transition:.18s}.pick:hover{transform:translateY(-3px)}.icon{font-size:46px}.pick h2{font-size:25px;margin:10px 0 8px}.pick p{color:var(--muted);line-height:1.6}
+.badge{display:inline-block;margin-top:12px;background:var(--soft);color:var(--dark);font-weight:900;padding:7px 11px;border-radius:999px}
+.hidden{display:none}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.back{border:0;background:none;color:var(--dark);font-weight:900;font-size:16px;cursor:pointer}
+.progress-row{display:flex;justify-content:space-between;color:var(--muted);font-weight:800;font-size:14px;margin-bottom:8px}.track{height:10px;background:#edf0f2;border-radius:999px;overflow:hidden;margin-bottom:16px}.bar{height:100%;background:var(--green);width:0;transition:.25s}
+.topic{display:inline-block;background:var(--soft);color:var(--dark);font-size:13px;font-weight:900;padding:7px 11px;border-radius:999px}.question{font-size:clamp(22px,5vw,30px);line-height:1.45;margin:15px 0 22px}
+.choices{display:grid;gap:12px}.choice{border:2px solid var(--line);background:#fff;border-radius:16px;padding:16px;text-align:left;font-size:17px;cursor:pointer}.choice.correct{border-color:var(--green);background:var(--soft);font-weight:900}.choice.wrong{border-color:#e79b9b;background:#fff0f0}.choice:disabled{cursor:default}
+.feedback{display:none;margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:15px;background:#f8fafc;line-height:1.65}.feedback.show{display:block}.ft{font-weight:900;margin-bottom:5px}
+.next,.restart{display:none;width:100%;margin-top:18px;border:0;border-radius:14px;padding:15px;background:var(--green);color:#fff;font-size:16px;font-weight:900;cursor:pointer}.restart{display:block}
+.result{text-align:center}.emoji{font-size:65px}.score{font-size:36px;font-weight:950;margin:12px}.footer{text-align:center;color:#9098a3;font-size:13px;margin-top:22px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.card{padding:21px}}
+</style>
 </head>
 <body>
 <main class="wrap">
-  <section class="hero">
-    <div class="eyebrow">🔎 아이와 함께 읽고, 생각하고, 맞혀 봐요</div>
-    <h1>엄마의 1분 상식 퀴즈</h1>
-    <p class="subtitle">7세부터 초등 저학년까지 부담 없이 풀 수 있는 3지선다 퀴즈입니다. 오늘은 어떤 주제를 만나볼까요?</p>
-  </section>
-
-  <section class="grid">
-    <a class="card quiz-card" href="watermelon.html">
-      <div class="icon">🍉</div>
-      <h2>수박 퀴즈</h2>
-      <p>수박의 줄무늬, 씨 없는 수박, 빨간 속살의 비밀을 알아봐요.</p>
-      <div class="meta"><span class="badge">5문제</span><span class="go">풀러 가기 →</span></div>
-    </a>
-
-    <div class="card">
-      <div class="icon">🍑</div>
-      <h2>복숭아 퀴즈</h2>
-      <p>다음에 추가할 퀴즈 자리입니다.</p>
-      <div class="meta"><span class="badge">준비 중</span><span class="go">곧 만나요</span></div>
-    </div>
-
-    <div class="card">
-      <div class="icon">🐞</div>
-      <h2>곤충 퀴즈</h2>
-      <p>다음에 추가할 퀴즈 자리입니다.</p>
-      <div class="meta"><span class="badge">준비 중</span><span class="go">곧 만나요</span></div>
-    </div>
-
-    <div class="card">
-      <div class="icon">🌍</div>
-      <h2>세계 공부 퀴즈</h2>
-      <p>다음에 추가할 퀴즈 자리입니다.</p>
-      <div class="meta"><span class="badge">준비 중</span><span class="go">곧 만나요</span></div>
-    </div>
-  </section>
-
-  <h2 class="section-title">이 사이트는 이렇게 커집니다</h2>
-  <div class="note">
-    퀴즈가 생길 때마다 새 HTML 파일을 하나 추가하고, 메인 화면에 카드만 연결하면 됩니다.
-    나중에는 과일·곤충·우리 몸·날씨·세계 공부처럼 카테고리별 퀴즈 사이트로 확장할 수 있어요.
+<section id="home">
+  <div class="hero"><div class="eyebrow">🔎 아이와 함께 읽고, 생각하고, 맞혀 봐요</div><h1>엄마의 1분 상식 퀴즈</h1><p class="sub">원하는 주제를 골라 5문제에 도전해 보세요.</p></div>
+  <div class="grid">
+    <div class="card pick" onclick="startQuiz('watermelon')"><div class="icon">🍉</div><h2>수박 퀴즈</h2><p>줄무늬, 씨 없는 수박, 빨간 속살의 비밀</p><span class="badge">5문제 · 시작하기 →</span></div>
+    <div class="card pick" onclick="startQuiz('peach')"><div class="icon">🍑</div><h2>복숭아 퀴즈</h2><p>복숭아 털, 향기, 씨와 갈변의 비밀</p><span class="badge">5문제 · 시작하기 →</span></div>
   </div>
+</section>
 
-  <div class="footer">엄마와 아이가 함께 만드는 호기심 공부</div>
+<section id="quiz" class="hidden">
+  <div class="top"><button class="back" onclick="goHome()">← 퀴즈 홈</button><span class="badge" id="category"></span></div>
+  <div class="hero"><h1 id="quizTitle"></h1><p class="sub">5가지 비밀을 맞혀 보세요!</p></div>
+  <div id="play">
+    <div class="progress-row"><span id="progress">1 / 5</span><span id="scoreNow">점수 0</span></div>
+    <div class="track"><div class="bar" id="bar"></div></div>
+    <div class="card">
+      <div class="topic" id="topic"></div><div class="question" id="question"></div><div class="choices" id="choices"></div>
+      <div class="feedback" id="feedback"><div class="ft" id="ft"></div><div id="explain"></div></div>
+      <button class="next" id="next" onclick="nextQuestion()">다음 문제</button>
+    </div>
+  </div>
+  <div id="result" class="card result hidden"><div class="emoji" id="emoji">🎉</div><div class="score" id="finalScore"></div><p class="sub" id="message"></p><button class="restart" onclick="restart()">다시 풀기</button><button class="restart" onclick="goHome()">다른 퀴즈 고르기</button></div>
+</section>
+<div class="footer">엄마와 아이가 함께 만드는 호기심 공부</div>
 </main>
-</body>
-</html>
+<script>
+const data={"watermelon": [{"topic": "수박은 왜 두드릴까요?", "question": "수박을 두드려 보는 이유는 무엇일까요?", "choices": ["씨를 작게 만들려고", "잘 익었는지 소리로 짐작하려고", "수박을 더 달게 하려고"], "answer": 1, "explanation": "수박을 두드렸을 때 나는 소리로 속이 잘 익었는지 짐작하기도 해요. 다만 소리만으로 정확히 판단하기는 어려워요."}, {"topic": "수박은 왜 줄무늬가 있을까요?", "question": "수박 껍질의 줄무늬는 왜 생길까요?", "choices": ["사람이 물감으로 그려서", "햇빛을 받은 부분만 타서", "수박 품종의 특징이 자라면서 나타나서"], "answer": 2, "explanation": "수박의 줄무늬는 품종에 따라 정해지는 껍질 무늬로, 열매가 자라면서 함께 나타나요."}, {"topic": "씨 없는 수박은 어떻게 만들까요?", "question": "씨 없는 수박은 보통 어떻게 만들까요?", "choices": ["염색체 수가 다른 수박을 교배해서", "씨를 하나씩 모두 빼서", "꽃에 물을 주지 않아서"], "answer": 0, "explanation": "염색체 수가 다른 수박을 교배하면 씨가 제대로 자라지 않는 수박을 만들 수 있어요."}, {"topic": "수박은 왜 빨간색일까요?", "question": "빨간 수박 속에는 어떤 색소가 들어 있을까요?", "choices": ["엽록소", "멜라닌", "라이코펜"], "answer": 2, "explanation": "라이코펜이라는 붉은색 천연 색소가 들어 있어 수박 속이 빨갛게 보여요."}, {"topic": "냉장고에 오래 넣으면 왜 맛이 떨어질까요?", "question": "자르지 않은 수박을 너무 차가운 곳에 오래 두면 어떻게 될 수 있을까요?", "choices": ["계속 더 달아져요", "향과 맛이 줄고 냉해를 입을 수 있어요", "씨가 모두 사라져요"], "answer": 1, "explanation": "자르지 않은 수박은 너무 낮은 온도에 오래 두면 냉해를 입어 향과 식감이 떨어질 수 있어요. 자른 수박은 반드시 냉장 보관해야 해요."}], "peach": [{"topic": "복숭아는 왜 털이 있을까요?", "question": "복숭아 껍질의 보송보송한 털은 어떤 일을 할까요?", "choices": ["복숭아를 더 달게 만들어요", "벌레와 햇빛으로부터 열매를 보호해요", "씨를 크게 만들어요"], "answer": 1, "explanation": "복숭아의 털은 벌레나 강한 햇빛, 물방울 등으로부터 어린 열매를 보호하는 데 도움을 줘요."}, {"topic": "딱딱한 복숭아와 말랑한 복숭아는 왜 다를까요?", "question": "복숭아가 익으면서 말랑해지는 이유는 무엇일까요?", "choices": ["과육을 단단하게 잡아 주던 성분이 부드러워져서", "복숭아 속에 물이 모두 빠져서", "씨가 작아져서"], "answer": 0, "explanation": "복숭아가 익으면 과육의 세포를 단단하게 이어 주던 성분이 변하면서 점점 부드러워져요. 품종에 따라서도 단단함이 달라요."}, {"topic": "복숭아는 왜 향기가 날까요?", "question": "잘 익은 복숭아가 향기를 내는 이유로 알맞은 것은?", "choices": ["비를 내리게 하려고", "열매를 차갑게 만들려고", "동물에게 잘 익었다는 신호를 보내려고"], "answer": 2, "explanation": "잘 익은 복숭아의 향기는 동물이 열매를 발견해 먹고 씨를 퍼뜨리도록 돕는 신호가 될 수 있어요."}, {"topic": "복숭아 씨는 왜 크고 단단할까요?", "question": "복숭아 속의 단단한 씨껍질은 무엇을 보호할까요?", "choices": ["복숭아의 향기", "안쪽의 씨앗", "껍질의 털"], "answer": 1, "explanation": "복숭아의 단단한 씨껍질은 안에 있는 씨앗을 충격이나 동물의 이빨로부터 보호해요."}, {"topic": "자른 복숭아는 왜 갈색으로 변할까요?", "question": "자른 복숭아가 갈색으로 변하는 가장 큰 이유는 무엇일까요?", "choices": ["과육이 공기와 만나 반응해서", "냉장고 불빛을 받아서", "단맛이 빠져나가서"], "answer": 0, "explanation": "복숭아를 자르면 과육 속 성분이 공기 중 산소와 만나 반응하면서 갈색으로 변해요. 이를 갈변이라고 해요."}]};
+let active=[],kind="",idx=0,score=0,answered=false;
+function startQuiz(k){kind=k;active=data[k];idx=0;score=0;document.getElementById("home").classList.add("hidden");document.getElementById("quiz").classList.remove("hidden");document.getElementById("play").classList.remove("hidden");document.getElementById("result").classList.add("hidden");document.getElementById("quizTitle").textContent=k==="watermelon"?"🍉 수박 퀴즈":"🍑 복숭아 퀴즈";document.getElementById("category").textContent=k==="watermelon"?"🍉 여름 과일":"🍑 여름 과일";render()}
+function render(){answered=false;const q=active[idx];document.getElementById("topic").textContent=q.topic;document.getElementById("question").textContent="Q"+(idx+1)+". "+q.question;document.getElementById("progress").textContent=(idx+1)+" / "+active.length;document.getElementById("scoreNow").textContent="점수 "+score;document.getElementById("bar").style.width=(idx/active.length*100)+"%";document.getElementById("feedback").classList.remove("show");document.getElementById("next").style.display="none";const c=document.getElementById("choices");c.innerHTML="";q.choices.forEach((x,i)=>{const b=document.createElement("button");b.className="choice";b.textContent=["①","②","③"][i]+" "+x;b.onclick=()=>answer(i);c.appendChild(b)})}
+function answer(i){if(answered)return;answered=true;const q=active[idx],ok=i===q.answer;document.querySelectorAll(".choice").forEach((b,n)=>{b.disabled=true;if(n===q.answer)b.classList.add("correct");if(n===i&&!ok)b.classList.add("wrong")});if(ok)score++;document.getElementById("ft").textContent=ok?"정답이에요! 👏":"아쉬워요. 정답을 확인해 볼까요? 😊";document.getElementById("explain").textContent=q.explanation;document.getElementById("feedback").classList.add("show");document.getElementById("scoreNow").textContent="점수 "+score;const n=document.getElementById("next");n.textContent=idx===active.length-1?"결과 보기":"다음 문제";n.style.display="block"}
+function nextQuestion(){if(idx<active.length-1){idx++;render();scrollTo({top:0,behavior:"smooth"})}else showResult()}
+function showResult(){document.getElementById("play").classList.add("hidden");document.getElementById("result").classList.remove("hidden");document.getElementById("finalScore").textContent=active.length+"문제 중 "+score+"문제 정답!";document.getElementById("emoji").textContent=score===5?"🏆":score>=3?"👏":"🌱";document.getElementById("message").textContent=score===5?"모든 문제를 정확하게 맞혔어요!":score>=3?"아주 잘했어요! 해설을 한 번 더 읽어보세요.":"새롭게 알게 된 것이 있다면 이미 멋진 공부를 한 거예요."}
+function restart(){idx=0;score=0;document.getElementById("play").classList.remove("hidden");document.getElementById("result").classList.add("hidden");render()}
+function goHome(){document.getElementById("quiz").classList.add("hidden");document.getElementById("home").classList.remove("hidden");scrollTo({top:0,behavior:"smooth"})}
+</script>
+</body></html>
