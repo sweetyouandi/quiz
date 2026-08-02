@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>복숭아 퀴즈 | 엄마의 1분 상식</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wrap">
+  <div class="topbar"><a class="home-link" href="index.html">← 퀴즈 홈</a><span class="badge">🍑 여름 과일</span></div>
+  <section class="hero"><div class="eyebrow">🔎 아이의 1분 상식</div><h1>🍑 복숭아 퀴즈</h1><p class="subtitle">복숭아에 관한 5가지 비밀을 맞혀 보세요!</p></section>
+  <section id="quizScreen">
+    <div class="progress-area">
+      <div class="progress-label"><span id="progressText">1 / 5</span><span id="scoreText">점수 0</span></div>
+      <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+    </div>
+    <article class="card">
+      <div class="topic" id="topic"></div>
+      <h2 class="question" id="question"></h2>
+      <div class="choices" id="choices"></div>
+      <div class="feedback" id="feedback"><div class="feedback-title" id="feedbackTitle"></div><div id="explanation"></div></div>
+      <div class="actions"><button class="action next" id="nextButton">다음 문제</button></div>
+    </article>
+  </section>
+  <section class="card result" id="resultScreen">
+    <div class="result-emoji" id="resultEmoji">🎉</div>
+    <div class="score" id="finalScore"></div>
+    <p class="message" id="resultMessage"></p>
+    <div class="actions">
+      <button class="action restart" id="restartButton">다시 풀기</button>
+      <a class="action restart" href="index.html" style="display:flex;align-items:center;justify-content:center;">퀴즈 홈</a>
+    </div>
+  </section>
+  <div class="footer">엄마와 아이가 함께 푸는 재미있는 상식 퀴즈</div>
+</main>
+<script>
+const quizData = [{"topic": "복숭아는 왜 털이 있을까요?", "question": "복숭아 껍질의 보송보송한 털은 어떤 일을 할까요?", "choices": ["복숭아를 더 달게 만들어요", "벌레와 햇빛으로부터 열매를 보호해요", "씨를 크게 만들어요"], "answer": 1, "explanation": "복숭아의 털은 벌레나 강한 햇빛, 물방울 등으로부터 어린 열매를 보호하는 데 도움을 줘요."}, {"topic": "딱딱한 복숭아와 말랑한 복숭아는 왜 다를까요?", "question": "복숭아가 익으면서 말랑해지는 이유는 무엇일까요?", "choices": ["과육을 단단하게 잡아 주던 성분이 부드러워져서", "복숭아 속에 물이 모두 빠져서", "씨가 작아져서"], "answer": 0, "explanation": "복숭아가 익으면 과육의 세포를 단단하게 이어 주던 성분이 변하면서 점점 부드러워져요. 품종에 따라서도 단단함이 달라요."}, {"topic": "복숭아는 왜 향기가 날까요?", "question": "잘 익은 복숭아가 향기를 내는 이유로 알맞은 것은?", "choices": ["비를 내리게 하려고", "열매를 차갑게 만들려고", "동물에게 잘 익었다는 신호를 보내려고"], "answer": 2, "explanation": "잘 익은 복숭아의 향기는 동물이 열매를 발견해 먹고 씨를 퍼뜨리도록 돕는 신호가 될 수 있어요."}, {"topic": "복숭아 씨는 왜 크고 단단할까요?", "question": "복숭아 속의 단단한 씨껍질은 무엇을 보호할까요?", "choices": ["복숭아의 향기", "안쪽의 씨앗", "껍질의 털"], "answer": 1, "explanation": "복숭아의 단단한 씨껍질은 안에 있는 씨앗을 충격이나 동물의 이빨로부터 보호해요."}, {"topic": "자른 복숭아는 왜 갈색으로 변할까요?", "question": "자른 복숭아가 갈색으로 변하는 가장 큰 이유는 무엇일까요?", "choices": ["과육이 공기와 만나 반응해서", "냉장고 불빛을 받아서", "단맛이 빠져나가서"], "answer": 0, "explanation": "복숭아를 자르면 과육 속 성분이 공기 중 산소와 만나 반응하면서 갈색으로 변해요. 이를 갈변이라고 해요."}];
+let currentIndex=0, score=0, answered=false;
+const $=id=>document.getElementById(id);
+const quizScreen=$("quizScreen"), resultScreen=$("resultScreen"), topicEl=$("topic"),
+questionEl=$("question"), choicesEl=$("choices"), feedbackEl=$("feedback"),
+feedbackTitleEl=$("feedbackTitle"), explanationEl=$("explanation"),
+nextButton=$("nextButton"), progressText=$("progressText"),
+progressBar=$("progressBar"), scoreText=$("scoreText"),
+finalScore=$("finalScore"), resultMessage=$("resultMessage"),
+resultEmoji=$("resultEmoji"), restartButton=$("restartButton");
+function renderQuestion(){
+  answered=false; feedbackEl.classList.remove("show"); nextButton.style.display="none"; choicesEl.innerHTML="";
+  const item=quizData[currentIndex];
+  topicEl.textContent=item.topic;
+  questionEl.textContent="Q"+(currentIndex+1)+". "+item.question;
+  progressText.textContent=(currentIndex+1)+" / "+quizData.length;
+  progressBar.style.width=((currentIndex/quizData.length)*100)+"%";
+  scoreText.textContent="점수 "+score;
+  item.choices.forEach((choice,index)=>{
+    const button=document.createElement("button");
+    button.className="choice";
+    button.textContent=["①","②","③"][index]+" "+choice;
+    button.addEventListener("click",()=>selectAnswer(index));
+    choicesEl.appendChild(button);
+  });
+}
+function selectAnswer(selectedIndex){
+  if(answered)return; answered=true;
+  const item=quizData[currentIndex];
+  const buttons=[...document.querySelectorAll(".choice")];
+  const isCorrect=selectedIndex===item.answer;
+  buttons.forEach((button,index)=>{
+    button.disabled=true;
+    if(index===item.answer)button.classList.add("correct");
+    if(index===selectedIndex&&!isCorrect)button.classList.add("wrong");
+  });
+  if(isCorrect){
+    score++; feedbackTitleEl.textContent="정답이에요! 👏"; feedbackTitleEl.className="feedback-title correct-text";
+  }else{
+    feedbackTitleEl.textContent="아쉬워요. 정답을 확인해 볼까요? 😊"; feedbackTitleEl.className="feedback-title wrong-text";
+  }
+  explanationEl.textContent=item.explanation;
+  feedbackEl.classList.add("show");
+  scoreText.textContent="점수 "+score;
+  nextButton.textContent=currentIndex===quizData.length-1?"결과 보기":"다음 문제";
+  nextButton.style.display="block";
+}
+function showResult(){
+  quizScreen.style.display="none"; resultScreen.classList.add("show");
+  finalScore.textContent=quizData.length+"문제 중 "+score+"문제 정답!";
+  if(score===quizData.length){
+    resultEmoji.textContent="🏆"; resultMessage.textContent="복숭아 박사 탄생! 모든 문제를 정확하게 맞혔어요.";
+  }else if(score>=3){
+    resultEmoji.textContent="👏"; resultMessage.textContent="아주 잘했어요! 해설을 한 번 더 읽으면 복숭아 박사가 될 수 있어요.";
+  }else{
+    resultEmoji.textContent="🌱"; resultMessage.textContent="괜찮아요. 새롭게 알게 된 것이 있다면 이미 멋진 공부를 한 거예요.";
+  }
+}
+nextButton.addEventListener("click",()=>{
+  if(currentIndex<quizData.length-1){currentIndex++;renderQuestion();window.scrollTo({top:0,behavior:"smooth"});}
+  else{showResult();window.scrollTo({top:0,behavior:"smooth"});}
+});
+restartButton.addEventListener("click",()=>{
+  currentIndex=0;score=0;resultScreen.classList.remove("show");quizScreen.style.display="block";renderQuestion();window.scrollTo({top:0,behavior:"smooth"});
+});
+renderQuestion();
+</script>
+</body>
+</html>
