@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>폴짝폴짝·깡충깡충·펄쩍펄쩍 퀴즈</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
+      background: #f7fbff;
+      color: #263238;
+      line-height: 1.6;
+    }
+    .wrap {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      padding: 20px 16px 60px;
+    }
+    .hero {
+      background: linear-gradient(135deg, #dff5ff, #e9e1ff);
+      border-radius: 24px;
+      padding: 28px 22px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(72, 88, 120, 0.10);
+      margin-bottom: 22px;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(255,255,255,.82);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: clamp(25px, 6vw, 38px);
+      line-height: 1.3;
+      margin: 4px 0 10px;
+      word-break: keep-all;
+    }
+    .hero p { margin: 0; font-size: 16px; }
+    .meaning {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    .meaning div {
+      background: #fff;
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 5px 16px rgba(72, 88, 120, 0.07);
+      font-size: 14px;
+    }
+    .meaning strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 3px;
+    }
+    .note {
+      font-size: 13px;
+      color: #607d8b;
+      margin-top: 8px;
+    }
+    .question {
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 7px 20px rgba(72, 88, 120, 0.08);
+      border: 2px solid transparent;
+    }
+    .question.correct { border-color: #72c58a; }
+    .question.wrong { border-color: #ef8b8b; }
+    .qnum {
+      color: #5b6fb8;
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .qtext {
+      font-size: 18px;
+      font-weight: 750;
+      margin-bottom: 14px;
+      word-break: keep-all;
+    }
+    .options {
+      display: grid;
+      gap: 9px;
+    }
+    label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f8fbff;
+      border: 1.5px solid #dce5f0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: .15s ease;
+      font-size: 16px;
+    }
+    label:hover {
+      transform: translateY(-1px);
+      border-color: #aebfe0;
+    }
+    input[type="radio"] {
+      width: 19px;
+      height: 19px;
+      accent-color: #697fd1;
+    }
+    .explain {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 750;
+    }
+    .correct .explain {
+      display: block;
+      background: #edf9ef;
+      color: #26713a;
+    }
+    .wrong .explain {
+      display: block;
+      background: #fff0f0;
+      color: #9f3535;
+    }
+    .actions {
+      position: sticky;
+      bottom: 12px;
+      display: flex;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    button {
+      flex: 1;
+      border: 0;
+      border-radius: 15px;
+      padding: 15px 10px;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(72, 88, 120, .14);
+    }
+    #checkBtn { background: #6d83d5; color: white; }
+    #resetBtn {
+      background: #fff;
+      color: #53627a;
+      border: 1px solid #d9e0eb;
+    }
+    #result {
+      display: none;
+      margin-top: 22px;
+      background: #5077a6;
+      color: white;
+      border-radius: 22px;
+      padding: 24px 18px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 21px;
+      box-shadow: 0 8px 24px rgba(72, 88, 120, .20);
+    }
+    .small {
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 5px;
+    }
+    @media (min-width: 620px) {
+      .meaning { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .question { padding: 17px 15px; }
+      .qtext { font-size: 17px; }
+      label { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="badge">엄마의 말공부 · 움직임말 퀴즈</div>
+    <h1>폴짝폴짝, 깡충깡충,<br>펄쩍펄쩍</h1>
+    <p>문장을 읽고 가장 잘 어울리는 말을 골라 보세요.</p>
+  </section>
+
+  <section class="meaning">
+    <div>
+      <strong>🐥 폴짝폴짝</strong>
+      작고 가볍게 자꾸 뛰는 모습
+    </div>
+    <div>
+      <strong>🐇 깡충깡충</strong>
+      두 발을 모아 높이 자꾸 뛰는 모습
+    </div>
+    <div>
+      <strong>😲 펄쩍펄쩍</strong>
+      놀라거나 기뻐서 몸을 크게 자꾸 뛰는 모습
+    </div>
+  </section>
+
+  <div class="note">※ 실제 말에서는 상황에 따라 둘 이상의 표현이 어울릴 수 있지만, 이 퀴즈에서는 가장 자연스러운 표현을 고릅니다.</div>
+
+  <main id="quiz"></main>
+
+  <div id="result"></div>
+
+  <div class="actions">
+    <button id="resetBtn" type="button">다시 풀기</button>
+    <button id="checkBtn" type="button">정답 확인</button>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    text: "작은 참새가 바닥에서 가볍게 뛰어다녀요.",
+    options: ["폴짝폴짝", "깡충깡충", "펄쩍펄쩍", "두리번두리번"],
+    answer: "폴짝폴짝"
+  },
+  {
+    text: "토끼가 두 발을 모아 풀밭을 높이 뛰어가요.",
+    options: ["펄쩍펄쩍", "깡충깡충", "폴짝폴짝", "끄덕끄덕"],
+    answer: "깡충깡충"
+  },
+  {
+    text: "갑자기 풍선이 터지자 아이가 깜짝 놀라 몸을 크게 뛰었어요.",
+    options: ["깡충깡충", "폴짝폴짝", "펄쩍펄쩍", "갸웃갸웃"],
+    answer: "펄쩍펄쩍"
+  },
+  {
+    text: "강아지가 신나서 작은 발로 가볍게 뛰어왔어요.",
+    options: ["폴짝폴짝", "펄쩍펄쩍", "깡충깡충", "절레절레"],
+    answer: "폴짝폴짝"
+  },
+  {
+    text: "토끼 인형처럼 두 발을 모아 앞으로 뛰어갔어요.",
+    options: ["폴짝폴짝", "깡충깡충", "펄쩍펄쩍", "두리번두리번"],
+    answer: "깡충깡충"
+  },
+  {
+    text: "선물을 받은 아이가 너무 기뻐 제자리에서 크게 뛰었어요.",
+    options: ["깡충깡충", "폴짝폴짝", "펄쩍펄쩍", "끄덕끄덕"],
+    answer: "펄쩍펄쩍"
+  },
+  {
+    text: "개구리가 작은 돌 위를 가볍게 옮겨 다녀요.",
+    options: ["폴짝폴짝", "깡충깡충", "펄쩍펄쩍", "갸웃갸웃"],
+    answer: "폴짝폴짝"
+  },
+  {
+    text: "아이가 토끼 흉내를 내며 두 발을 모아 뛰어요.",
+    options: ["펄쩍펄쩍", "깡충깡충", "폴짝폴짝", "절레절레"],
+    answer: "깡충깡충"
+  },
+  {
+    text: "차가운 물이 발에 닿자 깜짝 놀라 몸을 크게 뛰었어요.",
+    options: ["폴짝폴짝", "깡충깡충", "펄쩍펄쩍", "두리번두리번"],
+    answer: "펄쩍펄쩍"
+  },
+  {
+    text: "병아리가 엄마 닭을 따라 작고 가볍게 뛰어가요.",
+    options: ["깡충깡충", "폴짝폴짝", "펄쩍펄쩍", "끄덕끄덕"],
+    answer: "폴짝폴짝"
+  }
+];
+
+const quiz = document.getElementById("quiz");
+
+questions.forEach((q, index) => {
+  const box = document.createElement("section");
+  box.className = "question";
+  box.dataset.answer = q.answer;
+
+  const optionHtml = q.options.map((opt, i) => `
+    <label>
+      <input type="radio" name="q${index}" value="${opt}">
+      <span>${["①","②","③","④"][i]} ${opt}</span>
+    </label>
+  `).join("");
+
+  box.innerHTML = `
+    <div class="qnum">문제 ${index + 1}</div>
+    <div class="qtext">${q.text}</div>
+    <div class="options">${optionHtml}</div>
+    <div class="explain"></div>
+  `;
+  quiz.appendChild(box);
+});
+
+document.getElementById("checkBtn").addEventListener("click", () => {
+  let score = 0;
+  let unanswered = 0;
+  const boxes = document.querySelectorAll(".question");
+
+  boxes.forEach((box) => {
+    box.classList.remove("correct", "wrong");
+    const selected = box.querySelector("input:checked");
+    const explain = box.querySelector(".explain");
+    const answer = box.dataset.answer;
+
+    if (!selected) {
+      unanswered++;
+      explain.textContent = `정답은 ‘${answer}’이에요.`;
+      box.classList.add("wrong");
+    } else if (selected.value === answer) {
+      score++;
+      explain.textContent = `정답! ‘${answer}’이 가장 잘 어울려요.`;
+      box.classList.add("correct");
+    } else {
+      explain.textContent = `아쉬워요. 정답은 ‘${answer}’이에요.`;
+      box.classList.add("wrong");
+    }
+  });
+
+  const result = document.getElementById("result");
+  let msg = "움직임의 크기와 느낌을 다시 살펴봐요 🌱";
+  if (score >= 4) msg = "좋아요! 세 표현의 차이가 조금씩 보이고 있어요 😊";
+  if (score >= 7) msg = "아주 잘했어요! 움직임말의 느낌을 잘 알고 있네요 👏";
+  if (score === 10) msg = "완벽해요! 움직임말 박사예요 🎉";
+
+  result.innerHTML = `${score}점 / 10점<div class="small">${msg}${unanswered ? `<br>고르지 않은 문제가 ${unanswered}개 있어요.` : ""}</div>`;
+  result.style.display = "block";
+  result.scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+  document.querySelectorAll(".question").forEach(box => box.classList.remove("correct", "wrong"));
+  const result = document.getElementById("result");
+  result.style.display = "none";
+  result.innerHTML = "";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+</script>
+</body>
+</html>
