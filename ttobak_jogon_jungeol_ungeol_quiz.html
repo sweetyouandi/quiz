@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>또박또박·조곤조곤·중얼중얼·웅얼웅얼 퀴즈</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
+      background: #fffaf4;
+      color: #333;
+    }
+
+    .wrap {
+      width: min(720px, 100%);
+      margin: 0 auto;
+      padding: 22px 15px 45px;
+    }
+
+    .hero {
+      padding: 27px 18px;
+      margin-bottom: 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #e2f3ff, #ffe5ef);
+      border-radius: 24px;
+      box-shadow: 0 7px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 27px;
+      line-height: 1.45;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .progress {
+      position: sticky;
+      top: 8px;
+      z-index: 10;
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      text-align: center;
+      color: white;
+      background: #3f4650;
+      border-radius: 15px;
+      font-size: 17px;
+      font-weight: 700;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+
+    .question {
+      margin-bottom: 16px;
+      padding: 20px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 5px 16px rgba(0, 0, 0, 0.07);
+    }
+
+    .question h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      line-height: 1.55;
+    }
+
+    .choices {
+      display: grid;
+      gap: 10px;
+    }
+
+    .choice {
+      width: 100%;
+      padding: 14px 15px;
+      border: 2px solid #dce6ee;
+      border-radius: 14px;
+      background: #fcfdff;
+      text-align: left;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .choice:hover:not(:disabled) {
+      background: #f1f8ff;
+      transform: translateY(-1px);
+    }
+
+    .choice:disabled {
+      cursor: default;
+    }
+
+    .choice.correct {
+      border-color: #5dbb7a;
+      background: #def7e6;
+      color: #176536;
+      font-weight: 700;
+    }
+
+    .choice.wrong {
+      border-color: #e07373;
+      background: #ffe3e3;
+      color: #982626;
+      font-weight: 700;
+    }
+
+    .result {
+      min-height: 25px;
+      margin-top: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .explain {
+      display: none;
+      margin-top: 8px;
+      padding: 11px 13px;
+      background: #fff8df;
+      border-radius: 11px;
+      font-size: 16px;
+      line-height: 1.55;
+      font-weight: 400;
+    }
+
+    .summary {
+      margin-top: 24px;
+      padding: 21px;
+      background: #eef7ff;
+      border-radius: 20px;
+      font-size: 17px;
+      line-height: 1.85;
+    }
+
+    .summary h3 {
+      margin: 0 0 9px;
+      font-size: 21px;
+    }
+
+    .reset {
+      display: block;
+      margin: 24px auto 0;
+      padding: 13px 24px;
+      border: 0;
+      border-radius: 14px;
+      background: #ff9860;
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .final-message {
+      display: none;
+      margin-top: 18px;
+      padding: 18px;
+      background: #fff0f5;
+      border-radius: 18px;
+      text-align: center;
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 430px) {
+      .hero h1 { font-size: 23px; }
+      .question h2 { font-size: 19px; }
+      .choice { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>🗣️ 또박또박·조곤조곤<br>중얼중얼·웅얼웅얼</h1>
+      <p>말하는 모습을 떠올리며 가장 잘 어울리는 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 · 푼 문제 <span id="done">0</span>/12
+    </div>
+
+    <div id="quiz"></div>
+
+    <div id="finalMessage" class="final-message"></div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      📖 <b>또박또박</b> : 글씨를 알아보기 쉽게 쓰거나 말을 분명하게 하는 모습<br>
+      🌷 <b>조곤조곤</b> : 낮고 부드러운 목소리로 차분하게 이야기하는 모습<br>
+      💭 <b>중얼중얼</b> : 혼잣말처럼 작은 목소리로 계속 말하는 모습<br>
+      😶 <b>웅얼웅얼</b> : 입을 제대로 벌리지 않아 말소리가 똑똑히 들리지 않는 모습
+    </section>
+
+    <button class="reset" onclick="resetQuiz()">처음부터 다시 풀기</button>
+  </main>
+
+  <script>
+    const questions = [
+      {
+        q: "민이가 발표할 때 모든 사람이 잘 들을 수 있도록 글자를 분명하게 읽었어요.",
+        choices: ["또박또박", "조곤조곤", "중얼중얼", "웅얼웅얼"],
+        answer: 0,
+        explanation: "말소리를 하나하나 분명하게 낼 때는 ‘또박또박’이 잘 어울려요."
+      },
+      {
+        q: "엄마가 잠든 동생 옆에서 낮고 부드러운 목소리로 이야기를 들려주었어요.",
+        choices: ["중얼중얼", "조곤조곤", "웅얼웅얼", "또박또박"],
+        answer: 1,
+        explanation: "부드럽고 차분한 목소리로 이야기할 때는 ‘조곤조곤’이라고 해요."
+      },
+      {
+        q: "아빠가 열쇠를 찾으며 ‘분명히 여기에 두었는데…’라고 혼자 작은 소리로 말했어요.",
+        choices: ["웅얼웅얼", "또박또박", "중얼중얼", "조곤조곤"],
+        answer: 2,
+        explanation: "혼잣말처럼 작은 소리로 계속 말할 때는 ‘중얼중얼’이 알맞아요."
+      },
+      {
+        q: "준이가 입을 거의 벌리지 않고 말해서 무슨 말인지 잘 알아들을 수 없었어요.",
+        choices: ["조곤조곤", "중얼중얼", "또박또박", "웅얼웅얼"],
+        answer: 3,
+        explanation: "입을 제대로 벌리지 않아 말이 또렷하지 않을 때는 ‘웅얼웅얼’이라고 해요."
+      },
+      {
+        q: "선생님이 아이들과 눈을 맞추며 차분하고 다정하게 설명해 주셨어요.",
+        choices: ["조곤조곤", "웅얼웅얼", "또박또박", "중얼중얼"],
+        answer: 0,
+        explanation: "차분하고 다정하게 이야기하는 모습에는 ‘조곤조곤’이 어울려요."
+      },
+      {
+        q: "민이가 일기장에 글씨를 정성껏 알아보기 쉽게 썼어요.",
+        choices: ["웅얼웅얼", "또박또박", "조곤조곤", "중얼중얼"],
+        answer: 1,
+        explanation: "글씨를 분명하고 바르게 쓰는 모습도 ‘또박또박’이라고 표현해요."
+      },
+      {
+        q: "친구가 고개를 숙이고 입안에서만 말해 대답이 잘 들리지 않았어요.",
+        choices: ["중얼중얼", "조곤조곤", "웅얼웅얼", "또박또박"],
+        answer: 2,
+        explanation: "말소리가 입안에 갇힌 듯 분명하지 않을 때는 ‘웅얼웅얼’이 알맞아요."
+      },
+      {
+        q: "민이가 문제를 풀며 ‘하나 더하기 둘은 셋…’ 하고 혼자 계속 말했어요.",
+        choices: ["또박또박", "웅얼웅얼", "조곤조곤", "중얼중얼"],
+        answer: 3,
+        explanation: "자기에게 들릴 정도로 혼자 계속 말하는 모습은 ‘중얼중얼’이에요."
+      },
+      {
+        q: "아나운서가 뉴스 내용을 정확한 발음으로 분명하게 전달했어요.",
+        choices: ["웅얼웅얼", "중얼중얼", "또박또박", "조곤조곤"],
+        answer: 2,
+        explanation: "정확한 발음으로 분명하게 말할 때는 ‘또박또박’이 알맞아요."
+      },
+      {
+        q: "할머니가 민이에게 옛날이야기를 나지막하고 편안한 목소리로 들려주셨어요.",
+        choices: ["또박또박", "웅얼웅얼", "중얼중얼", "조곤조곤"],
+        answer: 3,
+        explanation: "나지막하고 편안한 목소리로 차분히 말하는 모습은 ‘조곤조곤’이에요."
+      },
+      {
+        q: "아이가 부끄러워서 입을 다문 채 작게 대답해 말이 뚜렷하게 들리지 않았어요.",
+        choices: ["중얼중얼", "웅얼웅얼", "조곤조곤", "또박또박"],
+        answer: 1,
+        explanation: "입을 제대로 움직이지 않아 말이 흐릿하게 들리면 ‘웅얼웅얼’이라고 해요."
+      },
+      {
+        q: "형이 게임을 하며 ‘이번에는 꼭 이겨야 하는데…’라고 혼자 작은 소리로 되풀이했어요.",
+        choices: ["중얼중얼", "또박또박", "조곤조곤", "웅얼웅얼"],
+        answer: 0,
+        explanation: "혼잣말을 작은 소리로 되풀이하는 모습에는 ‘중얼중얼’이 어울려요."
+      }
+    ];
+
+    let score = 0;
+    let done = 0;
+    const answered = Array(questions.length).fill(false);
+
+    function renderQuiz() {
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = "";
+
+      questions.forEach((item, questionIndex) => {
+        const section = document.createElement("section");
+        section.className = "question";
+
+        const title = document.createElement("h2");
+        title.textContent = `${questionIndex + 1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices = document.createElement("div");
+        choices.className = "choices";
+
+        item.choices.forEach((choiceText, choiceIndex) => {
+          const button = document.createElement("button");
+          button.className = "choice";
+          button.textContent = `${choiceIndex + 1}. ${choiceText}`;
+          button.addEventListener("click", () => {
+            checkAnswer(questionIndex, choiceIndex, button, section);
+          });
+          choices.appendChild(button);
+        });
+
+        const result = document.createElement("div");
+        result.className = "result";
+
+        const explain = document.createElement("div");
+        explain.className = "explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(questionIndex, choiceIndex, selectedButton, section) {
+      if (answered[questionIndex]) return;
+
+      answered[questionIndex] = true;
+      done += 1;
+
+      const item = questions[questionIndex];
+      const buttons = section.querySelectorAll(".choice");
+      const result = section.querySelector(".result");
+      const explain = section.querySelector(".explain");
+
+      buttons.forEach((button, index) => {
+        button.disabled = true;
+        if (index === item.answer) {
+          button.classList.add("correct");
+        }
+      });
+
+      if (choiceIndex === item.answer) {
+        score += 1;
+        result.textContent = "⭕ 정답이에요!";
+      } else {
+        selectedButton.classList.add("wrong");
+        result.textContent = `❌ 정답은 ‘${item.choices[item.answer]}’이에요.`;
+      }
+
+      explain.textContent = `💡 ${item.explanation}`;
+      explain.style.display = "block";
+
+      document.getElementById("score").textContent = score;
+      document.getElementById("done").textContent = done;
+
+      if (done === questions.length) {
+        showFinalMessage();
+      }
+    }
+
+    function showFinalMessage() {
+      const finalMessage = document.getElementById("finalMessage");
+      let message = "";
+
+      if (score === 12) {
+        message = "🎉 12문제를 모두 맞혔어요! 네 가지 말하는 모습의 차이를 정확히 알고 있네요.";
+      } else if (score >= 9) {
+        message = `👏 ${score}문제를 맞혔어요! 헷갈린 문제만 다시 살펴보세요.`;
+      } else {
+        message = `🌱 ${score}문제를 맞혔어요. 아래 정리를 읽고 다시 도전해 보세요!`;
+      }
+
+      finalMessage.textContent = message;
+      finalMessage.style.display = "block";
+      finalMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function resetQuiz() {
+      score = 0;
+      done = 0;
+      answered.fill(false);
+      document.getElementById("score").textContent = "0";
+      document.getElementById("done").textContent = "0";
+      document.getElementById("finalMessage").style.display = "none";
+      renderQuiz();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
