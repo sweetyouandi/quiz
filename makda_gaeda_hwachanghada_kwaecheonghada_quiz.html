@@ -1,0 +1,38 @@
+
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>맑다·개다·화창하다·쾌청하다 퀴즈</title>
+<style>
+body{font-family:sans-serif;background:#f7f7fb;max-width:760px;margin:auto;padding:20px}
+.q{background:#fff;border-radius:16px;padding:16px;margin:14px 0;box-shadow:0 2px 8px #0001}
+button{display:block;width:100%;margin:8px 0;padding:12px;border-radius:10px;border:1px solid #ccc;text-align:left}
+.correct{background:#dff7e5}.wrong{background:#ffe3e3}
+#score{position:sticky;top:0;background:#333;color:#fff;padding:10px;border-radius:8px}
+</style></head><body>
+<h1>☀️ 맑다 · 개다 · 화창하다 · 쾌청하다</h1><div id="score">0 / 10</div><div id="quiz"></div>
+<script>
+const qs=
+[{"q": "비가 그친 뒤 먹구름이 사라지고 파란 하늘이 보였어요.", "c": ["맑다", "개다", "화창하다", "쾌청하다"], "a": 1, "e": "비나 흐린 날씨가 걷혀 맑아질 때는 '개다'를 써요."}, {"q": "창문을 열자 햇살이 눈부시고 기분 좋은 날씨였어요.", "c": ["맑다", "개다", "화창하다", "쾌청하다"], "a": 2, "e": "햇살이 밝고 따뜻한 날씨는 '화창하다'예요."}, {"q": "하늘에 구름이 거의 없고 공기도 깨끗했어요.", "c": ["맑다", "개다", "화창하다", "쾌청하다"], "a": 3, "e": "매우 맑고 상쾌한 날씨는 '쾌청하다'예요."}, {"q": "계곡물이 바닥이 보일 만큼 깨끗했어요.", "c": ["맑다", "개다", "화창하다", "쾌청하다"], "a": 0, "e": "물이나 공기가 깨끗하면 '맑다'예요."}, {"q": "아침까지 비가 왔지만 점심에는 해가 나왔어요.", "c": ["맑다", "개다", "화창하다", "쾌청하다"], "a": 1, "e": "흐린 날씨가 좋아지면 '개다'예요."}, {"q": "봄날 소풍 가기 딱 좋을 만큼 햇볕이 환했어요.", "c": ["맑다", "개다", "화창하다", "쾌청하다"], "a": 2, "e": "햇볕이 환하고 따뜻하면 '화창하다'예요."}, {"q": "멀리 있는 산까지 또렷하게 보일 만큼 하늘이 깨끗했어요.", "c": ["맑다", "개다", "화창하다", "쾌청하다"], "a": 3, "e": "구름이 거의 없는 매우 좋은 날씨는 '쾌청하다'예요."}, {"q": "유리창을 닦았더니 속이 훤히 보였어요.", "c": ["맑다", "개다", "화창하다", "쾌청하다"], "a": 0, "e": "투명하고 깨끗한 상태는 '맑다'예요."}, {"q": "오후가 되자 먹구름이 모두 걷혔어요.", "c": ["맑다", "개다", "화창하다", "쾌청하다"], "a": 1, "e": "먹구름이 걷히면 '개다'예요."}, {"q": "가을 하늘이 높고 구름 한 점 없이 상쾌했어요.", "c": ["맑다", "개다", "화창하다", "쾌청하다"], "a": 3, "e": "구름 한 점 없이 상쾌한 하늘은 '쾌청하다'예요."}]
+;
+let s=0,d=0;
+const root=document.getElementById('quiz');
+function draw(){
+root.innerHTML='';
+qs.forEach((x,i)=>{
+let div=document.createElement('div');div.className='q';
+div.innerHTML=`<h3>${i+1}. ${x.q}</h3><div class=r></div>`;
+x.c.forEach((t,j)=>{
+let b=document.createElement('button');b.textContent=(j+1)+'. '+t;
+b.onclick=()=>{
+if(b.disabled)return;
+div.querySelectorAll('button').forEach((k,n)=>{k.disabled=true;if(n===x.a)k.classList.add('correct');});
+if(j===x.a){s++;}else b.classList.add('wrong');
+d++;document.getElementById('score').textContent=`${s} / 10`;
+div.querySelector('.r').innerHTML=`<b>💡 ${x.e}</b>`;
+};
+div.appendChild(b);
+});
+root.appendChild(div);
+});
+}
+draw();
+</script></body></html>
