@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="훌쩍훌쩍, 엉엉, 펑펑의 차이를 익히는 어린이 우리말 퀴즈">
+  <title>훌쩍훌쩍·엉엉·펑펑 퀴즈</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:#f8f9fd;color:#333}
+    .wrap{width:min(720px,100%);margin:0 auto;padding:22px 15px 45px}
+    .hero{padding:27px 18px;margin-bottom:20px;text-align:center;background:linear-gradient(135deg,#e9eaf8,#fce9ed);border-radius:24px;box-shadow:0 7px 20px rgba(0,0,0,.08)}
+    .hero h1{margin:0 0 10px;font-size:26px;line-height:1.45}
+    .hero p{margin:0;font-size:17px;line-height:1.6}
+    .progress{position:sticky;top:8px;z-index:10;margin-bottom:16px;padding:12px 16px;text-align:center;color:#fff;background:#525b72;border-radius:15px;font-size:17px;font-weight:700;box-shadow:0 5px 15px rgba(0,0,0,.15)}
+    .question{margin-bottom:16px;padding:20px;background:#fff;border-radius:20px;box-shadow:0 5px 16px rgba(0,0,0,.07)}
+    .question h2{margin:0 0 14px;font-size:20px;line-height:1.55}
+    .choices{display:grid;gap:10px}
+    .choice{width:100%;padding:14px 15px;border:2px solid #e1e4ec;border-radius:14px;background:#fcfdff;text-align:left;font-size:18px;cursor:pointer;transition:.15s}
+    .choice:hover:not(:disabled){background:#f0f2f8;transform:translateY(-1px)}
+    .choice:disabled{cursor:default}
+    .choice.correct{border-color:#5dbb7a;background:#def7e6;color:#176536;font-weight:700}
+    .choice.wrong{border-color:#e07373;background:#ffe3e3;color:#982626;font-weight:700}
+    .result{min-height:25px;margin-top:12px;font-size:17px;font-weight:700;line-height:1.5}
+    .explain{display:none;margin-top:8px;padding:11px 13px;background:#fff8df;border-radius:11px;font-size:16px;line-height:1.55}
+    .mid-cheer{display:none;margin:18px 0;padding:17px;background:#eef5ff;border-radius:18px;text-align:center;font-size:18px;font-weight:700;line-height:1.6}
+    .summary{margin-top:24px;padding:21px;background:#f1f2f9;border-radius:20px;font-size:17px;line-height:1.9}
+    .summary h3{margin:0 0 9px;font-size:21px}
+    .final-message{display:none;margin-top:18px;padding:18px;background:#fff0f4;border-radius:18px;text-align:center;font-size:19px;font-weight:700;line-height:1.6}
+    .reset{display:block;margin:24px auto 0;padding:13px 24px;border:0;border-radius:14px;background:#75809a;color:white;font-size:17px;font-weight:700;cursor:pointer}
+    @media(max-width:430px){.hero h1{font-size:22px}.question h2{font-size:19px}.choice{font-size:17px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>😢 훌쩍훌쩍·엉엉·펑펑</h1>
+      <p>우는 소리와 모습을 떠올리며 알맞은 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 · 푼 문제 <span id="done">0</span>/12
+    </div>
+
+    <div id="quiz"></div>
+    <div id="midCheer" class="mid-cheer">🌟 벌써 6문제를 풀었어요! 잠깐 숨을 고르고 계속 도전해 볼까요?</div>
+    <div id="finalMessage" class="final-message"></div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      🤧 <b>훌쩍훌쩍</b> : 코를 훌쩍이며 비교적 조용히 우는 모습<br>
+      😭 <b>엉엉</b> : 목소리를 크게 내며 서럽게 우는 모습<br>
+      💦 <b>펑펑</b> : 눈물을 아주 많이 흘리며 몹시 우는 모습
+    </section>
+
+    <button class="reset" onclick="resetQuiz()">처음부터 다시 풀기</button>
+  </main>
+
+  <script>
+    const questions = [{"q": "민이는 속상했지만 큰 소리를 내지 않고 코를 훌쩍이며 울었어요.", "choices": ["훌쩍훌쩍", "엉엉", "펑펑"], "answer": 0, "explanation": "코를 훌쩍이며 비교적 조용히 우는 모습은 ‘훌쩍훌쩍’이에요."}, {"q": "준이는 장난감이 망가지자 목소리를 크게 내며 서럽게 울었어요.", "choices": ["훌쩍훌쩍", "엉엉", "펑펑"], "answer": 1, "explanation": "목소리를 크게 내며 서럽게 우는 모습은 ‘엉엉’이에요."}, {"q": "슬픈 영화를 본 언니는 눈물이 많이 쏟아질 만큼 울었어요.", "choices": ["훌쩍훌쩍", "엉엉", "펑펑"], "answer": 2, "explanation": "눈물을 아주 많이 흘리며 몹시 우는 모습은 ‘펑펑’이에요."}, {"q": "친구와 다툰 민이는 소매로 코를 닦으며 조용히 울었어요.", "choices": ["엉엉", "펑펑", "훌쩍훌쩍"], "answer": 2, "explanation": "소리를 크게 내지 않고 코를 훌쩍이며 울 때는 ‘훌쩍훌쩍’이 알맞아요."}, {"q": "길을 잃은 아이는 엄마를 찾으며 큰 소리로 울었어요.", "choices": ["엉엉", "훌쩍훌쩍", "펑펑"], "answer": 0, "explanation": "서러운 마음을 큰 울음소리로 나타낼 때는 ‘엉엉’이라고 해요."}, {"q": "오랫동안 키운 강아지와 헤어진 아이는 눈물을 쏟으며 몹시 울었어요.", "choices": ["엉엉", "펑펑", "훌쩍훌쩍"], "answer": 1, "explanation": "눈물이 멈추지 않을 만큼 아주 많이 울 때는 ‘펑펑’이 잘 어울려요."}, {"q": "꾸중을 들은 준이는 방 한쪽에서 코를 훌쩍이며 울었어요.", "choices": ["펑펑", "훌쩍훌쩍", "엉엉"], "answer": 1, "explanation": "코를 훌쩍이는 작은 울음은 ‘훌쩍훌쩍’이에요."}, {"q": "동생은 엄마가 보이지 않자 입을 크게 벌리고 울었어요.", "choices": ["펑펑", "훌쩍훌쩍", "엉엉"], "answer": 2, "explanation": "입을 크게 벌리고 큰 소리로 우는 모습은 ‘엉엉’이에요."}, {"q": "결승전에서 진 선수는 참았던 눈물을 한꺼번에 쏟으며 울었어요.", "choices": ["펑펑", "엉엉", "훌쩍훌쩍"], "answer": 0, "explanation": "참았던 눈물을 한꺼번에 많이 쏟으며 우는 모습은 ‘펑펑’이에요."}, {"q": "민이는 아픈 주사를 맞고 눈물을 닦으며 코를 계속 훌쩍였어요.", "choices": ["훌쩍훌쩍", "펑펑", "엉엉"], "answer": 0, "explanation": "눈물을 조금 흘리며 코를 자꾸 훌쩍이는 모습은 ‘훌쩍훌쩍’이에요."}, {"q": "아기는 배가 고프자 온 방에 들릴 만큼 큰 소리로 울었어요.", "choices": ["펑펑", "엉엉", "훌쩍훌쩍"], "answer": 1, "explanation": "큰 소리를 내며 서럽게 우는 소리는 ‘엉엉’이에요."}, {"q": "감동적인 편지를 읽은 엄마는 눈물을 아주 많이 흘리며 울었어요.", "choices": ["훌쩍훌쩍", "엉엉", "펑펑"], "answer": 2, "explanation": "눈물이 많이 쏟아질 정도로 몹시 우는 모습은 ‘펑펑’이에요."}];
+    let score = 0;
+    let done = 0;
+    const answered = Array(questions.length).fill(false);
+
+    function renderQuiz(){
+      const quiz=document.getElementById("quiz");
+      quiz.innerHTML="";
+
+      questions.forEach((item,qi)=>{
+        const section=document.createElement("section");
+        section.className="question";
+
+        const title=document.createElement("h2");
+        title.textContent=`${qi+1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices=document.createElement("div");
+        choices.className="choices";
+
+        item.choices.forEach((text,ci)=>{
+          const button=document.createElement("button");
+          button.className="choice";
+          button.textContent=`${ci+1}. ${text}`;
+          button.addEventListener("click",()=>checkAnswer(qi,ci,button,section));
+          choices.appendChild(button);
+        });
+
+        const result=document.createElement("div");
+        result.className="result";
+
+        const explain=document.createElement("div");
+        explain.className="explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(qi,ci,selected,section){
+      if(answered[qi]) return;
+
+      answered[qi]=true;
+      done++;
+
+      const item=questions[qi];
+      const buttons=section.querySelectorAll(".choice");
+      const result=section.querySelector(".result");
+      const explain=section.querySelector(".explain");
+
+      buttons.forEach((button,index)=>{
+        button.disabled=true;
+        if(index===item.answer) button.classList.add("correct");
+      });
+
+      if(ci===item.answer){
+        score++;
+        result.textContent="⭕ 정답이에요!";
+      }else{
+        selected.classList.add("wrong");
+        result.textContent=`❌ 정답은 ‘${item.choices[item.answer]}’이에요.`;
+      }
+
+      explain.textContent=`💡 ${item.explanation}`;
+      explain.style.display="block";
+
+      document.getElementById("score").textContent=score;
+      document.getElementById("done").textContent=done;
+
+      if(done===6){
+        document.getElementById("midCheer").style.display="block";
+      }
+      if(done===questions.length){
+        showFinalMessage();
+      }
+    }
+
+    function showFinalMessage(){
+      const box=document.getElementById("finalMessage");
+
+      if(score===12){
+        box.textContent="🎉 12문제를 모두 맞혔어요! 세 가지 울음 표현의 차이를 정확히 알고 있네요.";
+      }else if(score>=9){
+        box.textContent=`👏 ${score}문제를 맞혔어요! 헷갈린 문제만 다시 살펴보세요.`;
+      }else{
+        box.textContent=`🌱 ${score}문제를 맞혔어요. 아래 정리를 읽고 다시 도전해 보세요!`;
+      }
+
+      box.style.display="block";
+      box.scrollIntoView({behavior:"smooth",block:"center"});
+    }
+
+    function resetQuiz(){
+      score=0;
+      done=0;
+      answered.fill(false);
+
+      document.getElementById("score").textContent="0";
+      document.getElementById("done").textContent="0";
+      document.getElementById("midCheer").style.display="none";
+      document.getElementById("finalMessage").style.display="none";
+
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
