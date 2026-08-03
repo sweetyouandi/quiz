@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>머뭇머뭇·우물쭈물·쭈뼛쭈뼛·안절부절 퀴즈</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:#faf8fc;color:#333}
+    .wrap{width:min(720px,100%);margin:0 auto;padding:22px 15px 45px}
+    .hero{padding:27px 18px;margin-bottom:20px;text-align:center;background:linear-gradient(135deg,#eee7f8,#fff0e9);border-radius:24px;box-shadow:0 7px 20px rgba(0,0,0,.08)}
+    .hero h1{margin:0 0 10px;font-size:25px;line-height:1.45}
+    .hero p{margin:0;font-size:17px;line-height:1.6}
+    .progress{position:sticky;top:8px;z-index:10;margin-bottom:16px;padding:12px 16px;text-align:center;color:#fff;background:#564d65;border-radius:15px;font-size:17px;font-weight:700;box-shadow:0 5px 15px rgba(0,0,0,.15)}
+    .question{margin-bottom:16px;padding:20px;background:#fff;border-radius:20px;box-shadow:0 5px 16px rgba(0,0,0,.07)}
+    .question h2{margin:0 0 14px;font-size:20px;line-height:1.55}
+    .choices{display:grid;gap:10px}
+    .choice{width:100%;padding:14px 15px;border:2px solid #e5dfea;border-radius:14px;background:#fefcff;text-align:left;font-size:18px;cursor:pointer;transition:.15s}
+    .choice:hover:not(:disabled){background:#f5f0fa;transform:translateY(-1px)}
+    .choice:disabled{cursor:default}
+    .choice.correct{border-color:#5dbb7a;background:#def7e6;color:#176536;font-weight:700}
+    .choice.wrong{border-color:#e07373;background:#ffe3e3;color:#982626;font-weight:700}
+    .result{min-height:25px;margin-top:12px;font-size:17px;font-weight:700;line-height:1.5}
+    .explain{display:none;margin-top:8px;padding:11px 13px;background:#fff8df;border-radius:11px;font-size:16px;line-height:1.55}
+    .summary{margin-top:24px;padding:21px;background:#f2edf7;border-radius:20px;font-size:17px;line-height:1.9}
+    .summary h3{margin:0 0 9px;font-size:21px}
+    .final-message{display:none;margin-top:18px;padding:18px;background:#fff0f4;border-radius:18px;text-align:center;font-size:19px;font-weight:700;line-height:1.6}
+    .reset{display:block;margin:24px auto 0;padding:13px 24px;border:0;border-radius:14px;background:#806f96;color:white;font-size:17px;font-weight:700;cursor:pointer}
+    @media(max-width:430px){.hero h1{font-size:21px}.question h2{font-size:19px}.choice{font-size:17px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>🤔 머뭇머뭇·우물쭈물<br>쭈뼛쭈뼛·안절부절</h1>
+      <p>망설임과 불안의 모습을 떠올리며 알맞은 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 · 푼 문제 <span id="done">0</span>/12
+    </div>
+
+    <div id="quiz"></div>
+    <div id="finalMessage" class="final-message"></div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      🤔 <b>머뭇머뭇</b> : 할지 말지 망설이며 행동을 바로 시작하지 못하는 모습<br>
+      🗣️ <b>우물쭈물</b> : 말이나 결정을 분명하게 하지 못하고 자꾸 흐리는 모습<br>
+      🙈 <b>쭈뼛쭈뼛</b> : 부끄럽거나 어색해서 몸가짐이 자연스럽지 못한 모습<br>
+      😰 <b>안절부절</b> : 걱정이나 초조함 때문에 가만히 있지 못하는 모습
+    </section>
+
+    <button class="reset" onclick="resetQuiz()">처음부터 다시 풀기</button>
+  </main>
+
+  <script>
+    const questions = [{"q": "민이는 대답을 할까 말까 망설이며 바로 말을 꺼내지 못했어요.", "choices": ["머뭇머뭇", "우물쭈물", "쭈뼛쭈뼛", "안절부절"], "answer": 0, "explanation": "무엇을 할지 망설이며 바로 행동하지 못하는 모습은 ‘머뭇머뭇’이에요."}, {"q": "준이는 잘못한 일을 물어보자 분명하게 말하지 못하고 자꾸 말을 흐렸어요.", "choices": ["머뭇머뭇", "우물쭈물", "쭈뼛쭈뼛", "안절부절"], "answer": 1, "explanation": "말이나 행동을 분명히 하지 못하고 자꾸 망설이는 모습은 ‘우물쭈물’이에요."}, {"q": "처음 만난 친구들 앞에서 민이는 몸을 어색하게 움직이며 가까이 가지 못했어요.", "choices": ["머뭇머뭇", "우물쭈물", "쭈뼛쭈뼛", "안절부절"], "answer": 2, "explanation": "부끄럽거나 어색해서 몸가짐이 자연스럽지 못한 모습은 ‘쭈뼛쭈뼛’이에요."}, {"q": "엄마가 늦게 오자 민이는 걱정되어 자리에 가만히 앉아 있지 못했어요.", "choices": ["머뭇머뭇", "우물쭈물", "쭈뼛쭈뼛", "안절부절"], "answer": 3, "explanation": "걱정되거나 초조해서 가만히 있지 못하는 모습은 ‘안절부절’이에요."}, {"q": "발표 차례가 되자 민이는 교실 앞으로 나갈지 잠시 망설였어요.", "choices": ["머뭇머뭇", "쭈뼛쭈뼛", "안절부절", "우물쭈물"], "answer": 0, "explanation": "행동을 시작할지 말지 망설이는 모습은 ‘머뭇머뭇’이 잘 어울려요."}, {"q": "친구가 어느 장난감을 고를지 묻자 준이는 대답을 미루며 말을 흐렸어요.", "choices": ["쭈뼛쭈뼛", "우물쭈물", "머뭇머뭇", "안절부절"], "answer": 1, "explanation": "결정이나 대답을 분명하게 하지 못하고 말을 흐리는 모습은 ‘우물쭈물’이에요."}, {"q": "낯선 어른이 말을 걸자 아이는 어깨를 움츠리고 어색하게 서 있었어요.", "choices": ["안절부절", "머뭇머뭇", "쭈뼛쭈뼛", "우물쭈물"], "answer": 2, "explanation": "부끄러움 때문에 몸을 어색하게 움직이는 모습은 ‘쭈뼛쭈뼛’이에요."}, {"q": "시험 결과가 나오기 전까지 아이는 방 안을 계속 왔다 갔다 했어요.", "choices": ["우물쭈물", "쭈뼛쭈뼛", "머뭇머뭇", "안절부절"], "answer": 3, "explanation": "걱정과 초조함 때문에 가만히 있지 못하는 모습은 ‘안절부절’이에요."}, {"q": "민이는 문 앞에서 들어갈지 말지 잠시 서성였어요.", "choices": ["머뭇머뭇", "안절부절", "우물쭈물", "쭈뼛쭈뼛"], "answer": 0, "explanation": "결정을 내리지 못하고 행동을 늦추는 모습은 ‘머뭇머뭇’이에요."}, {"q": "선생님이 이유를 묻자 아이는 똑바로 대답하지 않고 엉뚱한 말만 했어요.", "choices": ["안절부절", "우물쭈물", "쭈뼛쭈뼛", "머뭇머뭇"], "answer": 1, "explanation": "대답을 분명하게 하지 않고 말을 흐리는 모습은 ‘우물쭈물’이에요."}, {"q": "무대에 올라온 아이는 많은 사람을 보자 몸을 어색하게 움직였어요.", "choices": ["우물쭈물", "안절부절", "쭈뼛쭈뼛", "머뭇머뭇"], "answer": 2, "explanation": "부끄럽고 어색해 몸가짐이 자연스럽지 않은 모습은 ‘쭈뼛쭈뼛’이에요."}, {"q": "길을 잃은 강아지를 기다리며 민이는 초조하게 창밖만 바라보았어요.", "choices": ["쭈뼛쭈뼛", "머뭇머뭇", "우물쭈물", "안절부절"], "answer": 3, "explanation": "걱정이 되어 마음을 놓지 못하고 초조한 모습은 ‘안절부절’이에요."}];
+    let score = 0;
+    let done = 0;
+    const answered = Array(questions.length).fill(false);
+
+    function renderQuiz(){
+      const quiz=document.getElementById("quiz");
+      quiz.innerHTML="";
+
+      questions.forEach((item,qi)=>{
+        const section=document.createElement("section");
+        section.className="question";
+
+        const title=document.createElement("h2");
+        title.textContent=`${qi+1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices=document.createElement("div");
+        choices.className="choices";
+
+        item.choices.forEach((text,ci)=>{
+          const button=document.createElement("button");
+          button.className="choice";
+          button.textContent=`${ci+1}. ${text}`;
+          button.addEventListener("click",()=>checkAnswer(qi,ci,button,section));
+          choices.appendChild(button);
+        });
+
+        const result=document.createElement("div");
+        result.className="result";
+
+        const explain=document.createElement("div");
+        explain.className="explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(qi,ci,selected,section){
+      if(answered[qi]) return;
+
+      answered[qi]=true;
+      done++;
+
+      const item=questions[qi];
+      const buttons=section.querySelectorAll(".choice");
+      const result=section.querySelector(".result");
+      const explain=section.querySelector(".explain");
+
+      buttons.forEach((button,index)=>{
+        button.disabled=true;
+        if(index===item.answer) button.classList.add("correct");
+      });
+
+      if(ci===item.answer){
+        score++;
+        result.textContent="⭕ 정답이에요!";
+      }else{
+        selected.classList.add("wrong");
+        result.textContent=`❌ 정답은 ‘${item.choices[item.answer]}’예요.`;
+      }
+
+      explain.textContent=`💡 ${item.explanation}`;
+      explain.style.display="block";
+
+      document.getElementById("score").textContent=score;
+      document.getElementById("done").textContent=done;
+
+      if(done===questions.length) showFinalMessage();
+    }
+
+    function showFinalMessage(){
+      const box=document.getElementById("finalMessage");
+
+      if(score===12){
+        box.textContent="🎉 12문제를 모두 맞혔어요! 네 가지 행동 모습의 차이를 정확히 알고 있네요.";
+      }else if(score>=9){
+        box.textContent=`👏 ${score}문제를 맞혔어요! 헷갈린 문제만 다시 살펴보세요.`;
+      }else{
+        box.textContent=`🌱 ${score}문제를 맞혔어요. 아래 정리를 읽고 다시 도전해 보세요!`;
+      }
+
+      box.style.display="block";
+      box.scrollIntoView({behavior:"smooth",block:"center"});
+    }
+
+    function resetQuiz(){
+      score=0;
+      done=0;
+      answered.fill(false);
+
+      document.getElementById("score").textContent="0";
+      document.getElementById("done").textContent="0";
+      document.getElementById("finalMessage").style.display="none";
+
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
