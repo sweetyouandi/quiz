@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>납작하다·평평하다·반듯하다·판판하다 퀴즈</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
+      background: #fffaf3;
+      color: #333;
+    }
+
+    .wrap {
+      width: min(720px, 100%);
+      margin: 0 auto;
+      padding: 22px 15px 45px;
+    }
+
+    .hero {
+      padding: 27px 18px;
+      margin-bottom: 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #dff5eb, #fff0c9);
+      border-radius: 24px;
+      box-shadow: 0 7px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 27px;
+      line-height: 1.45;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .progress {
+      position: sticky;
+      top: 8px;
+      z-index: 10;
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      text-align: center;
+      color: white;
+      background: #3f4a45;
+      border-radius: 15px;
+      font-size: 17px;
+      font-weight: 700;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+
+    .question {
+      margin-bottom: 16px;
+      padding: 20px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 5px 16px rgba(0, 0, 0, 0.07);
+    }
+
+    .question h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      line-height: 1.55;
+    }
+
+    .choices {
+      display: grid;
+      gap: 10px;
+    }
+
+    .choice {
+      width: 100%;
+      padding: 14px 15px;
+      border: 2px solid #dce7df;
+      border-radius: 14px;
+      background: #fcfffd;
+      text-align: left;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .choice:hover:not(:disabled) {
+      background: #eff9f2;
+      transform: translateY(-1px);
+    }
+
+    .choice:disabled {
+      cursor: default;
+    }
+
+    .choice.correct {
+      border-color: #5dbb7a;
+      background: #def7e6;
+      color: #176536;
+      font-weight: 700;
+    }
+
+    .choice.wrong {
+      border-color: #e07373;
+      background: #ffe3e3;
+      color: #982626;
+      font-weight: 700;
+    }
+
+    .result {
+      min-height: 25px;
+      margin-top: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .explain {
+      display: none;
+      margin-top: 8px;
+      padding: 11px 13px;
+      background: #fff8df;
+      border-radius: 11px;
+      font-size: 16px;
+      line-height: 1.55;
+      font-weight: 400;
+    }
+
+    .summary {
+      margin-top: 24px;
+      padding: 21px;
+      background: #eef7ff;
+      border-radius: 20px;
+      font-size: 17px;
+      line-height: 1.85;
+    }
+
+    .summary h3 {
+      margin: 0 0 9px;
+      font-size: 21px;
+    }
+
+    .reset {
+      display: block;
+      margin: 24px auto 0;
+      padding: 13px 24px;
+      border: 0;
+      border-radius: 14px;
+      background: #ff9860;
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .final-message {
+      display: none;
+      margin-top: 18px;
+      padding: 18px;
+      background: #fff1f5;
+      border-radius: 18px;
+      text-align: center;
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 430px) {
+      .hero h1 { font-size: 24px; }
+      .question h2 { font-size: 19px; }
+      .choice { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>📏 납작하다·평평하다<br>반듯하다·판판하다</h1>
+      <p>문장을 읽고 가장 잘 어울리는 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 · 푼 문제 <span id="done">0</span>/10
+    </div>
+
+    <div id="quiz"></div>
+
+    <div id="finalMessage" class="final-message"></div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      🥞 <b>납작하다</b> : 두께가 얇고 눌린 듯한 모양이에요.<br>
+      🛣️ <b>평평하다</b> : 높고 낮은 곳 없이 고른 상태예요.<br>
+      📐 <b>반듯하다</b> : 비뚤어지지 않고 곧고 바른 모습이에요.<br>
+      📄 <b>판판하다</b> : 구김이나 울퉁불퉁함 없이 매끈하고 평평해요.
+    </section>
+
+    <button class="reset" onclick="resetQuiz()">처음부터 다시 풀기</button>
+  </main>
+
+  <script>
+    const questions = [
+      {
+        q: "상자에 눌린 빵이 얇고 넓게 변했어요.",
+        choices: ["평평하다", "반듯하다", "납작하다", "판판하다"],
+        answer: 2,
+        explanation: "눌려서 두께가 얇아진 모양에는 ‘납작하다’가 잘 어울려요."
+      },
+      {
+        q: "운동장 바닥에는 높고 낮은 곳이 없이 고르게 흙이 깔려 있어요.",
+        choices: ["평평하다", "납작하다", "판판하다", "반듯하다"],
+        answer: 0,
+        explanation: "바닥의 높이가 고르고 울퉁불퉁하지 않을 때 ‘평평하다’라고 해요."
+      },
+      {
+        q: "민이가 자를 대고 선을 비뚤어지지 않게 곧게 그었어요.",
+        choices: ["판판하다", "반듯하다", "납작하다", "평평하다"],
+        answer: 1,
+        explanation: "선이나 모양이 비뚤지 않고 곧고 바를 때 ‘반듯하다’라고 해요."
+      },
+      {
+        q: "구겨진 종이를 책 사이에 넣어 두었더니 매끈하게 펴졌어요.",
+        choices: ["납작하다", "평평하다", "반듯하다", "판판하다"],
+        answer: 3,
+        explanation: "종이처럼 구김이 사라져 매끄럽게 펴진 상태에는 ‘판판하다’가 잘 어울려요."
+      },
+      {
+        q: "풍선의 바람이 빠지자 바닥에 얇게 붙은 모양이 되었어요.",
+        choices: ["반듯하다", "납작하다", "판판하다", "평평하다"],
+        answer: 1,
+        explanation: "부풀었던 것이 꺼져 얇아졌으므로 ‘납작하다’가 알맞아요."
+      },
+      {
+        q: "새 책상 위에는 울퉁불퉁한 곳이 없어 블록이 기울지 않아요.",
+        choices: ["판판하다", "반듯하다", "평평하다", "납작하다"],
+        answer: 2,
+        explanation: "책상 표면의 높이가 고르다는 뜻이므로 ‘평평하다’가 알맞아요."
+      },
+      {
+        q: "책들을 기울어지지 않게 줄을 맞춰 가지런히 세웠어요.",
+        choices: ["납작하다", "판판하다", "평평하다", "반듯하다"],
+        answer: 3,
+        explanation: "물건이 기울거나 비뚤어지지 않고 바르게 놓였을 때 ‘반듯하다’라고 해요."
+      },
+      {
+        q: "다림질을 했더니 구겨졌던 손수건이 매끈하게 펴졌어요.",
+        choices: ["판판하다", "평평하다", "납작하다", "반듯하다"],
+        answer: 0,
+        explanation: "천의 구김이 없어지고 매끈해진 모습에는 ‘판판하다’가 잘 어울려요."
+      },
+      {
+        q: "찐 감자를 손바닥으로 꾹 눌러 얇고 넓게 만들었어요.",
+        choices: ["평평하다", "판판하다", "반듯하다", "납작하다"],
+        answer: 3,
+        explanation: "감자를 눌러 두께가 얇아졌으므로 ‘납작하다’가 알맞아요."
+      },
+      {
+        q: "액자를 벽에 삐뚤어지지 않게 똑바로 걸었어요.",
+        choices: ["반듯하다", "납작하다", "평평하다", "판판하다"],
+        answer: 0,
+        explanation: "액자가 비뚤지 않고 바르게 걸렸으므로 ‘반듯하다’가 알맞아요."
+      }
+    ];
+
+    let score = 0;
+    let done = 0;
+    const answered = Array(questions.length).fill(false);
+
+    function renderQuiz() {
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = "";
+
+      questions.forEach((item, questionIndex) => {
+        const section = document.createElement("section");
+        section.className = "question";
+
+        const title = document.createElement("h2");
+        title.textContent = `${questionIndex + 1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices = document.createElement("div");
+        choices.className = "choices";
+
+        item.choices.forEach((choiceText, choiceIndex) => {
+          const button = document.createElement("button");
+          button.className = "choice";
+          button.textContent = `${choiceIndex + 1}. ${choiceText}`;
+          button.addEventListener("click", () => {
+            checkAnswer(questionIndex, choiceIndex, button, section);
+          });
+          choices.appendChild(button);
+        });
+
+        const result = document.createElement("div");
+        result.className = "result";
+
+        const explain = document.createElement("div");
+        explain.className = "explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(questionIndex, choiceIndex, selectedButton, section) {
+      if (answered[questionIndex]) return;
+
+      answered[questionIndex] = true;
+      done += 1;
+
+      const item = questions[questionIndex];
+      const buttons = section.querySelectorAll(".choice");
+      const result = section.querySelector(".result");
+      const explain = section.querySelector(".explain");
+
+      buttons.forEach((button, index) => {
+        button.disabled = true;
+        if (index === item.answer) {
+          button.classList.add("correct");
+        }
+      });
+
+      if (choiceIndex === item.answer) {
+        score += 1;
+        result.textContent = "⭕ 정답이에요!";
+      } else {
+        selectedButton.classList.add("wrong");
+        result.textContent = `❌ 정답은 ‘${item.choices[item.answer]}’예요.`;
+      }
+
+      explain.textContent = `💡 ${item.explanation}`;
+      explain.style.display = "block";
+
+      document.getElementById("score").textContent = score;
+      document.getElementById("done").textContent = done;
+
+      if (done === questions.length) {
+        showFinalMessage();
+      }
+    }
+
+    function showFinalMessage() {
+      const finalMessage = document.getElementById("finalMessage");
+      let message = "";
+
+      if (score === 10) {
+        message = "🎉 10문제를 모두 맞혔어요! 네 단어의 차이를 정확히 알고 있네요.";
+      } else if (score >= 7) {
+        message = `👏 ${score}문제를 맞혔어요! 헷갈린 문제만 다시 살펴보세요.`;
+      } else {
+        message = `🌱 ${score}문제를 맞혔어요. 아래 정리를 읽고 한 번 더 도전해 보세요!`;
+      }
+
+      finalMessage.textContent = message;
+      finalMessage.style.display = "block";
+      finalMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function resetQuiz() {
+      score = 0;
+      done = 0;
+      answered.fill(false);
+      document.getElementById("score").textContent = "0";
+      document.getElementById("done").textContent = "0";
+      document.getElementById("finalMessage").style.display = "none";
+      renderQuiz();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
