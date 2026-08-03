@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>훌쩍훌쩍·엉엉·펑펑 1분 퀴즈</title>
+<style>
+:root {
+  --bg:#fff9f5; --card:#ffffff; --text:#2f2a2a; --sub:#766d6d;
+  --accent:#ff7f6a; --accent2:#ffd8cf; --ok:#2d9f73; --bad:#db5b5b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#fff6f1,#fffdfb);font-family:"Pretendard","Noto Sans KR",sans-serif;color:var(--text)}
+.wrap{max-width:720px;margin:0 auto;padding:22px 16px 40px}
+.hero{text-align:center;padding:18px 8px 12px}
+.badge{display:inline-block;background:#ffe4dc;color:#9a4939;padding:7px 12px;border-radius:999px;font-size:14px;font-weight:800}
+h1{font-size:28px;line-height:1.3;margin:13px 0 8px}
+.desc{font-size:15px;color:var(--sub);line-height:1.6}
+.legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0}
+.legend div{background:white;border:1px solid #f1ddd7;border-radius:16px;padding:12px 8px;text-align:center;font-size:13px;line-height:1.45}
+.legend strong{display:block;font-size:16px;margin-bottom:3px}
+.card{background:var(--card);border-radius:24px;padding:22px;box-shadow:0 10px 30px rgba(82,47,38,.09);border:1px solid #f3e5e0}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;color:var(--sub);font-size:14px;font-weight:700}
+.progress{height:9px;background:#f2e8e5;border-radius:99px;overflow:hidden;margin-bottom:22px}
+.progress span{display:block;height:100%;width:0;background:var(--accent);transition:.3s}
+.q{font-size:21px;line-height:1.55;font-weight:850;margin:5px 0 18px}
+.answers{display:grid;gap:11px}
+button{font:inherit}
+.answer{width:100%;border:2px solid #eee2de;background:#fff;border-radius:16px;padding:15px 14px;text-align:left;font-size:17px;font-weight:750;cursor:pointer;transition:.15s}
+.answer:hover{transform:translateY(-1px);border-color:#ffc5b8}
+.answer.correct{border-color:var(--ok);background:#edf9f4;color:#177455}
+.answer.wrong{border-color:var(--bad);background:#fff0f0;color:#a73838}
+.answer:disabled{cursor:default;transform:none}
+.feedback{display:none;margin-top:16px;padding:15px;border-radius:15px;line-height:1.55;font-size:15px;font-weight:650}
+.feedback.show{display:block}
+.feedback.ok{background:#eef9f5;color:#176d51}
+.feedback.no{background:#fff1f1;color:#963e3e}
+.next{display:none;width:100%;margin-top:15px;border:0;border-radius:16px;padding:15px;background:var(--accent);color:white;font-size:17px;font-weight:850;cursor:pointer}
+.next.show{display:block}
+.result{display:none;text-align:center}
+.result.show{display:block}
+.result .emoji{font-size:54px}
+.result h2{font-size:28px;margin:9px 0}
+.scorebig{font-size:42px;font-weight:900;color:var(--accent)}
+.restart{border:0;border-radius:16px;padding:14px 20px;background:var(--accent);color:white;font-weight:850;font-size:17px;cursor:pointer}
+.tip{margin-top:18px;background:#fff4d9;border-radius:16px;padding:14px;line-height:1.6;text-align:left;font-size:14px}
+.footer{text-align:center;color:#9a8e8b;font-size:12px;margin-top:18px}
+@media(max-width:520px){
+ h1{font-size:24px} .legend{grid-template-columns:1fr} .legend div{text-align:left;padding:10px 14px}
+ .card{padding:18px} .q{font-size:19px} .answer{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <span class="badge">🧠 아이와 함께하는 1분 퀴즈</span>
+    <h1>훌쩍훌쩍 · 엉엉 · 펑펑<br>어떻게 다를까요?</h1>
+    <p class="desc">문제를 읽고 가장 잘 어울리는 말을 골라 보세요.</p>
+  </div>
+
+  <div class="legend">
+    <div><strong>😢 훌쩍훌쩍</strong>코를 들이마시며 조용히 울어요.</div>
+    <div><strong>😭 엉엉</strong>큰 소리를 내며 울어요.</div>
+    <div><strong>💦 펑펑</strong>눈물을 아주 많이 쏟으며 울어요.</div>
+  </div>
+
+  <div class="card">
+    <div id="quiz">
+      <div class="top"><span id="count">1 / 10</span><span id="score">0점</span></div>
+      <div class="progress"><span id="bar"></span></div>
+      <div class="q" id="question"></div>
+      <div class="answers" id="answers"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next" id="nextBtn">다음 문제 →</button>
+    </div>
+
+    <div class="result" id="result">
+      <div class="emoji" id="resultEmoji">🎉</div>
+      <h2>퀴즈 완료!</h2>
+      <div class="scorebig" id="finalScore"></div>
+      <p id="resultText"></p>
+      <div class="tip">
+        <strong>한눈에 기억하기</strong><br>
+        훌쩍훌쩍 = 조용히, 코를 훌쩍<br>
+        엉엉 = 큰 울음소리<br>
+        펑펑 = 눈물을 아주 많이
+      </div>
+      <br>
+      <button class="restart" onclick="startQuiz()">다시 풀기</button>
+    </div>
+  </div>
+  <div class="footer">문제는 매번 무작위로 출제됩니다.</div>
+</div>
+
+<script>
+const bank = [{"q": "친구와 헤어진 민지가 코를 훌쩍이며 작은 소리로 울었어요. 알맞은 말은?", "choices": ["훌쩍훌쩍", "엉엉", "펑펑"], "answer": "훌쩍훌쩍", "exp": "‘훌쩍훌쩍’은 큰 소리를 내지 않고 코를 들이마시며 조용히 우는 모습이에요."}, {"q": "길을 잃은 아이가 엄마를 찾으며 큰 소리로 울었어요. 알맞은 말은?", "choices": ["펑펑", "훌쩍훌쩍", "엉엉"], "answer": "엉엉", "exp": "‘엉엉’은 슬프거나 서러워서 큰 소리를 내며 우는 소리예요."}, {"q": "슬픈 영화를 본 언니가 눈물을 아주 많이 쏟으며 울었어요. 알맞은 말은?", "choices": ["엉엉", "펑펑", "훌쩍훌쩍"], "answer": "펑펑", "exp": "‘펑펑’은 눈물을 많이 쏟으며 아주 세게 우는 모습을 나타내요."}, {"q": "혼이 난 준이는 들키지 않으려고 방 안에서 코만 훌쩍였어요.", "choices": ["엉엉", "훌쩍훌쩍", "펑펑"], "answer": "훌쩍훌쩍", "exp": "소리를 죽이고 코를 훌쩍이며 우는 모습은 ‘훌쩍훌쩍’이 잘 어울려요."}, {"q": "동생은 장난감이 망가지자 입을 크게 벌리고 큰 소리로 울었어요.", "choices": ["엉엉", "펑펑", "훌쩍훌쩍"], "answer": "엉엉", "exp": "입을 크게 벌리고 큰 소리로 우는 소리는 ‘엉엉’이에요."}, {"q": "오랫동안 키운 강아지와 헤어진 가족이 눈물을 쏟으며 아주 많이 울었어요.", "choices": ["훌쩍훌쩍", "펑펑", "엉엉"], "answer": "펑펑", "exp": "눈물이 많이 흐르고 울음이 매우 거센 모습에는 ‘펑펑’이 어울려요."}, {"q": "다음 중 가장 조용한 울음에 가까운 말은?", "choices": ["펑펑", "엉엉", "훌쩍훌쩍"], "answer": "훌쩍훌쩍", "exp": "‘훌쩍훌쩍’은 세 표현 가운데 비교적 조용한 울음을 나타내요."}, {"q": "다음 중 ‘큰 울음소리’를 가장 잘 나타내는 말은?", "choices": ["훌쩍훌쩍", "엉엉", "펑펑"], "answer": "엉엉", "exp": "‘엉엉’은 울 때 나는 큰 소리에 초점이 있어요."}, {"q": "다음 중 ‘눈물을 아주 많이 쏟는 모습’을 가장 잘 나타내는 말은?", "choices": ["펑펑", "훌쩍훌쩍", "엉엉"], "answer": "펑펑", "exp": "‘펑펑’은 눈물이 많이 쏟아지는 모습과 아주 세찬 울음을 나타내요."}, {"q": "문장을 완성해 보세요. ‘상을 받지 못한 수아는 아쉬워서 코를 _____ 울었어요.’", "choices": ["엉엉", "펑펑", "훌쩍훌쩍"], "answer": "훌쩍훌쩍", "exp": "‘코를 훌쩍이다’와 잘 어울리는 말은 ‘훌쩍훌쩍’이에요."}, {"q": "문장을 완성해 보세요. ‘아기는 엄마가 보이지 않자 _____ 소리를 내며 울었어요.’", "choices": ["펑펑", "엉엉", "훌쩍훌쩍"], "answer": "엉엉", "exp": "큰 울음소리를 나타낼 때는 ‘엉엉’이 자연스러워요."}, {"q": "문장을 완성해 보세요. ‘감동적인 편지를 읽은 할머니는 눈물을 _____ 쏟으셨어요.’", "choices": ["훌쩍훌쩍", "엉엉", "펑펑"], "answer": "펑펑", "exp": "‘눈물을 펑펑 쏟다’처럼 눈물의 양이 많을 때 사용해요."}, {"q": "‘훌쩍훌쩍’에 가장 가까운 장면은?", "choices": ["소리 없이 코를 들이마시며 운다", "입을 크게 벌리고 큰 소리로 운다", "눈물을 폭포처럼 많이 쏟는다"], "answer": "소리 없이 코를 들이마시며 운다", "exp": "‘훌쩍훌쩍’은 코를 들이마시며 조용히 우는 모습이에요."}, {"q": "‘엉엉’에 가장 가까운 장면은?", "choices": ["눈가만 살짝 젖는다", "큰 울음소리를 내며 운다", "눈물을 닦으며 참는다"], "answer": "큰 울음소리를 내며 운다", "exp": "‘엉엉’은 우는 소리가 크고 분명할 때 써요."}, {"q": "‘펑펑’에 가장 가까운 장면은?", "choices": ["눈물을 아주 많이 흘리며 운다", "코를 한 번 훌쩍인다", "작게 흐느낀다"], "answer": "눈물을 아주 많이 흘리며 운다", "exp": "‘펑펑’은 눈물을 쏟듯 많이 흘리는 모습을 나타내요."}, {"q": "다음 문장 중 가장 자연스러운 것은?", "choices": ["민이는 코를 엉엉 훌쩍였어요.", "민이는 눈물을 펑펑 쏟았어요.", "민이는 작은 소리로 펑펑 울었어요."], "answer": "민이는 눈물을 펑펑 쏟았어요.", "exp": "‘눈물을 펑펑 쏟다’는 자연스러운 표현이에요."}, {"q": "다음 문장 중 가장 자연스러운 것은?", "choices": ["아기가 엉엉 울었어요.", "아기가 코를 펑펑 들이마셨어요.", "아기가 눈물을 훌쩍훌쩍 쏟았어요."], "answer": "아기가 엉엉 울었어요.", "exp": "‘엉엉 울다’는 큰 소리로 우는 모습을 자연스럽게 나타내요."}, {"q": "다음 문장 중 가장 자연스러운 것은?", "choices": ["지우는 훌쩍훌쩍 코를 들이마셨어요.", "지우는 엉엉 눈물을 쏟았어요.", "지우는 펑펑 작은 소리로 울었어요."], "answer": "지우는 훌쩍훌쩍 코를 들이마셨어요.", "exp": "‘훌쩍훌쩍 코를 들이마시다’가 가장 자연스러워요."}, {"q": "서러운 마음에 목소리를 높여 우는 모습을 나타내려면?", "choices": ["훌쩍훌쩍", "엉엉", "펑펑"], "answer": "엉엉", "exp": "목소리를 높여 크게 우는 소리에는 ‘엉엉’이 잘 어울려요."}, {"q": "눈물이 볼을 타고 계속 쏟아지는 모습을 나타내려면?", "choices": ["엉엉", "훌쩍훌쩍", "펑펑"], "answer": "펑펑", "exp": "눈물이 많이 쏟아지는 모습을 강조할 때 ‘펑펑’을 써요."}];
+let quiz=[], index=0, score=0, locked=false;
+
+function shuffle(arr){
+  return [...arr].sort(()=>Math.random()-0.5);
+}
+
+function startQuiz(){
+  quiz = shuffle(bank).slice(0,10).map(item => ({...item, choices: shuffle(item.choices)}));
+  index=0; score=0; locked=false;
+  document.getElementById('quiz').style.display='block';
+  document.getElementById('result').classList.remove('show');
+  render();
+}
+
+function render(){
+  locked=false;
+  const item=quiz[index];
+  document.getElementById('count').textContent=`${index+1} / ${quiz.length}`;
+  document.getElementById('score').textContent=`${score}점`;
+  document.getElementById('bar').style.width=`${(index/quiz.length)*100}%`;
+  document.getElementById('question').textContent=item.q;
+
+  const answers=document.getElementById('answers');
+  answers.innerHTML='';
+  item.choices.forEach(choice=>{
+    const btn=document.createElement('button');
+    btn.className='answer';
+    btn.textContent=choice;
+    btn.onclick=()=>check(choice,btn);
+    answers.appendChild(btn);
+  });
+
+  const fb=document.getElementById('feedback');
+  fb.className='feedback';
+  fb.textContent='';
+  document.getElementById('nextBtn').className='next';
+}
+
+function check(choice,btn){
+  if(locked) return;
+  locked=true;
+  const item=quiz[index];
+  const buttons=[...document.querySelectorAll('.answer')];
+  buttons.forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===item.answer) b.classList.add('correct');
+  });
+
+  const fb=document.getElementById('feedback');
+  if(choice===item.answer){
+    score+=10;
+    fb.className='feedback show ok';
+    fb.innerHTML=`✅ 정답!<br>${item.exp}`;
+  } else {
+    btn.classList.add('wrong');
+    fb.className='feedback show no';
+    fb.innerHTML=`❌ 아쉬워요. 정답은 <strong>${item.answer}</strong>이에요.<br>${item.exp}`;
+  }
+  document.getElementById('score').textContent=`${score}점`;
+  const next=document.getElementById('nextBtn');
+  next.textContent=index===quiz.length-1?'결과 보기':'다음 문제 →';
+  next.className='next show';
+}
+
+document.getElementById('nextBtn').onclick=()=>{
+  if(index<quiz.length-1){ index++; render(); }
+  else showResult();
+};
+
+function showResult(){
+  document.getElementById('quiz').style.display='none';
+  const result=document.getElementById('result');
+  result.classList.add('show');
+  document.getElementById('finalScore').textContent=`${score}점`;
+  let emoji='🎉', text='세 표현의 차이를 아주 잘 알고 있어요!';
+  if(score<80){emoji='👏'; text='조금만 더 연습하면 완벽해요!';}
+  if(score<50){emoji='🌱'; text='괜찮아요. 차이를 다시 보고 한 번 더 도전해 보세요!';}
+  document.getElementById('resultEmoji').textContent=emoji;
+  document.getElementById('resultText').textContent=text;
+}
+startQuiz();
+</script>
+</body>
+</html>
