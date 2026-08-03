@@ -1,0 +1,33 @@
+<!doctype html><html lang='ko'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>몽글몽글·둥실둥실·복슬복슬·오밀조밀 퀴즈</title>
+<style>
+body{font-family:'Noto Sans KR',sans-serif;max-width:760px;margin:auto;padding:20px;background:#fffaf5}
+.hero,.q,.sum{background:#fff;border-radius:16px;padding:16px;margin:14px 0;box-shadow:0 2px 8px #0001}
+#p{position:sticky;top:0;background:#444;color:#fff;padding:10px;border-radius:10px;text-align:center}
+button{display:block;width:100%;margin:8px 0;padding:12px;text-align:left;border:1px solid #ccc;border-radius:10px;background:#fff}
+.correct{background:#def7e6}.wrong{background:#ffe3e3}
+.exp{margin-top:8px;background:#fff7dc;padding:8px;border-radius:8px}
+</style></head><body>
+<div class='hero'><h2>☁️ 몽글몽글 · 둥실둥실 · 복슬복슬 · 오밀조밀</h2><p>상황에 맞는 낱말을 골라 보세요!</p></div>
+<div id='p'>0 / 12</div><div id='quiz'></div>
+<div class='sum'><b>🌱 한 번에 정리해요</b><br>☁️ 몽글몽글: 부드럽고 동그랗게 뭉친 모습<br>🎈 둥실둥실: 가볍게 떠다니는 모습<br>🐑 복슬복슬: 털이 풍성하고 포근한 모습<br>🏘️ 오밀조밀: 작은 것이 촘촘히 모인 모습</div>
+<script>
+const qs=[{"q": "하늘에 작은 구름이 부드럽게 모여 있었어요.", "choices": ["몽글몽글", "둥실둥실", "복슬복슬", "오밀조밀"], "answer": 0, "explanation": "부드럽고 동그랗게 뭉친 모습은 '몽글몽글'이에요."}, {"q": "열기구가 하늘을 천천히 떠다녔어요.", "choices": ["몽글몽글", "둥실둥실", "복슬복슬", "오밀조밀"], "answer": 1, "explanation": "가볍게 떠다니는 모습은 '둥실둥실'이에요."}, {"q": "강아지 털이 부드럽고 풍성했어요.", "choices": ["몽글몽글", "둥실둥실", "복슬복슬", "오밀조밀"], "answer": 2, "explanation": "털이 풍성하고 포근한 모습은 '복슬복슬'이에요."}, {"q": "예쁜 꽃들이 작은 화단에 촘촘히 모여 피었어요.", "choices": ["몽글몽글", "둥실둥실", "복슬복슬", "오밀조밀"], "answer": 3, "explanation": "작은 것이 빽빽하게 모인 모습은 '오밀조밀'이에요."}, {"q": "비누 거품이 동글동글 피어올랐어요.", "choices": ["몽글몽글", "둥실둥실", "복슬복슬", "오밀조밀"], "answer": 0, "explanation": "거품이 말랑하게 모인 모습은 '몽글몽글'이에요."}, {"q": "민들레 씨앗이 바람을 타고 천천히 날아갔어요.", "choices": ["몽글몽글", "둥실둥실", "복슬복슬", "오밀조밀"], "answer": 1, "explanation": "천천히 떠다니는 모습은 '둥실둥실'이에요."}, {"q": "병아리의 노란 털이 포근해 보였어요.", "choices": ["몽글몽글", "둥실둥실", "복슬복슬", "오밀조밀"], "answer": 2, "explanation": "보송보송한 털은 '복슬복슬'이에요."}, {"q": "작은 집들이 골목에 다닥다닥 모여 있었어요.", "choices": ["몽글몽글", "둥실둥실", "복슬복슬", "오밀조밀"], "answer": 3, "explanation": "작은 것이 촘촘히 모인 모습은 '오밀조밀'이에요."}, {"q": "생크림이 폭신하게 올라와 있었어요.", "choices": ["몽글몽글", "둥실둥실", "복슬복슬", "오밀조밀"], "answer": 0, "explanation": "폭신하게 뭉친 모습은 '몽글몽글'이에요."}, {"q": "풍선이 하늘 위로 천천히 떠올랐어요.", "choices": ["몽글몽글", "둥실둥실", "복슬복슬", "오밀조밀"], "answer": 1, "explanation": "가볍게 떠오르는 모습은 '둥실둥실'이에요."}, {"q": "양의 털이 풍성하고 포근해 보였어요.", "choices": ["몽글몽글", "둥실둥실", "복슬복슬", "오밀조밀"], "answer": 2, "explanation": "풍성한 털은 '복슬복슬'이에요."}, {"q": "작은 가게들이 시장 골목에 빼곡하게 들어서 있었어요.", "choices": ["몽글몽글", "둥실둥실", "복슬복슬", "오밀조밀"], "answer": 3, "explanation": "아기자기하고 촘촘한 모습은 '오밀조밀'이에요."}];let s=0,d=0;
+const root=document.getElementById('quiz');
+qs.forEach((x,i)=>{
+ let div=document.createElement('div');div.className='q';
+ div.innerHTML=`<h3>${i+1}. ${x.q}</h3><div class='r'></div>`;
+ x.choices.forEach((t,j)=>{
+  let b=document.createElement('button');b.textContent=`${j+1}. ${t}`;
+  b.onclick=()=>{
+   if(b.disabled)return;
+   div.querySelectorAll('button').forEach((k,n)=>{k.disabled=true;if(n===x.answer)k.classList.add('correct');});
+   if(j===x.answer)s++; else b.classList.add('wrong');
+   d++;document.getElementById('p').textContent=`${s} / 12`;
+   div.querySelector('.r').innerHTML=`<div class='exp'>💡 ${x.explanation}</div>`;
+  };
+  div.appendChild(b);
+ });
+ root.appendChild(div);
+});
+</script></body></html>
