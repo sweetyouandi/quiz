@@ -1,0 +1,513 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="엄마의 말공부 공통 퀴즈 템플릿">
+  <title>엄마의 말공부 퀴즈</title>
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
+      background:#f8f9fd;
+      color:#333;
+    }
+    .wrap{
+      width:min(720px,100%);
+      margin:0 auto;
+      padding:22px 15px 45px;
+    }
+    .hero{
+      padding:27px 18px;
+      margin-bottom:20px;
+      text-align:center;
+      background:linear-gradient(135deg,#e9eaf8,#fce9ed);
+      border-radius:24px;
+      box-shadow:0 7px 20px rgba(0,0,0,.08);
+    }
+    .hero h1{
+      margin:0 0 10px;
+      font-size:26px;
+      line-height:1.45;
+    }
+    .hero p{
+      margin:0;
+      font-size:17px;
+      line-height:1.6;
+    }
+    .progress{
+      position:sticky;
+      top:8px;
+      z-index:10;
+      margin-bottom:16px;
+      padding:12px 16px;
+      text-align:center;
+      color:#fff;
+      background:#525b72;
+      border-radius:15px;
+      font-size:17px;
+      font-weight:700;
+      box-shadow:0 5px 15px rgba(0,0,0,.15);
+    }
+    .question{
+      margin-bottom:16px;
+      padding:20px;
+      background:#fff;
+      border-radius:20px;
+      box-shadow:0 5px 16px rgba(0,0,0,.07);
+    }
+    .question h2{
+      margin:0 0 14px;
+      font-size:20px;
+      line-height:1.55;
+    }
+    .choices{
+      display:grid;
+      gap:10px;
+    }
+    .choice{
+      width:100%;
+      padding:14px 15px;
+      border:2px solid #e1e4ec;
+      border-radius:14px;
+      background:#fcfdff;
+      text-align:left;
+      font-size:18px;
+      cursor:pointer;
+      transition:.15s;
+    }
+    .choice:hover:not(:disabled){
+      background:#f0f2f8;
+      transform:translateY(-1px);
+    }
+    .choice:disabled{cursor:default}
+    .choice.correct{
+      border-color:#5dbb7a;
+      background:#def7e6;
+      color:#176536;
+      font-weight:700;
+    }
+    .choice.wrong{
+      border-color:#e07373;
+      background:#ffe3e3;
+      color:#982626;
+      font-weight:700;
+    }
+    .result{
+      min-height:25px;
+      margin-top:12px;
+      font-size:17px;
+      font-weight:700;
+      line-height:1.5;
+    }
+    .explain{
+      display:none;
+      margin-top:8px;
+      padding:11px 13px;
+      background:#fff8df;
+      border-radius:11px;
+      font-size:16px;
+      line-height:1.55;
+    }
+    .final-message{
+      display:none;
+      margin-top:20px;
+      padding:22px;
+      background:#fff0f4;
+      border-radius:20px;
+      text-align:center;
+      font-size:19px;
+      font-weight:700;
+      line-height:1.75;
+      box-shadow:0 5px 16px rgba(0,0,0,.06);
+    }
+    .final-score{
+      display:block;
+      margin:5px 0 8px;
+      font-size:31px;
+    }
+    .buttons{
+      display:none;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin:18px 0 0;
+    }
+    .action-btn{
+      padding:14px 12px;
+      border:0;
+      border-radius:14px;
+      font-size:17px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .reset{
+      background:#75809a;
+      color:#fff;
+    }
+    .random{
+      background:#e8edf8;
+      color:#3f4960;
+    }
+    .summary{
+      margin-top:24px;
+      padding:21px;
+      background:#f1f2f9;
+      border-radius:20px;
+      font-size:17px;
+      line-height:1.9;
+    }
+    .summary h3{
+      margin:0 0 9px;
+      font-size:21px;
+    }
+    @media(max-width:430px){
+      .hero h1{font-size:22px}
+      .question h2{font-size:19px}
+      .choice{font-size:17px}
+      .buttons{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1 id="quizTitle">📖 엄마의 말공부 퀴즈</h1>
+      <p id="quizSubtitle">알맞은 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 ·
+      푼 문제 <span id="done">0</span>/<span id="total">0</span>
+    </div>
+
+    <div id="quiz"></div>
+
+    <div id="finalMessage" class="final-message"></div>
+
+    <div id="buttons" class="buttons">
+      <button class="action-btn reset" onclick="restartOriginal()">🔄 다시 풀기</button>
+      <button class="action-btn random" onclick="restartRandom()">🎲 랜덤으로 풀기</button>
+    </div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      <div id="summaryContent"></div>
+    </section>
+  </main>
+
+  <script>
+    /*
+      ================================
+      1. 아래 QUIZ_CONFIG만 바꾸면 됩니다.
+      ================================
+    */
+
+    const QUIZ_CONFIG = {
+  "title": "📖 방긋방긋·싱글벙글·깔깔 퀴즈",
+  "subtitle": "웃는 모습과 웃음소리에 알맞은 말을 골라 보세요!",
+  "summary": [
+    {
+      "emoji": "🙂",
+      "word": "방긋방긋",
+      "meaning": "소리를 크게 내지 않고 밝고 귀엽게 자꾸 웃는 모양"
+    },
+    {
+      "emoji": "😊",
+      "word": "싱글벙글",
+      "meaning": "아주 기뻐서 얼굴에 웃음이 가득한 모양"
+    },
+    {
+      "emoji": "😆",
+      "word": "깔깔",
+      "meaning": "재미있어서 밝고 큰 소리로 웃는 소리"
+    }
+  ],
+  "questions": [
+    {
+      "q": "민이는 엄마와 눈이 마주치자 소리 내지 않고 입꼬리를 올리며 계속 웃었어요. 알맞은 말은?",
+      "choices": [
+        "방긋방긋",
+        "싱글벙글",
+        "깔깔"
+      ],
+      "answer": 0,
+      "explanation": "‘방긋방긋’은 소리를 크게 내지 않고 밝고 귀엽게 자꾸 웃는 모습을 나타내요."
+    },
+    {
+      "q": "생일 선물을 받은 준이는 기쁜 마음을 감추지 못하고 얼굴 가득 환하게 웃었어요. 알맞은 말은?",
+      "choices": [
+        "방긋방긋",
+        "싱글벙글",
+        "깔깔"
+      ],
+      "answer": 1,
+      "explanation": "‘싱글벙글’은 아주 기뻐서 얼굴에 웃음이 가득한 모습을 나타내요."
+    },
+    {
+      "q": "친구가 우스운 표정을 짓자 아이들이 소리를 내며 크게 웃었어요. 알맞은 말은?",
+      "choices": [
+        "방긋방긋",
+        "싱글벙글",
+        "깔깔"
+      ],
+      "answer": 2,
+      "explanation": "‘깔깔’은 재미있어서 밝고 큰 소리로 웃는 소리를 나타내요."
+    },
+    {
+      "q": "아기가 까꿍 놀이를 하며 엄마를 보고 조용히 예쁘게 웃었어요. 알맞은 말은?",
+      "choices": [
+        "방긋방긋",
+        "싱글벙글",
+        "깔깔"
+      ],
+      "answer": 0,
+      "explanation": "아기가 조용히 입을 벌리며 밝게 자꾸 웃는 모습에는 ‘방긋방긋’이 잘 어울려요."
+    },
+    {
+      "q": "민이는 칭찬 스티커를 다 모아 하루 종일 기분 좋은 웃음을 지었어요. 알맞은 말은?",
+      "choices": [
+        "방긋방긋",
+        "싱글벙글",
+        "깔깔"
+      ],
+      "answer": 1,
+      "explanation": "좋은 일이 생겨 기쁨이 얼굴에 가득 드러날 때 ‘싱글벙글’이라고 해요."
+    },
+    {
+      "q": "재미있는 인형극을 보던 아이들이 배를 잡고 큰 소리로 웃었어요. 알맞은 말은?",
+      "choices": [
+        "방긋방긋",
+        "싱글벙글",
+        "깔깔"
+      ],
+      "answer": 2,
+      "explanation": "큰 소리를 내며 신나게 웃는 장면이므로 ‘깔깔’이 알맞아요."
+    },
+    {
+      "q": "사진을 찍어 주자 동생이 카메라를 바라보며 귀엽게 여러 번 웃었어요. 알맞은 말은?",
+      "choices": [
+        "방긋방긋",
+        "싱글벙글",
+        "깔깔"
+      ],
+      "answer": 0,
+      "explanation": "귀엽고 밝게 자꾸 웃는 표정은 ‘방긋방긋’으로 표현해요."
+    },
+    {
+      "q": "아빠가 오늘 놀이공원에 간다고 하자 민이는 좋아서 환한 얼굴로 웃고 있었어요. 알맞은 말은?",
+      "choices": [
+        "방긋방긋",
+        "싱글벙글",
+        "깔깔"
+      ],
+      "answer": 1,
+      "explanation": "기쁜 마음이 얼굴 전체에 드러나 환하게 웃는 모습은 ‘싱글벙글’이에요."
+    },
+    {
+      "q": "개그 장면을 본 가족들이 거실에서 큰 웃음소리를 터뜨렸어요. 알맞은 말은?",
+      "choices": [
+        "방긋방긋",
+        "싱글벙글",
+        "깔깔"
+      ],
+      "answer": 2,
+      "explanation": "우스워서 밝고 크게 터뜨리는 웃음소리는 ‘깔깔’이라고 표현해요."
+    },
+    {
+      "q": "선생님이 이름을 불러 주자 아이가 부끄러운 듯 조용히 웃음을 지었어요. 알맞은 말은?",
+      "choices": [
+        "방긋방긋",
+        "싱글벙글",
+        "깔깔"
+      ],
+      "answer": 0,
+      "explanation": "소리 없이 밝고 살짝 웃는 모습에는 ‘방긋방긋’이 가장 자연스러워요."
+    },
+    {
+      "q": "대회에서 상을 받은 언니는 상장을 들고 기쁨에 넘쳐 웃었어요. 알맞은 말은?",
+      "choices": [
+        "방긋방긋",
+        "싱글벙글",
+        "깔깔"
+      ],
+      "answer": 1,
+      "explanation": "큰 기쁨 때문에 얼굴에 웃음이 가득한 모습은 ‘싱글벙글’이에요."
+    },
+    {
+      "q": "친구의 엉뚱한 대답을 듣자 교실 안에서 밝고 큰 웃음소리가 이어졌어요. 알맞은 말은?",
+      "choices": [
+        "방긋방긋",
+        "싱글벙글",
+        "깔깔"
+      ],
+      "answer": 2,
+      "explanation": "재미있는 일 때문에 큰 소리로 계속 웃는 상황에는 ‘깔깔’이 알맞아요."
+    }
+  ]
+};
+
+    /*
+      ================================
+      2. 아래 코드는 수정하지 않아도 됩니다.
+      ================================
+    */
+
+    const originalQuestions = deepCopy(QUIZ_CONFIG.questions);
+    let currentQuestions = deepCopy(originalQuestions);
+    let score = 0;
+    let done = 0;
+    let answered = [];
+
+    function deepCopy(data){
+      return JSON.parse(JSON.stringify(data));
+    }
+
+    function shuffle(array){
+      for(let i=array.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [array[i],array[j]]=[array[j],array[i]];
+      }
+      return array;
+    }
+
+    function initPage(){
+      document.getElementById("quizTitle").textContent = QUIZ_CONFIG.title;
+      document.getElementById("quizSubtitle").textContent = QUIZ_CONFIG.subtitle;
+      document.getElementById("total").textContent = originalQuestions.length;
+
+      const summaryBox = document.getElementById("summaryContent");
+      summaryBox.innerHTML = QUIZ_CONFIG.summary.map(item =>
+        `${item.emoji} <b>${item.word}</b> : ${item.meaning}`
+      ).join("<br>");
+
+      renderQuiz();
+    }
+
+    function renderQuiz(){
+      score=0;
+      done=0;
+      answered=Array(currentQuestions.length).fill(false);
+
+      document.getElementById("score").textContent="0";
+      document.getElementById("done").textContent="0";
+      document.getElementById("total").textContent=currentQuestions.length;
+      document.getElementById("finalMessage").style.display="none";
+      document.getElementById("buttons").style.display="none";
+
+      const quiz=document.getElementById("quiz");
+      quiz.innerHTML="";
+
+      currentQuestions.forEach((item,qi)=>{
+        const section=document.createElement("section");
+        section.className="question";
+
+        const title=document.createElement("h2");
+        title.textContent=`${qi+1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices=document.createElement("div");
+        choices.className="choices";
+
+        item.choices.forEach((text,ci)=>{
+          const button=document.createElement("button");
+          button.className="choice";
+          button.textContent=`${ci+1}. ${text}`;
+          button.addEventListener("click",()=>checkAnswer(qi,ci,button,section));
+          choices.appendChild(button);
+        });
+
+        const result=document.createElement("div");
+        result.className="result";
+
+        const explain=document.createElement("div");
+        explain.className="explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(qi,ci,selected,section){
+      if(answered[qi]) return;
+
+      answered[qi]=true;
+      done++;
+
+      const item=currentQuestions[qi];
+      const buttons=section.querySelectorAll(".choice");
+      const result=section.querySelector(".result");
+      const explain=section.querySelector(".explain");
+
+      buttons.forEach((button,index)=>{
+        button.disabled=true;
+        if(index===item.answer) button.classList.add("correct");
+      });
+
+      if(ci===item.answer){
+        score++;
+        result.textContent="⭕ 정답이에요!";
+      }else{
+        selected.classList.add("wrong");
+        result.textContent=`❌ 정답은 ‘${item.choices[item.answer]}’이에요.`;
+      }
+
+      explain.textContent=`💡 ${item.explanation}`;
+      explain.style.display="block";
+
+      document.getElementById("score").textContent=score;
+      document.getElementById("done").textContent=done;
+
+      if(done===currentQuestions.length){
+        showFinalMessage();
+      }
+    }
+
+    function showFinalMessage(){
+      const box=document.getElementById("finalMessage");
+      const total=currentQuestions.length;
+      const ratio=score/total;
+      let message="";
+
+      if(score===total){
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>🎉 말 박사네요! 모두 정확히 알고 있어요.`;
+      }else if(ratio>=0.8){
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>👏 정말 잘했어요! 조금만 더 하면 만점이에요.`;
+      }else if(ratio>=0.55){
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>🌟 잘했어요! 헷갈린 문제만 다시 살펴보세요.`;
+      }else{
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>🌱 다시 도전하면 더 잘할 수 있어요!`;
+      }
+
+      box.innerHTML=message;
+      box.style.display="block";
+      document.getElementById("buttons").style.display="grid";
+      box.scrollIntoView({behavior:"smooth",block:"center"});
+    }
+
+    function restartOriginal(){
+      currentQuestions=deepCopy(originalQuestions);
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function restartRandom(){
+      currentQuestions=shuffle(deepCopy(originalQuestions));
+
+      currentQuestions.forEach(item=>{
+        const correctText=item.choices[item.answer];
+        item.choices=shuffle([...item.choices]);
+        item.answer=item.choices.indexOf(correctText);
+      });
+
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    initPage();
+  </script>
+</body>
+</html>
