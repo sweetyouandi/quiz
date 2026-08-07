@@ -1,0 +1,538 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="풍경, 유카타, 불꽃놀이, 가키고오리로 만나는 일본의 여름 문화 12문제 퀴즈.">
+  <title>일본의 여름 퀴즈 12문제 | 엄마의 세계공부</title>
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
+      background:#f8f9fd;
+      color:#333;
+    }
+    .wrap{
+      width:min(720px,100%);
+      margin:0 auto;
+      padding:22px 15px 45px;
+    }
+    .hero{
+      padding:27px 18px;
+      margin-bottom:20px;
+      text-align:center;
+      background:linear-gradient(135deg,#e9eaf8,#fce9ed);
+      border-radius:24px;
+      box-shadow:0 7px 20px rgba(0,0,0,.08);
+    }
+    .hero h1{
+      margin:0 0 10px;
+      font-size:26px;
+      line-height:1.45;
+    }
+    .hero p{
+      margin:0;
+      font-size:17px;
+      line-height:1.6;
+    }
+    .progress{
+      position:sticky;
+      top:8px;
+      z-index:10;
+      margin-bottom:16px;
+      padding:12px 16px;
+      text-align:center;
+      color:#fff;
+      background:#525b72;
+      border-radius:15px;
+      font-size:17px;
+      font-weight:700;
+      box-shadow:0 5px 15px rgba(0,0,0,.15);
+    }
+    .question{
+      margin-bottom:16px;
+      padding:20px;
+      background:#fff;
+      border-radius:20px;
+      box-shadow:0 5px 16px rgba(0,0,0,.07);
+    }
+    .question h2{
+      margin:0 0 14px;
+      font-size:20px;
+      line-height:1.55;
+    }
+    .choices{
+      display:grid;
+      gap:10px;
+    }
+    .choice{
+      width:100%;
+      padding:14px 15px;
+      border:2px solid #e1e4ec;
+      border-radius:14px;
+      background:#fcfdff;
+      text-align:left;
+      font-size:18px;
+      cursor:pointer;
+      transition:.15s;
+    }
+    .choice:hover:not(:disabled){
+      background:#f0f2f8;
+      transform:translateY(-1px);
+    }
+    .choice:disabled{cursor:default}
+    .choice.correct{
+      border-color:#5dbb7a;
+      background:#def7e6;
+      color:#176536;
+      font-weight:700;
+    }
+    .choice.wrong{
+      border-color:#e07373;
+      background:#ffe3e3;
+      color:#982626;
+      font-weight:700;
+    }
+    .result{
+      min-height:25px;
+      margin-top:12px;
+      font-size:17px;
+      font-weight:700;
+      line-height:1.5;
+    }
+    .explain{
+      display:none;
+      margin-top:8px;
+      padding:11px 13px;
+      background:#fff8df;
+      border-radius:11px;
+      font-size:16px;
+      line-height:1.55;
+    }
+    .final-message{
+      display:none;
+      margin-top:20px;
+      padding:22px;
+      background:#fff0f4;
+      border-radius:20px;
+      text-align:center;
+      font-size:19px;
+      font-weight:700;
+      line-height:1.75;
+      box-shadow:0 5px 16px rgba(0,0,0,.06);
+    }
+    .final-score{
+      display:block;
+      margin:5px 0 8px;
+      font-size:31px;
+    }
+    .buttons{
+      display:none;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin:18px 0 0;
+    }
+    .action-btn{
+      padding:14px 12px;
+      border:0;
+      border-radius:14px;
+      font-size:17px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .reset{
+      background:#75809a;
+      color:#fff;
+    }
+    .random{
+      background:#e8edf8;
+      color:#3f4960;
+    }
+    .summary{
+      margin-top:24px;
+      padding:21px;
+      background:#f1f2f9;
+      border-radius:20px;
+      font-size:17px;
+      line-height:1.9;
+    }
+    .summary h3{
+      margin:0 0 9px;
+      font-size:21px;
+    }
+    @media(max-width:430px){
+      .hero h1{font-size:22px}
+      .question h2{font-size:19px}
+      .choice{font-size:17px}
+      .buttons{grid-template-columns:1fr}
+    }
+  </style>
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="일본의 여름 퀴즈 12문제 | 엄마의 세계공부">
+  <meta property="og:description" content="풍경, 유카타, 불꽃놀이, 가키고오리로 만나는 일본의 여름 문화 12문제 퀴즈.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="일본의 여름 퀴즈 12문제 | 엄마의 세계공부">
+  <meta name="twitter:description" content="풍경, 유카타, 불꽃놀이, 가키고오리로 만나는 일본의 여름 문화 12문제 퀴즈.">
+
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1 id="quizTitle">📖 엄마의 말공부 퀴즈</h1>
+      <p id="quizSubtitle">알맞은 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 ·
+      푼 문제 <span id="done">0</span>/<span id="total">0</span>
+    </div>
+
+    <div id="quiz"></div>
+
+    <div id="finalMessage" class="final-message"></div>
+
+    <div id="buttons" class="buttons">
+      <button class="action-btn reset" onclick="restartOriginal()">🔄 다시 풀기</button>
+      <button class="action-btn random" onclick="restartRandom()">🎲 랜덤으로 풀기</button>
+    </div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      <div id="summaryContent"></div>
+    </section>
+  </main>
+
+  <script>
+    /*
+      ================================
+      1. 아래 QUIZ_CONFIG만 바꾸면 됩니다.
+      ================================
+    */
+
+    const QUIZ_CONFIG = {
+  "title": "🌏 일본의 여름 퀴즈",
+  "subtitle": "풍경부터 가키고오리까지, 일본의 여름 문화를 얼마나 기억하고 있을까요?",
+  "summary": [
+    {
+      "emoji": "🎐",
+      "word": "풍경",
+      "meaning": "바람을 소리로 느끼게 해 주는 일본의 여름 장식"
+    },
+    {
+      "emoji": "👘",
+      "word": "유카타",
+      "meaning": "목욕 문화에서 시작해 여름 축제의 옷이 된 가벼운 전통 의상"
+    },
+    {
+      "emoji": "🎆",
+      "word": "불꽃놀이",
+      "meaning": "위령의 마음에서 시작해 대표적인 여름 축제로 이어진 문화"
+    },
+    {
+      "emoji": "🍧",
+      "word": "가키고오리",
+      "meaning": "귀한 얼음에서 시작해 모두가 즐기는 여름 간식"
+    }
+  ],
+  "questions": [
+    {
+      "q": "일본의 풍경(후린)은 바람이 불면 어떻게 소리를 낼까요?",
+      "choices": [
+        "햇빛을 받으면 종이 저절로 울려요.",
+        "아래 종이가 흔들려 안쪽의 추를 건드려요.",
+        "빗물이 종 안으로 들어가 소리가 나요.",
+        "사람이 줄을 잡아당겨야 소리가 나요."
+      ],
+      "answer": 1,
+      "explanation": "풍경 아래의 가느다란 종이가 바람에 흔들리면 안쪽의 추가 움직이며 맑은 소리를 냅니다."
+    },
+    {
+      "q": "일본 풍경의 뿌리로 소개된 것은 무엇일까요?",
+      "choices": [
+        "절 처마 끝에 달았던 풍탁",
+        "여름 축제의 북",
+        "어부들이 쓰던 방울",
+        "궁궐의 등불"
+      ],
+      "answer": 0,
+      "explanation": "일본 풍경의 뿌리는 절 처마 끝에 달았던 풍탁(후타쿠)에서 찾을 수 있습니다."
+    },
+    {
+      "q": "일본 사람들이 여름에 풍경 소리를 즐긴 까닭으로 가장 알맞은 것은?",
+      "choices": [
+        "방 안의 온도를 크게 낮춰 주기 때문에",
+        "벌레를 모두 쫓아 주기 때문에",
+        "비가 올 시간을 알려 주기 때문에",
+        "보이지 않는 바람을 소리로 느끼며 시원함을 떠올릴 수 있기 때문에"
+      ],
+      "answer": 3,
+      "explanation": "풍경은 실제 온도를 낮추지는 않지만 바람을 소리로 느끼게 해 마음까지 시원하게 해 주는 여름 장식이었습니다."
+    },
+    {
+      "q": "유카타는 처음에 무엇과 관련된 옷이었을까요?",
+      "choices": [
+        "농사를 지을 때 입는 옷",
+        "전쟁터에서 입는 옷",
+        "목욕할 때 몸을 가리거나 목욕 뒤에 입던 얇은 옷",
+        "학교에 갈 때 입는 옷"
+      ],
+      "answer": 2,
+      "explanation": "유카타의 시작은 헤이안 시대에 목욕할 때 몸을 가리기 위해 입던 얇은 옷인 유카타비라와 관련이 있습니다."
+    },
+    {
+      "q": "유카타가 일반 기모노보다 여름에 입기 편한 이유는 무엇일까요?",
+      "choices": [
+        "소매가 전혀 없기 때문에",
+        "안감을 대지 않은 면 소재이고 겹쳐 입는 옷과 장식이 적기 때문에",
+        "항상 물에 적셔 입기 때문에",
+        "두꺼운 털로 만들어 햇빛을 막기 때문에"
+      ],
+      "answer": 1,
+      "explanation": "유카타는 보통 안감을 대지 않은 면 소재로 만들고 일반 기모노보다 겹쳐 입는 옷과 장식이 적어 비교적 가볍습니다."
+    },
+    {
+      "q": "오늘날 일본에서 유카타를 쉽게 볼 수 있는 곳은 어디일까요?",
+      "choices": [
+        "겨울 스키장",
+        "회사 사무실",
+        "학교 수업 시간",
+        "여름 축제와 불꽃놀이"
+      ],
+      "answer": 3,
+      "explanation": "오늘날 유카타는 일본의 여름 축제와 불꽃놀이에서 쉽게 볼 수 있는 계절의 옷이 되었습니다."
+    },
+    {
+      "q": "일본의 대표적인 여름 불꽃놀이의 시작과 관련 있는 마음은 무엇이었을까요?",
+      "choices": [
+        "세상을 떠난 사람을 기리고 큰 재앙이 다시 없기를 바라는 마음",
+        "새해를 화려하게 맞이하려는 마음",
+        "전쟁에서 이긴 것을 축하하려는 마음",
+        "불꽃의 색을 연구하려는 마음"
+      ],
+      "answer": 0,
+      "explanation": "1733년 스미다강 위령제에서 세상을 떠난 사람들의 넋을 기리고 재앙이 다시 없기를 바라며 불꽃을 올린 것이 시작으로 전해집니다."
+    },
+    {
+      "q": "처음 위령제로 시작한 불꽃놀이는 시간이 흐르며 어떻게 달라졌을까요?",
+      "choices": [
+        "왕만 볼 수 있는 행사가 되었어요.",
+        "겨울에만 열리는 행사가 되었어요.",
+        "가족과 친구가 함께 여름밤을 즐기는 축제로 발전했어요.",
+        "불꽃 대신 등불만 사용하는 행사가 되었어요."
+      ],
+      "answer": 2,
+      "explanation": "처음에는 슬픔을 함께 나누던 자리였지만 시간이 흐르며 가족과 친구가 함께 여름밤을 보내는 축제로 발전했습니다."
+    },
+    {
+      "q": "글에서 일본을 대표하는 여름 불꽃놀이가 열리는 곳으로 소개된 강은 어디일까요?",
+      "choices": [
+        "한강",
+        "나일강",
+        "아마존강",
+        "스미다강"
+      ],
+      "answer": 3,
+      "explanation": "스미다강 불꽃놀이는 일본을 대표하는 여름 행사 가운데 하나로 소개되었습니다."
+    },
+    {
+      "q": "가키고오리는 어떤 음식일까요?",
+      "choices": [
+        "차가운 국수",
+        "얼음을 곱게 갈아 시럽이나 팥, 말차 등을 올린 음식",
+        "쌀을 구워 만든 과자",
+        "과일을 통째로 얼린 음식"
+      ],
+      "answer": 1,
+      "explanation": "가키고오리는 얼음을 곱게 갈아 시럽이나 팥, 말차 등을 올려 먹는 일본의 대표적인 여름 간식입니다."
+    },
+    {
+      "q": "냉장고가 없던 옛날 일본에서는 여름에 먹을 얼음을 어떻게 보관했을까요?",
+      "choices": [
+        "겨울에 언 얼음을 히무로라는 얼음 창고에 보관했어요.",
+        "바닷속에 넣어 두었어요.",
+        "매일 새 얼음을 만들어 두었어요.",
+        "햇빛이 드는 마당에 쌓아 두었어요."
+      ],
+      "answer": 0,
+      "explanation": "사람들은 겨울에 언 얼음을 산속의 히무로라는 얼음 창고에 보관해 여름까지 지켰습니다."
+    },
+    {
+      "q": "헤이안 시대에 귀한 얼음을 주로 사용할 수 있었던 사람들은 누구였을까요?",
+      "choices": [
+        "모든 사람이 자유롭게 사용했어요.",
+        "어린이들만 사용했어요.",
+        "왕실과 일부 귀족들이 사용했어요.",
+        "상인들만 사용했어요."
+      ],
+      "answer": 2,
+      "explanation": "당시 얼음은 조정에서 직접 관리할 만큼 귀해 왕실과 일부 귀족들만 사용할 수 있었습니다."
+    }
+  ]
+};
+
+    /*
+      ================================
+      2. 아래 코드는 수정하지 않아도 됩니다.
+      ================================
+    */
+
+    const originalQuestions = deepCopy(QUIZ_CONFIG.questions);
+    let currentQuestions = deepCopy(originalQuestions);
+    let score = 0;
+    let done = 0;
+    let answered = [];
+
+    function deepCopy(data){
+      return JSON.parse(JSON.stringify(data));
+    }
+
+    function shuffle(array){
+      for(let i=array.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [array[i],array[j]]=[array[j],array[i]];
+      }
+      return array;
+    }
+
+    function initPage(){
+      document.getElementById("quizTitle").textContent = QUIZ_CONFIG.title;
+      document.getElementById("quizSubtitle").textContent = QUIZ_CONFIG.subtitle;
+      document.getElementById("total").textContent = originalQuestions.length;
+
+      const summaryBox = document.getElementById("summaryContent");
+      summaryBox.innerHTML = QUIZ_CONFIG.summary.map(item =>
+        `${item.emoji} <b>${item.word}</b> : ${item.meaning}`
+      ).join("<br>");
+
+      renderQuiz();
+    }
+
+    function renderQuiz(){
+      score=0;
+      done=0;
+      answered=Array(currentQuestions.length).fill(false);
+
+      document.getElementById("score").textContent="0";
+      document.getElementById("done").textContent="0";
+      document.getElementById("total").textContent=currentQuestions.length;
+      document.getElementById("finalMessage").style.display="none";
+      document.getElementById("buttons").style.display="none";
+
+      const quiz=document.getElementById("quiz");
+      quiz.innerHTML="";
+
+      currentQuestions.forEach((item,qi)=>{
+        const section=document.createElement("section");
+        section.className="question";
+
+        const title=document.createElement("h2");
+        title.textContent=`${qi+1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices=document.createElement("div");
+        choices.className="choices";
+
+        item.choices.forEach((text,ci)=>{
+          const button=document.createElement("button");
+          button.className="choice";
+          button.textContent=`${ci+1}. ${text}`;
+          button.addEventListener("click",()=>checkAnswer(qi,ci,button,section));
+          choices.appendChild(button);
+        });
+
+        const result=document.createElement("div");
+        result.className="result";
+
+        const explain=document.createElement("div");
+        explain.className="explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(qi,ci,selected,section){
+      if(answered[qi]) return;
+
+      answered[qi]=true;
+      done++;
+
+      const item=currentQuestions[qi];
+      const buttons=section.querySelectorAll(".choice");
+      const result=section.querySelector(".result");
+      const explain=section.querySelector(".explain");
+
+      buttons.forEach((button,index)=>{
+        button.disabled=true;
+        if(index===item.answer) button.classList.add("correct");
+      });
+
+      if(ci===item.answer){
+        score++;
+        result.textContent="⭕ 정답이에요!";
+      }else{
+        selected.classList.add("wrong");
+        result.textContent=`❌ 정답은 ‘${item.choices[item.answer]}’이에요.`;
+      }
+
+      explain.textContent=`💡 ${item.explanation}`;
+      explain.style.display="block";
+
+      document.getElementById("score").textContent=score;
+      document.getElementById("done").textContent=done;
+
+      if(done===currentQuestions.length){
+        showFinalMessage();
+      }
+    }
+
+    function showFinalMessage(){
+      const box=document.getElementById("finalMessage");
+      const total=currentQuestions.length;
+      const ratio=score/total;
+      let message="";
+
+      if(score===total){
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>🎉 말 박사네요! 모두 정확히 알고 있어요.`;
+      }else if(ratio>=0.8){
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>👏 정말 잘했어요! 조금만 더 하면 만점이에요.`;
+      }else if(ratio>=0.55){
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>🌟 잘했어요! 헷갈린 문제만 다시 살펴보세요.`;
+      }else{
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>🌱 다시 도전하면 더 잘할 수 있어요!`;
+      }
+
+      box.innerHTML=message;
+      box.style.display="block";
+      document.getElementById("buttons").style.display="grid";
+      box.scrollIntoView({behavior:"smooth",block:"center"});
+    }
+
+    function restartOriginal(){
+      currentQuestions=deepCopy(originalQuestions);
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function restartRandom(){
+      currentQuestions=shuffle(deepCopy(originalQuestions));
+
+      currentQuestions.forEach(item=>{
+        const correctText=item.choices[item.answer];
+        item.choices=shuffle([...item.choices]);
+        item.answer=item.choices.indexOf(correctText);
+      });
+
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    initPage();
+  </script>
+</body>
+</html>
