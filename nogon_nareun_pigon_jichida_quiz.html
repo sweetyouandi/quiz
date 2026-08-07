@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="노곤노곤, 나른하다, 피곤하다, 지치다의 차이를 12문제 퀴즈로 쉽게 익혀 보세요.">
+  <meta property="og:title" content="노곤노곤·나른하다·피곤하다·지치다 퀴즈">
+  <meta property="og:description" content="몸의 피로와 기운 상태를 나타내는 네 가지 우리말의 차이를 퀴즈로 익혀 보세요.">
+  <title>노곤노곤·나른하다·피곤하다·지치다 퀴즈</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:#faf8fc;color:#333}
+    .wrap{width:min(720px,100%);margin:0 auto;padding:22px 15px 45px}
+    .hero{padding:27px 18px;margin-bottom:20px;text-align:center;background:linear-gradient(135deg,#f3e9f8,#fff2e5);border-radius:24px;box-shadow:0 7px 20px rgba(0,0,0,.08)}
+    .hero h1{margin:0 0 10px;font-size:25px;line-height:1.45}
+    .hero p{margin:0;font-size:17px;line-height:1.6}
+    .progress{position:sticky;top:8px;z-index:10;margin-bottom:16px;padding:12px 16px;text-align:center;color:#fff;background:#62556f;border-radius:15px;font-size:17px;font-weight:700;box-shadow:0 5px 15px rgba(0,0,0,.15)}
+    .question{margin-bottom:16px;padding:20px;background:#fff;border-radius:20px;box-shadow:0 5px 16px rgba(0,0,0,.07)}
+    .question h2{margin:0 0 14px;font-size:20px;line-height:1.55}
+    .choices{display:grid;gap:10px}
+    .choice{width:100%;padding:14px 15px;border:2px solid #e7dfea;border-radius:14px;background:#fefcff;text-align:left;font-size:18px;cursor:pointer;transition:.15s}
+    .choice:hover:not(:disabled){background:#f5f0fa;transform:translateY(-1px)}
+    .choice:disabled{cursor:default}
+    .choice.correct{border-color:#5dbb7a;background:#def7e6;color:#176536;font-weight:700}
+    .choice.wrong{border-color:#e07373;background:#ffe3e3;color:#982626;font-weight:700}
+    .result{min-height:25px;margin-top:12px;font-size:17px;font-weight:700;line-height:1.5}
+    .explain{display:none;margin-top:8px;padding:11px 13px;background:#fff8df;border-radius:11px;font-size:16px;line-height:1.55}
+    .summary{margin-top:24px;padding:21px;background:#f2edf7;border-radius:20px;font-size:17px;line-height:1.9}
+    .summary h3{margin:0 0 9px;font-size:21px}
+    .final-message{display:none;margin-top:18px;padding:18px;background:#fff0f4;border-radius:18px;text-align:center;font-size:19px;font-weight:700;line-height:1.6}
+    .reset{display:block;margin:24px auto 0;padding:13px 24px;border:0;border-radius:14px;background:#806f96;color:white;font-size:17px;font-weight:700;cursor:pointer}
+    @media(max-width:430px){.hero h1{font-size:21px}.question h2{font-size:19px}.choice{font-size:17px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>😴 노곤노곤·나른하다<br>피곤하다·지치다</h1>
+      <p>몸의 기운과 피로 상태를 떠올리며 알맞은 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 · 푼 문제 <span id="done">0</span>/12
+    </div>
+
+    <div id="quiz"></div>
+    <div id="finalMessage" class="final-message"></div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      🛁 <b>노곤노곤</b> : 몸의 긴장이 풀리며 편안하고 나른해지는 느낌<br>
+      🌤️ <b>나른하다</b> : 몸에 기운이 없고 축 처지며 졸린 듯한 상태<br>
+      😮‍💨 <b>피곤하다</b> : 일이나 활동, 잠 부족 등으로 몸과 마음이 힘든 상태<br>
+      🪫 <b>지치다</b> : 힘든 일을 오래 해서 기운이 많이 빠지고 계속하기 어려운 상태
+    </section>
+
+    <button class="reset" onclick="resetQuiz()">처음부터 다시 풀기</button>
+  </main>
+
+  <script>
+    const questions = [{"q": "따뜻한 물로 목욕을 하고 나오니 온몸의 긴장이 풀리며 편안하게 늘어졌어요.", "choices": ["나른하다", "노곤노곤", "피곤하다", "지치다"], "answer": 1, "explanation": "피로가 부드럽게 풀리면서 몸이 편안하고 나른해지는 느낌에는 ‘노곤노곤’이 잘 어울려요."}, {"q": "봄날 오후, 햇볕을 쬐고 있으니 몸에 힘이 없고 자꾸 졸음이 왔어요.", "choices": ["피곤하다", "지치다", "노곤노곤", "나른하다"], "answer": 3, "explanation": "몸에 힘이 없고 기운이 축 처지며 졸린 듯한 상태는 ‘나른하다’라고 해요."}, {"q": "어젯밤 늦게 자서 오늘은 눈도 무겁고 쉬고 싶어요.", "choices": ["피곤하다", "지치다", "노곤노곤", "나른하다"], "answer": 0, "explanation": "잠이 부족하거나 일을 많이 해서 몸과 마음이 힘든 상태는 ‘피곤하다’가 자연스러워요."}, {"q": "오랫동안 산길을 걸었더니 더는 걷기 힘들 만큼 힘이 빠졌어요.", "choices": ["노곤노곤", "나른하다", "지치다", "피곤하다"], "answer": 2, "explanation": "힘든 일을 오래 해서 기운이 거의 다 빠지고 계속하기 어려운 상태는 ‘지치다’예요."}, {"q": "하루 종일 쉬지 않고 일을 했더니 저녁에는 아무것도 하기 싫고 쉬고 싶었어요.", "choices": ["나른하다", "지치다", "노곤노곤", "피곤하다"], "answer": 3, "explanation": "일이나 활동으로 몸과 마음이 힘들어 휴식이 필요한 상태는 ‘피곤하다’라고 해요."}, {"q": "점심을 먹고 따뜻한 교실에 앉아 있으니 몸에 힘이 빠지고 졸음이 솔솔 왔어요.", "choices": ["지치다", "나른하다", "노곤노곤", "피곤하다"], "answer": 1, "explanation": "기운이 없고 몸이 축 늘어지면서 졸린 느낌은 ‘나른하다’가 잘 어울려요."}, {"q": "하루 종일 놀이터에서 뛰어놀고 집에 오니 힘이 다 빠져 더 뛰고 싶지 않았어요.", "choices": ["노곤노곤", "나른하다", "지치다", "피곤하다"], "answer": 2, "explanation": "오랫동안 힘을 써서 더 계속하기 어려울 만큼 기운이 빠진 상태는 ‘지치다’예요."}, {"q": "따뜻한 찜질을 받고 누워 있으니 굳었던 몸이 풀리며 기분 좋게 늘어졌어요.", "choices": ["노곤노곤", "피곤하다", "지치다", "나른하다"], "answer": 0, "explanation": "몸의 긴장이 부드럽게 풀려 편안하게 늘어지는 느낌에는 ‘노곤노곤’이 잘 어울려요."}, {"q": "숙제를 오래 하다 보니 머리도 무겁고 잠깐 쉬고 싶은 기분이 들었어요.", "choices": ["지치다", "피곤하다", "노곤노곤", "나른하다"], "answer": 1, "explanation": "오랫동안 무언가를 해서 몸이나 머리가 힘들고 쉬고 싶은 상태는 ‘피곤하다’라고 해요."}, {"q": "포근한 햇볕 아래 가만히 누워 있으니 몸이 부드럽게 풀리고 잠이 솔솔 왔어요.", "choices": ["노곤노곤", "나른하다", "피곤하다", "지치다"], "answer": 0, "explanation": "몸이 편안하게 풀리며 나른해지는 느낌을 강조할 때 ‘노곤노곤’이라고 해요."}, {"q": "며칠 동안 계속 연습했더니 힘이 다 빠져 이제는 더 연습하기 어려웠어요.", "choices": ["나른하다", "피곤하다", "노곤노곤", "지치다"], "answer": 3, "explanation": "힘든 일이 오래 이어져 기운이 소진되고 계속하기 어려울 때 ‘지치다’라고 해요."}, {"q": "따뜻하고 조용한 오후가 되자 특별히 힘든 일을 하지 않았는데도 몸이 축 처졌어요.", "choices": ["지치다", "노곤노곤", "나른하다", "피곤하다"], "answer": 2, "explanation": "특별히 힘을 많이 쓰지 않아도 몸에 기운이 없고 축 처지는 상태는 ‘나른하다’가 잘 어울려요."}];
+    let score = 0;
+    let done = 0;
+    const answered = Array(questions.length).fill(false);
+
+    function renderQuiz(){
+      const quiz=document.getElementById("quiz");
+      quiz.innerHTML="";
+      questions.forEach((item,qi)=>{
+        const section=document.createElement("section");
+        section.className="question";
+
+        const title=document.createElement("h2");
+        title.textContent=`${qi+1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices=document.createElement("div");
+        choices.className="choices";
+
+        item.choices.forEach((text,ci)=>{
+          const button=document.createElement("button");
+          button.className="choice";
+          button.textContent=`${ci+1}. ${text}`;
+          button.addEventListener("click",()=>checkAnswer(qi,ci,button,section));
+          choices.appendChild(button);
+        });
+
+        const result=document.createElement("div");
+        result.className="result";
+        const explain=document.createElement("div");
+        explain.className="explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(qi,ci,selected,section){
+      if(answered[qi]) return;
+      answered[qi]=true;
+      done++;
+
+      const item=questions[qi];
+      const buttons=section.querySelectorAll(".choice");
+      const result=section.querySelector(".result");
+      const explain=section.querySelector(".explain");
+
+      buttons.forEach((button,index)=>{
+        button.disabled=true;
+        if(index===item.answer) button.classList.add("correct");
+      });
+
+      if(ci===item.answer){
+        score++;
+        result.textContent="⭕ 정답이에요!";
+      }else{
+        selected.classList.add("wrong");
+        result.textContent=`❌ 정답은 ‘${item.choices[item.answer]}’예요.`;
+      }
+
+      explain.textContent=`💡 ${item.explanation}`;
+      explain.style.display="block";
+      document.getElementById("score").textContent=score;
+      document.getElementById("done").textContent=done;
+      if(done===questions.length) showFinalMessage();
+    }
+
+    function showFinalMessage(){
+      const box=document.getElementById("finalMessage");
+      if(score===12){
+        box.textContent="🎉 12문제를 모두 맞혔어요! 네 가지 피로 표현의 차이를 정확히 알고 있네요.";
+      }else if(score>=9){
+        box.textContent=`👏 ${score}문제를 맞혔어요! 헷갈린 문제만 다시 살펴보세요.`;
+      }else{
+        box.textContent=`🌱 ${score}문제를 맞혔어요. 아래 정리를 읽고 다시 도전해 보세요!`;
+      }
+      box.style.display="block";
+      box.scrollIntoView({behavior:"smooth",block:"center"});
+    }
+
+    function resetQuiz(){
+      score=0;
+      done=0;
+      answered.fill(false);
+      document.getElementById("score").textContent="0";
+      document.getElementById("done").textContent="0";
+      document.getElementById("finalMessage").style.display="none";
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
