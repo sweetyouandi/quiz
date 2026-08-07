@@ -1,9 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="머뭇머뭇, 우물쭈물, 쭈뼛쭈뼛, 안절부절의 차이를 12문제 퀴즈로 쉽게 익혀 보세요.">
   <title>머뭇머뭇·우물쭈물·쭈뼛쭈뼛·안절부절 퀴즈</title>
   <style>
     *{box-sizing:border-box}
@@ -25,6 +25,7 @@
     .explain{display:none;margin-top:8px;padding:11px 13px;background:#fff8df;border-radius:11px;font-size:16px;line-height:1.55}
     .summary{margin-top:24px;padding:21px;background:#f2edf7;border-radius:20px;font-size:17px;line-height:1.9}
     .summary h3{margin:0 0 9px;font-size:21px}
+    .note{margin-top:10px;padding:10px 12px;background:#fff;border-radius:11px;font-size:15px;line-height:1.6}
     .final-message{display:none;margin-top:18px;padding:18px;background:#fff0f4;border-radius:18px;text-align:center;font-size:19px;font-weight:700;line-height:1.6}
     .reset{display:block;margin:24px auto 0;padding:13px 24px;border:0;border-radius:14px;background:#806f96;color:white;font-size:17px;font-weight:700;cursor:pointer}
     @media(max-width:430px){.hero h1{font-size:21px}.question h2{font-size:19px}.choice{font-size:17px}}
@@ -49,14 +50,89 @@
       🤔 <b>머뭇머뭇</b> : 할지 말지 망설이며 행동을 바로 시작하지 못하는 모습<br>
       🗣️ <b>우물쭈물</b> : 말이나 결정을 분명하게 하지 못하고 자꾸 흐리는 모습<br>
       🙈 <b>쭈뼛쭈뼛</b> : 부끄럽거나 어색해서 몸가짐이 자연스럽지 못한 모습<br>
-      😰 <b>안절부절</b> : 걱정이나 초조함 때문에 가만히 있지 못하는 모습
+      😰 <b>안절부절</b> : 마음이 초조하고 불안하여 어찌할 바를 모르는 모습
+      <div class="note">💡 문장에서는 <b>‘안절부절못하다’</b>라고 쓰는 것이 표준어예요.</div>
     </section>
 
     <button class="reset" onclick="resetQuiz()">처음부터 다시 풀기</button>
   </main>
 
   <script>
-    const questions = [{"q": "민이는 대답을 할까 말까 망설이며 바로 말을 꺼내지 못했어요.", "choices": ["머뭇머뭇", "우물쭈물", "쭈뼛쭈뼛", "안절부절"], "answer": 0, "explanation": "무엇을 할지 망설이며 바로 행동하지 못하는 모습은 ‘머뭇머뭇’이에요."}, {"q": "준이는 잘못한 일을 물어보자 분명하게 말하지 못하고 자꾸 말을 흐렸어요.", "choices": ["머뭇머뭇", "우물쭈물", "쭈뼛쭈뼛", "안절부절"], "answer": 1, "explanation": "말이나 행동을 분명히 하지 못하고 자꾸 망설이는 모습은 ‘우물쭈물’이에요."}, {"q": "처음 만난 친구들 앞에서 민이는 몸을 어색하게 움직이며 가까이 가지 못했어요.", "choices": ["머뭇머뭇", "우물쭈물", "쭈뼛쭈뼛", "안절부절"], "answer": 2, "explanation": "부끄럽거나 어색해서 몸가짐이 자연스럽지 못한 모습은 ‘쭈뼛쭈뼛’이에요."}, {"q": "엄마가 늦게 오자 민이는 걱정되어 자리에 가만히 앉아 있지 못했어요.", "choices": ["머뭇머뭇", "우물쭈물", "쭈뼛쭈뼛", "안절부절"], "answer": 3, "explanation": "걱정되거나 초조해서 가만히 있지 못하는 모습은 ‘안절부절’이에요."}, {"q": "발표 차례가 되자 민이는 교실 앞으로 나갈지 잠시 망설였어요.", "choices": ["머뭇머뭇", "쭈뼛쭈뼛", "안절부절", "우물쭈물"], "answer": 0, "explanation": "행동을 시작할지 말지 망설이는 모습은 ‘머뭇머뭇’이 잘 어울려요."}, {"q": "친구가 어느 장난감을 고를지 묻자 준이는 대답을 미루며 말을 흐렸어요.", "choices": ["쭈뼛쭈뼛", "우물쭈물", "머뭇머뭇", "안절부절"], "answer": 1, "explanation": "결정이나 대답을 분명하게 하지 못하고 말을 흐리는 모습은 ‘우물쭈물’이에요."}, {"q": "낯선 어른이 말을 걸자 아이는 어깨를 움츠리고 어색하게 서 있었어요.", "choices": ["안절부절", "머뭇머뭇", "쭈뼛쭈뼛", "우물쭈물"], "answer": 2, "explanation": "부끄러움 때문에 몸을 어색하게 움직이는 모습은 ‘쭈뼛쭈뼛’이에요."}, {"q": "시험 결과가 나오기 전까지 아이는 방 안을 계속 왔다 갔다 했어요.", "choices": ["우물쭈물", "쭈뼛쭈뼛", "머뭇머뭇", "안절부절"], "answer": 3, "explanation": "걱정과 초조함 때문에 가만히 있지 못하는 모습은 ‘안절부절’이에요."}, {"q": "민이는 문 앞에서 들어갈지 말지 잠시 서성였어요.", "choices": ["머뭇머뭇", "안절부절", "우물쭈물", "쭈뼛쭈뼛"], "answer": 0, "explanation": "결정을 내리지 못하고 행동을 늦추는 모습은 ‘머뭇머뭇’이에요."}, {"q": "선생님이 이유를 묻자 아이는 똑바로 대답하지 않고 엉뚱한 말만 했어요.", "choices": ["안절부절", "우물쭈물", "쭈뼛쭈뼛", "머뭇머뭇"], "answer": 1, "explanation": "대답을 분명하게 하지 않고 말을 흐리는 모습은 ‘우물쭈물’이에요."}, {"q": "무대에 올라온 아이는 많은 사람을 보자 몸을 어색하게 움직였어요.", "choices": ["우물쭈물", "안절부절", "쭈뼛쭈뼛", "머뭇머뭇"], "answer": 2, "explanation": "부끄럽고 어색해 몸가짐이 자연스럽지 않은 모습은 ‘쭈뼛쭈뼛’이에요."}, {"q": "길을 잃은 강아지를 기다리며 민이는 초조하게 창밖만 바라보았어요.", "choices": ["쭈뼛쭈뼛", "머뭇머뭇", "우물쭈물", "안절부절"], "answer": 3, "explanation": "걱정이 되어 마음을 놓지 못하고 초조한 모습은 ‘안절부절’이에요."}];
+    const questions = [
+      {
+        "q": "민이는 대답을 할까 말까 망설이며 바로 말을 꺼내지 못했어요.",
+        "choices": ["머뭇머뭇", "우물쭈물", "쭈뼛쭈뼛", "안절부절"],
+        "answer": 0,
+        "explanation": "무엇을 할지 망설이며 바로 행동하지 못하는 모습은 ‘머뭇머뭇’이에요."
+      },
+      {
+        "q": "준이는 잘못한 일을 물어보자 분명하게 말하지 못하고 자꾸 말을 흐렸어요.",
+        "choices": ["머뭇머뭇", "우물쭈물", "쭈뼛쭈뼛", "안절부절"],
+        "answer": 1,
+        "explanation": "말이나 결정을 분명하게 하지 못하고 자꾸 흐리는 모습은 ‘우물쭈물’이에요."
+      },
+      {
+        "q": "처음 만난 친구들 앞에서 민이는 몸을 어색하게 움직이며 가까이 가지 못했어요.",
+        "choices": ["머뭇머뭇", "우물쭈물", "쭈뼛쭈뼛", "안절부절"],
+        "answer": 2,
+        "explanation": "부끄럽거나 어색해서 몸가짐이 자연스럽지 못한 모습은 ‘쭈뼛쭈뼛’이에요."
+      },
+      {
+        "q": "엄마가 늦게 오자 민이는 마음이 초조하고 불안해 어찌할 바를 몰랐어요.",
+        "choices": ["머뭇머뭇", "우물쭈물", "쭈뼛쭈뼛", "안절부절"],
+        "answer": 3,
+        "explanation": "마음이 초조하고 불안해 어찌할 바를 모르는 모습은 ‘안절부절’이에요. 문장에서는 ‘안절부절못했어요’라고 써요."
+      },
+      {
+        "q": "발표 차례가 되자 민이는 교실 앞으로 나갈지 잠시 망설였어요.",
+        "choices": ["머뭇머뭇", "쭈뼛쭈뼛", "안절부절", "우물쭈물"],
+        "answer": 0,
+        "explanation": "행동을 시작할지 말지 망설이는 모습은 ‘머뭇머뭇’이 잘 어울려요."
+      },
+      {
+        "q": "친구가 어느 장난감을 고를지 묻자 준이는 대답을 미루며 말을 흐렸어요.",
+        "choices": ["쭈뼛쭈뼛", "우물쭈물", "머뭇머뭇", "안절부절"],
+        "answer": 1,
+        "explanation": "결정이나 대답을 분명하게 하지 못하고 말을 흐리는 모습은 ‘우물쭈물’이에요."
+      },
+      {
+        "q": "낯선 어른이 말을 걸자 아이는 어깨를 움츠리고 어색하게 서 있었어요.",
+        "choices": ["안절부절", "머뭇머뭇", "쭈뼛쭈뼛", "우물쭈물"],
+        "answer": 2,
+        "explanation": "부끄럽거나 어색해 몸가짐이 자연스럽지 못한 모습은 ‘쭈뼛쭈뼛’이에요."
+      },
+      {
+        "q": "시험 결과를 기다리는 동안 아이는 마음이 초조해 방 안을 계속 왔다 갔다 했어요.",
+        "choices": ["우물쭈물", "쭈뼛쭈뼛", "머뭇머뭇", "안절부절"],
+        "answer": 3,
+        "explanation": "초조하고 불안해 어찌할 바를 모르는 모습은 ‘안절부절’이에요. ‘시험 결과를 기다리며 안절부절못했어요’처럼 쓸 수 있어요."
+      },
+      {
+        "q": "민이는 문 앞에서 들어갈지 말지 잠시 망설였어요.",
+        "choices": ["머뭇머뭇", "안절부절", "우물쭈물", "쭈뼛쭈뼛"],
+        "answer": 0,
+        "explanation": "할지 말지 망설이며 행동을 바로 시작하지 못하는 모습은 ‘머뭇머뭇’이에요."
+      },
+      {
+        "q": "선생님이 이유를 묻자 아이는 똑바로 대답하지 않고 자꾸 말을 돌렸어요.",
+        "choices": ["안절부절", "우물쭈물", "쭈뼛쭈뼛", "머뭇머뭇"],
+        "answer": 1,
+        "explanation": "말이나 대답을 분명하게 하지 못하고 자꾸 흐리는 모습은 ‘우물쭈물’이에요."
+      },
+      {
+        "q": "무대에 올라온 아이는 많은 사람을 보자 부끄러워 몸을 어색하게 움직였어요.",
+        "choices": ["우물쭈물", "안절부절", "쭈뼛쭈뼛", "머뭇머뭇"],
+        "answer": 2,
+        "explanation": "부끄럽고 어색해 몸가짐이 자연스럽지 않은 모습은 ‘쭈뼛쭈뼛’이에요."
+      },
+      {
+        "q": "길을 잃은 강아지가 돌아오기를 기다리며 민이는 마음이 초조하고 불안했어요.",
+        "choices": ["쭈뼛쭈뼛", "머뭇머뭇", "우물쭈물", "안절부절"],
+        "answer": 3,
+        "explanation": "걱정과 초조함으로 마음이 불안해 어찌할 바를 모르는 모습은 ‘안절부절’이에요. 문장에서는 ‘안절부절못했어요’라고 표현해요."
+      }
+    ];
+
     let score = 0;
     let done = 0;
     const answered = Array(questions.length).fill(false);
@@ -134,7 +210,7 @@
       const box=document.getElementById("finalMessage");
 
       if(score===12){
-        box.textContent="🎉 12문제를 모두 맞혔어요! 네 가지 행동 모습의 차이를 정확히 알고 있네요.";
+        box.textContent="🎉 12문제를 모두 맞혔어요! 네 가지 행동과 마음의 차이를 정확히 알고 있네요.";
       }else if(score>=9){
         box.textContent=`👏 ${score}문제를 맞혔어요! 헷갈린 문제만 다시 살펴보세요.`;
       }else{
