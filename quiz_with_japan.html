@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="사과엄마의 과일 퀴즈, 엄마의 말공부 퀴즈, 엄마의 세계공부 퀴즈를 한곳에서 만나보세요.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="사과엄마 퀴즈 모음">
+  <meta property="og:description" content="과일 상식, 비슷한 말의 차이, 세계 문화를 재미있는 퀴즈로 복습해 보세요.">
+  <title>사과엄마 퀴즈 모음</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:#fff9f1;color:#3e312c}
+    .wrap{width:min(760px,100%);margin:0 auto;padding:22px 15px 56px}
+    .hero{padding:34px 22px;text-align:center;background:linear-gradient(135deg,#fff0d7,#eaf3ff);border-radius:28px;box-shadow:0 8px 22px rgba(78,61,50,.10)}
+    .hero .icon{font-size:50px}
+    .hero h1{margin:8px 0 9px;font-size:30px}
+    .hero p{margin:0;color:#6d5c55;font-size:15px;line-height:1.7}
+    .top-links{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0 22px}
+    .top-links a{padding:14px 12px;border-radius:15px;text-decoration:none;text-align:center;font-weight:750;color:#4c403b;background:#fff;border:1px solid #eee2d9;box-shadow:0 4px 12px rgba(78,61,50,.06)}
+    .section{margin-top:20px;background:#fff;border:1px solid #eee3da;border-radius:22px;box-shadow:0 5px 16px rgba(78,61,50,.07);overflow:hidden}
+    .section button{width:100%;padding:19px;border:0;background:#fff;display:flex;justify-content:space-between;align-items:center;font-size:20px;font-weight:850;color:#3e312c;cursor:pointer}
+    .section button small{font-size:13px;font-weight:650;color:#8c776c}
+    .section .chevron{font-size:20px;transition:.2s}
+    .section.open .chevron{transform:rotate(180deg)}
+    .panel{display:none;padding:0 13px 15px}
+    .section.open .panel{display:grid;gap:9px}
+    .quiz-card{display:flex;align-items:center;gap:11px;padding:14px;text-decoration:none;color:#3e312c;background:#fdfbf9;border:1px solid #eee5df;border-radius:15px}
+    .quiz-card:hover{background:#fff4e9;transform:translateY(-1px)}
+    .badge{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:13px;background:#fff0d5;font-size:22px}
+    .quiz-text{flex:1;min-width:0}
+    .quiz-text strong{display:block;font-size:15px;line-height:1.45;word-break:keep-all}
+    .quiz-text span{display:block;margin-top:3px;color:#8a756b;font-size:12px}
+    .arrow{font-size:20px;color:#b29c91}
+    .footer{padding:30px 10px 10px;text-align:center;color:#8a766c;font-size:13px;line-height:1.7}
+    @media(max-width:440px){
+      .hero h1{font-size:25px}
+      .top-links{grid-template-columns:1fr}
+      .section button{font-size:18px}
+    }
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <div class="icon">🧠</div>
+    <h1>사과엄마 퀴즈 모음</h1>
+    <p>글을 읽고 배운 내용을 재미있는 퀴즈로<br>한 번 더 확인해 보세요.</p>
+  </section>
+
+  <div class="top-links">
+    <a href="https://sweetyouandi.github.io/quiz/blog.html">🍎 콘텐츠 모음으로</a>
+    <a href="https://sweetyouandi.github.io/quiz/">🏠 퀴즈 메인으로</a>
+  </div>
+
+  <section class="section open">
+    <button type="button" aria-expanded="true">
+      <span>🍉 과일 퀴즈 <small>4개</small></span>
+      <span class="chevron">⌄</span>
+    </button>
+    <div class="panel">
+      <a class="quiz-card" href="https://sweetyouandi.github.io/quiz/watermelon.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">🍓</div>
+          <div class="quiz-text">
+            <strong>🍉 수박 퀴즈</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/peach.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">🍓</div>
+          <div class="quiz-text">
+            <strong>🍑 복숭아 퀴즈</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/kids-mango-quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">🍓</div>
+          <div class="quiz-text">
+            <strong>🥭 망고 퀴즈</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/blueberry.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">🍓</div>
+          <div class="quiz-text">
+            <strong>🫐 블루베리 퀴즈</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+    </div>
+  </section>
+
+  <section class="section open">
+    <button type="button" aria-expanded="true">
+      <span>📖 엄마의 말공부 퀴즈 <small>37개</small></span>
+      <span class="chevron">⌄</span>
+    </button>
+    <div class="panel">
+      <a class="quiz-card" href="https://sweetyouandi.github.io/quiz/malgongbu-052.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>데굴데굴·또르르·빙글빙글·빙빙의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/todak_ssdam_salsal_sseuksseuk_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>토닥토닥·쓰담쓰담·살살·쓱쓱의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/kids_jump_words_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>폴짝폴짝·깡충깡충·펄쩍펄쩍의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/mom_word_quiz_gestures.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>두리번두리번·갸웃갸웃·끄덕끄덕·절레절레의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/jjaenggeurang_dalgeurak_deolkeong_quiz-2.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>쨍그랑·달그락·덜컹의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/ppeokkeum_omul_umul_nyam_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>뻐끔뻐끔·오물오물·우물우물·냠냠의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/napjakhada_pyeongpyeonghada_bandeuthada_panpanhada_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>납작하다·평평하다·반듯하다·판판하다의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/ttobak_jogon_jungeol_ungeol_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>또박또박·조곤조곤·중얼중얼·웅얼웅얼의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/kkulkkuk_beolkeok_holjjak_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>꿀꺽꿀꺽·벌컥벌컥·홀짝홀짝의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/heurida_keomkeomhada_kamkamhada_eodukeodukhada_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>흐리다·컴컴하다·캄캄하다·어둑어둑하다의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/makda_gaeda_hwachanghada_kwaecheonghada_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>맑다·개다·화창하다·쾌청하다의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/bogeul_bageul_palpal_jigeul_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>보글보글·바글바글·팔팔·지글지글의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/hyanggeuthada_gusuhada_gosohada_dambaekhada_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>향긋하다·구수하다·고소하다·담백하다의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/monggeul_dungsil_bokseul_omil_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>몽글몽글·둥실둥실·복슬복슬·오밀조밀의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/ttatteuthada_pogeunhada_hunhunhada_huteopjigeunhada_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>따뜻하다·포근하다·훈훈하다·후텁지근하다의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/seonseonhada_siwonhada_seoneulhada_ssalssalhada_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>선선하다·시원하다·서늘하다·쌀쌀하다의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/jjaekkak_ttukttak_dalgeurak_ttalgak_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>째깍째깍·똑딱똑딱·달그락달그락·딸깍딸깍의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/baseurak_buseureok_sagak_asak_quiz.html?v=2" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>바스락바스락·부스럭부스럭·사각사각·아삭아삭의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/bodeul_poksin_mallang_malkang_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>보들보들·폭신폭신·말랑말랑·말캉말캉의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/maekkeun_mikkeul_kkeunjeok_kkaseul_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>매끈매끈·미끌미끌·끈적끈적·까슬까슬의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/chokchok_chukchuk_nuknuk_jilcheok_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>촉촉하다·축축하다·눅눅하다·질척질척의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/dapdaphada_gapgaphada_makmakhada_meokmeokhada_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>답답하다·갑갑하다·막막하다·먹먹하다의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/meomut_umuljjumul_jjupyeot_anjeolbujeol_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>머뭇머뭇·우물쭈물·쭈뼛쭈뼛·안절부절의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/hilkkum_ppanhi_seuljjeok_mulkkeureomi_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>힐끔힐끔·빤히·슬쩍·물끄러미의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/soreureu_kulkul_saegeun_deureureong_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>소르르·쿨쿨·새근새근·드르렁드르렁의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/dugeundugeun_kongdakkongdak_ulleongulleong_jomajoma_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>두근두근·콩닥콩닥·울렁울렁·조마조마의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/sappun_chongchong_kungkung_salgeum_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>사뿐사뿐·총총·쿵쿵·살금살금의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/banjjak_jjaengjjaeng_tasaropda_nunbusida_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>반짝반짝·쨍쨍·따사롭다·눈부시다의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/sallangsallang_ssaengssaeng_hwikhwik_wingwing_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>살랑살랑·쌩쌩·휙휙·윙윙의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/pongdang_cheombeong_joljol_kwalkwal_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>퐁당·첨벙·졸졸·콸콸의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/nyamnyam_ugeokugeok_kkaejakkkaejak_yageumyageum_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>냠냠·우걱우걱·깨작깨작·야금야금의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/huljjeokhuljjeok_eongeong_peongpeong_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>훌쩍훌쩍·엉엉·펑펑의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/banggeut_singgeul_kkalkkal_quiz_12.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>방긋방긋·싱글벙글·깔깔의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/walk.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>아장아장·성큼성큼·뚜벅뚜벅의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/rain.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>부슬부슬·주룩주룩·후드득의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/sparkle.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>반짝반짝·번쩍번쩍·반들반들의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+
+<a class="quiz-card" href="https://sweetyouandi.github.io/quiz/challang_chulleong_illeong_neomsil_quiz.html" target="_blank" rel="noopener noreferrer">
+          <div class="badge">💬</div>
+          <div class="quiz-text">
+            <strong>찰랑찰랑·출렁출렁·일렁일렁·넘실넘실의 차이</strong>
+            <span>퀴즈 풀어보기</span>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+    </div>
+  </section>
+
+
+  <section class="section open">
+    <button type="button" aria-expanded="true">
+      <span>🌏 엄마의 세계공부 퀴즈 <small>1개</small></span>
+      <span class="chevron">⌄</span>
+    </button>
+    <div class="panel">
+      <a class="quiz-card" href="https://sweetyouandi.github.io/quiz/japan_summer_quiz.html" target="_blank" rel="noopener noreferrer">
+        <div class="badge">🇯🇵</div>
+        <div class="quiz-text">
+          <strong>일본의 여름 퀴즈</strong>
+          <span>풍경·유카타·불꽃놀이·가키고오리 12문제</span>
+        </div>
+        <div class="arrow">›</div>
+      </a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    하나씩 천천히 풀다 보면<br>말의 느낌이 더 선명해집니다.
+  </footer>
+</main>
+
+<script>
+document.querySelectorAll(".section > button").forEach(button=>{
+  button.addEventListener("click",()=>{
+    const section=button.parentElement;
+    const open=section.classList.toggle("open");
+    button.setAttribute("aria-expanded",String(open));
+  });
+});
+</script>
+</body>
+</html>
