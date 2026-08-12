@@ -1,0 +1,520 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="부슬부슬, 주룩주룩, 후드득은 어떻게 다를까요? 가는 비, 굵게 이어지는 비, 갑자기 떨어지는 큰 빗방울을 12문제로 구별해 보세요.">
+  <title>부슬부슬·주룩주룩·후드득 차이 퀴즈 12문제 | 엄마의 말공부</title>
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
+      background:#f8f9fd;
+      color:#333;
+    }
+    .wrap{
+      width:min(720px,100%);
+      margin:0 auto;
+      padding:22px 15px 45px;
+    }
+    .hero{
+      padding:27px 18px;
+      margin-bottom:20px;
+      text-align:center;
+      background:linear-gradient(135deg,#e9eaf8,#fce9ed);
+      border-radius:24px;
+      box-shadow:0 7px 20px rgba(0,0,0,.08);
+    }
+    .hero h1{
+      margin:0 0 10px;
+      font-size:26px;
+      line-height:1.45;
+    }
+    .hero p{
+      margin:0;
+      font-size:17px;
+      line-height:1.6;
+    }
+    .progress{
+      position:sticky;
+      top:8px;
+      z-index:10;
+      margin-bottom:16px;
+      padding:12px 16px;
+      text-align:center;
+      color:#fff;
+      background:#525b72;
+      border-radius:15px;
+      font-size:17px;
+      font-weight:700;
+      box-shadow:0 5px 15px rgba(0,0,0,.15);
+    }
+    .question{
+      margin-bottom:16px;
+      padding:20px;
+      background:#fff;
+      border-radius:20px;
+      box-shadow:0 5px 16px rgba(0,0,0,.07);
+    }
+    .question h2{
+      margin:0 0 14px;
+      font-size:20px;
+      line-height:1.55;
+    }
+    .choices{
+      display:grid;
+      gap:10px;
+    }
+    .choice{
+      width:100%;
+      padding:14px 15px;
+      border:2px solid #e1e4ec;
+      border-radius:14px;
+      background:#fcfdff;
+      text-align:left;
+      font-size:18px;
+      cursor:pointer;
+      transition:.15s;
+    }
+    .choice:hover:not(:disabled){
+      background:#f0f2f8;
+      transform:translateY(-1px);
+    }
+    .choice:disabled{cursor:default}
+    .choice.correct{
+      border-color:#5dbb7a;
+      background:#def7e6;
+      color:#176536;
+      font-weight:700;
+    }
+    .choice.wrong{
+      border-color:#e07373;
+      background:#ffe3e3;
+      color:#982626;
+      font-weight:700;
+    }
+    .result{
+      min-height:25px;
+      margin-top:12px;
+      font-size:17px;
+      font-weight:700;
+      line-height:1.5;
+    }
+    .explain{
+      display:none;
+      margin-top:8px;
+      padding:11px 13px;
+      background:#fff8df;
+      border-radius:11px;
+      font-size:16px;
+      line-height:1.55;
+    }
+    .final-message{
+      display:none;
+      margin-top:20px;
+      padding:22px;
+      background:#fff0f4;
+      border-radius:20px;
+      text-align:center;
+      font-size:19px;
+      font-weight:700;
+      line-height:1.75;
+      box-shadow:0 5px 16px rgba(0,0,0,.06);
+    }
+    .final-score{
+      display:block;
+      margin:5px 0 8px;
+      font-size:31px;
+    }
+    .buttons{
+      display:none;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin:18px 0 0;
+    }
+    .action-btn{
+      padding:14px 12px;
+      border:0;
+      border-radius:14px;
+      font-size:17px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .reset{
+      background:#75809a;
+      color:#fff;
+    }
+    .random{
+      background:#e8edf8;
+      color:#3f4960;
+    }
+    .summary{
+      margin-top:24px;
+      padding:21px;
+      background:#f1f2f9;
+      border-radius:20px;
+      font-size:17px;
+      line-height:1.9;
+    }
+    .summary h3{
+      margin:0 0 9px;
+      font-size:21px;
+    }
+    @media(max-width:430px){
+      .hero h1{font-size:22px}
+      .question h2{font-size:19px}
+      .choice{font-size:17px}
+      .buttons{grid-template-columns:1fr}
+    }
+  </style>
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="부슬부슬·주룩주룩·후드득 차이 퀴즈 12문제 | 엄마의 말공부">
+  <meta property="og:description" content="부슬부슬, 주룩주룩, 후드득은 어떻게 다를까요? 가는 비, 굵게 이어지는 비, 갑자기 떨어지는 큰 빗방울을 12문제로 구별해 보세요.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="부슬부슬·주룩주룩·후드득 차이 퀴즈 12문제 | 엄마의 말공부">
+  <meta name="twitter:description" content="부슬부슬, 주룩주룩, 후드득은 어떻게 다를까요? 가는 비, 굵게 이어지는 비, 갑자기 떨어지는 큰 빗방울을 12문제로 구별해 보세요.">
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1 id="quizTitle">📖 엄마의 말공부 퀴즈</h1>
+      <p id="quizSubtitle">알맞은 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 ·
+      푼 문제 <span id="done">0</span>/<span id="total">0</span>
+    </div>
+
+    <div id="quiz"></div>
+
+    <div id="finalMessage" class="final-message"></div>
+
+    <div id="buttons" class="buttons">
+      <button class="action-btn reset" onclick="restartOriginal()">🔄 다시 풀기</button>
+      <button class="action-btn random" onclick="restartRandom()">🎲 랜덤으로 풀기</button>
+    </div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      <div id="summaryContent"></div>
+    </section>
+  </main>
+
+  <script>
+    /*
+      ================================
+      1. 아래 QUIZ_CONFIG만 바꾸면 됩니다.
+      ================================
+    */
+
+    const QUIZ_CONFIG = {
+  "title": "📖 부슬부슬·주룩주룩·후드득 퀴즈",
+  "subtitle": "비가 내리는 모습과 소리에 알맞은 말을 골라 보세요!",
+  "summary": [
+    {
+      "emoji": "🌦️",
+      "word": "부슬부슬",
+      "meaning": "가늘고 약한 비가 조용히 계속 내리는 모양"
+    },
+    {
+      "emoji": "🌧️",
+      "word": "주룩주룩",
+      "meaning": "굵은 빗줄기가 계속 이어져 많이 내리는 모양"
+    },
+    {
+      "emoji": "💦",
+      "word": "후드득",
+      "meaning": "굵은 빗방울이나 물방울이 갑자기 떨어지는 소리나 모양"
+    }
+  ],
+  "questions": [
+    {
+        "q": "갑자기 비가 굵어져 우산 위로 많은 빗줄기가 쉬지 않고 쏟아졌어요. 알맞은 말은?",
+        "choices": [
+            "부슬부슬",
+            "주룩주룩",
+            "후드득"
+        ],
+        "answer": 1,
+        "explanation": "‘주룩주룩’은 굵은 빗줄기가 계속 이어져 많이 내리는 모양을 나타내요."
+    },
+    {
+        "q": "아침 산책을 나갔는데 우산을 펴지 않아도 될 만큼 아주 가는 비가 조용히 내렸어요. 알맞은 말은?",
+        "choices": [
+            "부슬부슬",
+            "주룩주룩",
+            "후드득"
+        ],
+        "answer": 0,
+        "explanation": "‘부슬부슬’은 가늘고 약한 비가 조용히 계속 내리는 모양을 나타내요."
+    },
+    {
+        "q": "갑자기 큰 빗방울이 천막 위에 떨어지며 짧고 굵은 소리를 냈어요. 알맞은 말은?",
+        "choices": [
+            "부슬부슬",
+            "주룩주룩",
+            "후드득"
+        ],
+        "answer": 2,
+        "explanation": "‘후드득’은 굵은 빗방울이나 물방울이 갑자기 떨어지며 내는 소리나 모양을 나타내요."
+    },
+    {
+        "q": "창밖을 보니 안개처럼 가벼운 빗방울이 소리 없이 이어지고 있었어요. 알맞은 말은?",
+        "choices": [
+            "주룩주룩",
+            "부슬부슬",
+            "후드득"
+        ],
+        "answer": 1,
+        "explanation": "빗방울이 작고 약하며 조용히 이어질 때 ‘부슬부슬’이라고 해요."
+    },
+    {
+        "q": "나무 아래를 지나는데 잎에 맺힌 큰 물방울이 어깨 위로 한꺼번에 떨어졌어요. 알맞은 말은?",
+        "choices": [
+            "후드득",
+            "부슬부슬",
+            "주룩주룩"
+        ],
+        "answer": 0,
+        "explanation": "큰 물방울이 갑자기 몇 번 떨어지는 소리와 모습에는 ‘후드득’이 잘 어울려요."
+    },
+    {
+        "q": "장대비가 내려 창문을 따라 물줄기가 계속 흘러내렸어요. 알맞은 말은?",
+        "choices": [
+            "부슬부슬",
+            "후드득",
+            "주룩주룩"
+        ],
+        "answer": 2,
+        "explanation": "비나 물이 줄을 이루어 계속 흘러내리는 모습에는 ‘주룩주룩’이 어울려요."
+    },
+    {
+        "q": "봄비가 옷을 살짝 적실 정도로 가늘게 내렸어요. 알맞은 말은?",
+        "choices": [
+            "부슬부슬",
+            "주룩주룩",
+            "후드득"
+        ],
+        "answer": 0,
+        "explanation": "옷을 조금씩 적시는 약하고 가는 비에는 ‘부슬부슬’이 잘 어울려요."
+    },
+    {
+        "q": "운동장에 굵은 비가 끊이지 않고 내려 금세 물웅덩이가 생겼어요. 알맞은 말은?",
+        "choices": [
+            "부슬부슬",
+            "주룩주룩",
+            "후드득"
+        ],
+        "answer": 1,
+        "explanation": "굵은 비가 계속 많이 내리는 상황이므로 ‘주룩주룩’이 알맞아요."
+    },
+    {
+        "q": "빗방울이 갑자기 굵어져 지붕을 세차게 두드리기 시작했어요. 알맞은 말은?",
+        "choices": [
+            "부슬부슬",
+            "주룩주룩",
+            "후드득"
+        ],
+        "answer": 2,
+        "explanation": "굵은 빗방울이 갑작스럽게 떨어져 두드리는 느낌은 ‘후드득’으로 표현해요."
+    },
+    {
+        "q": "우산을 써도 옷이 젖을 만큼 굵은 빗줄기가 오래 이어졌어요. 알맞은 말은?",
+        "choices": [
+            "주룩주룩",
+            "부슬부슬",
+            "후드득"
+        ],
+        "answer": 0,
+        "explanation": "굵고 많은 비가 계속 내릴 때 ‘주룩주룩’이라고 표현해요."
+    },
+    {
+        "q": "소나기가 시작되며 큰 빗방울 몇 개가 차창 위로 먼저 떨어졌어요. 알맞은 말은?",
+        "choices": [
+            "부슬부슬",
+            "후드득",
+            "주룩주룩"
+        ],
+        "answer": 1,
+        "explanation": "소나기가 시작될 때 굵은 빗방울이 갑자기 떨어지는 모습에는 ‘후드득’이 알맞아요."
+    },
+    {
+        "q": "공원에 아주 가는 비가 조용히 내려 나뭇잎이 촉촉해졌어요. 알맞은 말은?",
+        "choices": [
+            "주룩주룩",
+            "후드득",
+            "부슬부슬"
+        ],
+        "answer": 2,
+        "explanation": "소리도 크지 않고 가늘게 내리는 비의 모습은 ‘부슬부슬’로 표현해요."
+    }
+]
+};
+
+    /*
+      ================================
+      2. 아래 코드는 수정하지 않아도 됩니다.
+      ================================
+    */
+
+    const originalQuestions = deepCopy(QUIZ_CONFIG.questions);
+    let currentQuestions = deepCopy(originalQuestions);
+    let score = 0;
+    let done = 0;
+    let answered = [];
+
+    function deepCopy(data){
+      return JSON.parse(JSON.stringify(data));
+    }
+
+    function shuffle(array){
+      for(let i=array.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [array[i],array[j]]=[array[j],array[i]];
+      }
+      return array;
+    }
+
+    function initPage(){
+      document.getElementById("quizTitle").textContent = QUIZ_CONFIG.title;
+      document.getElementById("quizSubtitle").textContent = QUIZ_CONFIG.subtitle;
+      document.getElementById("total").textContent = originalQuestions.length;
+
+      const summaryBox = document.getElementById("summaryContent");
+      summaryBox.innerHTML = QUIZ_CONFIG.summary.map(item =>
+        `${item.emoji} <b>${item.word}</b> : ${item.meaning}`
+      ).join("<br>");
+
+      renderQuiz();
+    }
+
+    function renderQuiz(){
+      score=0;
+      done=0;
+      answered=Array(currentQuestions.length).fill(false);
+
+      document.getElementById("score").textContent="0";
+      document.getElementById("done").textContent="0";
+      document.getElementById("total").textContent=currentQuestions.length;
+      document.getElementById("finalMessage").style.display="none";
+      document.getElementById("buttons").style.display="none";
+
+      const quiz=document.getElementById("quiz");
+      quiz.innerHTML="";
+
+      currentQuestions.forEach((item,qi)=>{
+        const section=document.createElement("section");
+        section.className="question";
+
+        const title=document.createElement("h2");
+        title.textContent=`${qi+1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices=document.createElement("div");
+        choices.className="choices";
+
+        item.choices.forEach((text,ci)=>{
+          const button=document.createElement("button");
+          button.className="choice";
+          button.textContent=`${ci+1}. ${text}`;
+          button.addEventListener("click",()=>checkAnswer(qi,ci,button,section));
+          choices.appendChild(button);
+        });
+
+        const result=document.createElement("div");
+        result.className="result";
+
+        const explain=document.createElement("div");
+        explain.className="explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(qi,ci,selected,section){
+      if(answered[qi]) return;
+
+      answered[qi]=true;
+      done++;
+
+      const item=currentQuestions[qi];
+      const buttons=section.querySelectorAll(".choice");
+      const result=section.querySelector(".result");
+      const explain=section.querySelector(".explain");
+
+      buttons.forEach((button,index)=>{
+        button.disabled=true;
+        if(index===item.answer) button.classList.add("correct");
+      });
+
+      if(ci===item.answer){
+        score++;
+        result.textContent="⭕ 정답이에요!";
+      }else{
+        selected.classList.add("wrong");
+        result.textContent=`❌ 정답은 ‘${item.choices[item.answer]}’이에요.`;
+      }
+
+      explain.textContent=`💡 ${item.explanation}`;
+      explain.style.display="block";
+
+      document.getElementById("score").textContent=score;
+      document.getElementById("done").textContent=done;
+
+      if(done===currentQuestions.length){
+        showFinalMessage();
+      }
+    }
+
+    function showFinalMessage(){
+      const box=document.getElementById("finalMessage");
+      const total=currentQuestions.length;
+      const ratio=score/total;
+      let message="";
+
+      if(score===total){
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>🎉 말 박사네요! 모두 정확히 알고 있어요.`;
+      }else if(ratio>=0.8){
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>👏 정말 잘했어요! 조금만 더 하면 만점이에요.`;
+      }else if(ratio>=0.55){
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>🌟 잘했어요! 헷갈린 문제만 다시 살펴보세요.`;
+      }else{
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>🌱 다시 도전하면 더 잘할 수 있어요!`;
+      }
+
+      box.innerHTML=message;
+      box.style.display="block";
+      document.getElementById("buttons").style.display="grid";
+      box.scrollIntoView({behavior:"smooth",block:"center"});
+    }
+
+    function restartOriginal(){
+      currentQuestions=deepCopy(originalQuestions);
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function restartRandom(){
+      currentQuestions=shuffle(deepCopy(originalQuestions));
+
+      currentQuestions.forEach(item=>{
+        const correctText=item.choices[item.answer];
+        item.choices=shuffle([...item.choices]);
+        item.answer=item.choices.indexOf(correctText);
+      });
+
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    initPage();
+  </script>
+</body>
+</html>
