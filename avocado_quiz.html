@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아보카도 퀴즈 10문제</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:#f7fbf3;color:#33412f}
+.wrap{width:min(720px,100%);margin:0 auto;padding:22px 15px 48px}
+.hero{padding:30px 20px;text-align:center;background:linear-gradient(135deg,#e6f3dc,#fff5d9);border-radius:26px;box-shadow:0 8px 22px rgba(55,83,47,.09)}
+.hero .emoji{font-size:52px}.hero h1{margin:8px 0 8px;font-size:28px}.hero p{margin:0;color:#687261;line-height:1.7}
+.progress{margin:16px 0 10px;background:#e8efe4;border-radius:999px;overflow:hidden;height:10px}
+.progress-bar{height:100%;width:0;background:#7cad62;transition:.25s}
+.status{display:flex;justify-content:space-between;margin:8px 3px 16px;color:#6a7665;font-size:14px}
+.card{background:#fff;border:1px solid #e4ebdf;border-radius:22px;padding:22px;box-shadow:0 6px 18px rgba(55,83,47,.07)}
+.qnum{font-size:14px;font-weight:800;color:#6e9d58;margin-bottom:8px}
+.question{font-size:21px;line-height:1.55;margin:0 0 18px;word-break:keep-all}
+.options{display:grid;gap:10px}
+.option{width:100%;text-align:left;border:1px solid #dfe8d9;background:#fbfdf9;border-radius:15px;padding:14px 15px;font-size:16px;line-height:1.45;cursor:pointer;color:#33412f}
+.option:hover{background:#f1f8ec}.option.correct{background:#e8f6df;border-color:#83b56d}.option.wrong{background:#fff0ed;border-color:#e7a69b}.option:disabled{cursor:default}
+.feedback{display:none;margin-top:15px;padding:14px;border-radius:14px;background:#f7f7f2;line-height:1.6;font-size:15px}
+.next{width:100%;margin-top:16px;border:0;border-radius:15px;padding:14px;background:#6e9d58;color:#fff;font-size:17px;font-weight:800;cursor:pointer}.next:disabled{opacity:.45;cursor:default}
+.result{display:none;text-align:center;background:#fff;border:1px solid #e4ebdf;border-radius:22px;padding:28px 20px;box-shadow:0 6px 18px rgba(55,83,47,.07)}
+.result.show{display:block}.result .big{font-size:48px}.result h2{margin:8px 0}.result .score{font-size:26px;font-weight:900;color:#5e9148}
+.summary{margin-top:18px;padding:18px;background:#fff9e7;border-radius:18px;line-height:1.8}
+.restart{margin-top:16px;border:0;border-radius:14px;padding:13px 22px;background:#f0a45a;color:#fff;font-weight:800;font-size:16px;cursor:pointer}
+footer{text-align:center;color:#7e8878;font-size:13px;margin-top:20px}
+</style>
+</head>
+<body>
+<main class="wrap">
+<section class="hero"><div class="emoji">🥑</div><h1>아보카도 퀴즈</h1><p>영양부터 후숙·갈변까지<br>10문제로 한 번에 복습해 보세요!</p></section>
+<div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+<div class="status"><span id="count">1 / 10</span><span id="score">점수 0</span></div>
+<section id="quizCard" class="card">
+<div id="qnum" class="qnum"></div><h2 id="question" class="question"></h2><div id="options" class="options"></div>
+<div id="feedback" class="feedback"></div><button id="nextBtn" class="next" disabled>다음 문제</button>
+</section>
+<section id="result" class="result"><div class="big">🎉</div><h2>퀴즈 완료!</h2><div id="finalScore" class="score"></div>
+<div class="summary">🥑 아보카도는 과일이에요.<br>🫒 불포화지방을 많이 함유한 특별한 과일이에요.<br>🌱 수확 뒤에도 후숙하면서 말랑해져요.<br>🍋 자른 뒤에는 산소와 만나 갈변할 수 있어요.</div>
+<button id="restartBtn" class="restart">다시 풀기</button></section>
+<footer>글을 읽고 다시 풀어보면 기억이 더 오래 남아요 😊</footer>
+</main>
+<script>
+const questions = [{"question": "아보카도에 많이 들어 있는 지방은 무엇일까요?", "options": ["트랜스지방", "불포화지방", "지방이 거의 없다", "포화지방만 들어 있다"], "answer": 1, "explanation": "아보카도에는 단일불포화지방을 비롯한 불포화지방이 많이 들어 있어요."}, {"question": "아보카도에는 ‘하루에 반드시 몇 개 먹어야 한다’는 공식 권장량이 있을까요?", "options": ["하루 1개로 정해져 있다", "어린이는 하루 반 개로 정해져 있다", "일주일에 1개로 정해져 있다", "공식적으로 정해진 개수는 없다"], "answer": 3, "explanation": "아보카도는 사람마다 식사량과 활동량이 달라 ‘하루 몇 개’라는 공식 권장량이 정해져 있지 않아요."}, {"question": "식물학적으로 아보카도는 무엇일까요?", "options": ["과일", "채소", "곡물", "견과류"], "answer": 0, "explanation": "아보카도는 꽃에서 발달하고 씨를 품는 열매이므로 식물학적으로 과일이에요."}, {"question": "아보카도가 과일이라고 볼 수 있는 중요한 특징은 무엇일까요?", "options": ["초록색이기 때문에", "단맛이 없기 때문에", "꽃에서 발달한 열매이며 씨를 품고 있기 때문에", "샐러드에 넣어 먹기 때문에"], "answer": 2, "explanation": "식물학에서는 꽃에서 발달해 씨를 품은 열매인지가 과일을 구분하는 중요한 기준이에요."}, {"question": "아보카도를 세계적으로 많이 생산하는 대표적인 나라는 어디일까요?", "options": ["멕시코", "캐나다", "핀란드", "영국"], "answer": 0, "explanation": "사용자 제공 원고에서는 멕시코를 세계적인 아보카도 생산국으로 소개하고 있어요."}, {"question": "아보카도가 다른 많은 과일과 비교해 특별한 점은 무엇일까요?", "options": ["씨가 없다", "물속에서 자란다", "익어도 부드러워지지 않는다", "지방 함량이 높은 편이다"], "answer": 3, "explanation": "아보카도는 다른 많은 과일과 비교했을 때 지방 함량이 높은 편이에요."}, {"question": "단단한 아보카도가 후숙하면서 말랑해지는 과정에 중요한 역할을 하는 것은 무엇일까요?", "options": ["소금", "에틸렌", "햇빛의 색", "씨의 크기"], "answer": 1, "explanation": "아보카도는 수확 뒤 에틸렌의 작용과 함께 후숙이 진행되며 점점 부드러워져요."}, {"question": "단단한 아보카도를 조금 더 빨리 후숙시키고 싶을 때 함께 두면 도움이 될 수 있는 것은 무엇일까요?", "options": ["얼음과 물", "소금과 설탕", "바나나나 사과", "오이와 양배추"], "answer": 2, "explanation": "바나나와 사과도 숙성 과정에서 에틸렌을 내놓아 아보카도 후숙을 촉진하는 데 도움이 될 수 있어요."}, {"question": "자른 아보카도의 표면이 갈색으로 변하는 주된 이유는 무엇일까요?", "options": ["씨가 너무 커서", "냉장고가 차가워서", "지방이 모두 사라져서", "공기 중 산소와 만나 효소가 관여하는 반응이 일어나서"], "answer": 3, "explanation": "자른 과육이 산소와 접촉하면 효소가 관여하는 산화 반응이 일어나 갈색으로 변할 수 있어요."}, {"question": "자른 아보카도의 갈변을 늦추는 데 도움이 되는 방법은 무엇일까요?", "options": ["햇빛이 드는 곳에 둔다", "레몬즙을 바르고 공기와의 접촉을 줄인다", "따뜻한 곳에 펼쳐 둔다", "씨만 빼면 갈변하지 않는다"], "answer": 1, "explanation": "레몬즙으로 표면의 산도를 낮추고 밀폐해 산소 접촉을 줄이면 갈변 속도를 늦추는 데 도움이 돼요."}];
+let current=0,score=0,answered=false;
+const qnum=document.getElementById("qnum"),question=document.getElementById("question"),options=document.getElementById("options"),
+feedback=document.getElementById("feedback"),nextBtn=document.getElementById("nextBtn"),progressBar=document.getElementById("progressBar"),
+count=document.getElementById("count"),scoreEl=document.getElementById("score"),quizCard=document.getElementById("quizCard"),
+result=document.getElementById("result"),finalScore=document.getElementById("finalScore");
+function render(){
+ answered=false;nextBtn.disabled=true;feedback.style.display="none";feedback.textContent="";options.innerHTML="";
+ const item=questions[current];qnum.textContent=`문제 ${current+1}`;question.textContent=item.question;
+ count.textContent=`${current+1} / ${questions.length}`;scoreEl.textContent=`점수 ${score}`;progressBar.style.width=`${(current/questions.length)*100}%`;
+ item.options.forEach((text,i)=>{const btn=document.createElement("button");btn.className="option";btn.textContent=`${["①","②","③","④"][i]} ${text}`;btn.addEventListener("click",()=>choose(i,btn));options.appendChild(btn);});
+}
+function choose(i,selected){
+ if(answered)return;answered=true;nextBtn.disabled=false;const item=questions[current];
+ [...options.children].forEach((btn,idx)=>{btn.disabled=true;if(idx===item.answer)btn.classList.add("correct");});
+ if(i===item.answer){score++;feedback.textContent=`⭕ 정답이에요! ${item.explanation}`;}
+ else{selected.classList.add("wrong");feedback.textContent=`❌ 정답은 ‘${item.options[item.answer]}’이에요. ${item.explanation}`;}
+ scoreEl.textContent=`점수 ${score}`;feedback.style.display="block";
+}
+nextBtn.addEventListener("click",()=>{if(!answered)return;if(current<questions.length-1){current++;render();window.scrollTo({top:0,behavior:"smooth"});}
+else{quizCard.style.display="none";result.classList.add("show");progressBar.style.width="100%";finalScore.textContent=`${score} / ${questions.length}`;window.scrollTo({top:0,behavior:"smooth"});}});
+document.getElementById("restartBtn").addEventListener("click",()=>{current=0;score=0;result.classList.remove("show");quizCard.style.display="block";render();window.scrollTo({top:0,behavior:"smooth"});});
+render();
+</script>
+</body>
+</html>
