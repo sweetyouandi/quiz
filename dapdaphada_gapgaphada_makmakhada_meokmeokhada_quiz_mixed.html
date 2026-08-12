@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>답답하다·갑갑하다·막막하다·먹먹하다 퀴즈</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:#faf8fc;color:#333}
+    .wrap{width:min(720px,100%);margin:0 auto;padding:22px 15px 45px}
+    .hero{padding:27px 18px;margin-bottom:20px;text-align:center;background:linear-gradient(135deg,#eee7f7,#f8ece9);border-radius:24px;box-shadow:0 7px 20px rgba(0,0,0,.08)}
+    .hero h1{margin:0 0 10px;font-size:25px;line-height:1.45}
+    .hero p{margin:0;font-size:17px;line-height:1.6}
+    .progress{position:sticky;top:8px;z-index:10;margin-bottom:16px;padding:12px 16px;text-align:center;color:#fff;background:#514a5e;border-radius:15px;font-size:17px;font-weight:700;box-shadow:0 5px 15px rgba(0,0,0,.15)}
+    .question{margin-bottom:16px;padding:20px;background:#fff;border-radius:20px;box-shadow:0 5px 16px rgba(0,0,0,.07)}
+    .question h2{margin:0 0 14px;font-size:20px;line-height:1.55}
+    .choices{display:grid;gap:10px}
+    .choice{width:100%;padding:14px 15px;border:2px solid #e4dfea;border-radius:14px;background:#fefcff;text-align:left;font-size:18px;cursor:pointer;transition:.15s}
+    .choice:hover:not(:disabled){background:#f5f0fa;transform:translateY(-1px)}
+    .choice:disabled{cursor:default}
+    .choice.correct{border-color:#5dbb7a;background:#def7e6;color:#176536;font-weight:700}
+    .choice.wrong{border-color:#e07373;background:#ffe3e3;color:#982626;font-weight:700}
+    .result{min-height:25px;margin-top:12px;font-size:17px;font-weight:700;line-height:1.5}
+    .explain{display:none;margin-top:8px;padding:11px 13px;background:#fff8df;border-radius:11px;font-size:16px;line-height:1.55}
+    .summary{margin-top:24px;padding:21px;background:#f2edf7;border-radius:20px;font-size:17px;line-height:1.9}
+    .summary h3{margin:0 0 9px;font-size:21px}
+    .final-message{display:none;margin-top:18px;padding:18px;background:#fff0f4;border-radius:18px;text-align:center;font-size:19px;font-weight:700;line-height:1.6}
+    .reset{display:block;margin:24px auto 0;padding:13px 24px;border:0;border-radius:14px;background:#7a6b8e;color:white;font-size:17px;font-weight:700;cursor:pointer}
+    @media(max-width:430px){.hero h1{font-size:21px}.question h2{font-size:19px}.choice{font-size:17px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>💭 답답하다·갑갑하다<br>막막하다·먹먹하다</h1>
+      <p>몸과 마음의 느낌을 떠올리며 알맞은 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 · 푼 문제 <span id="done">0</span>/12
+    </div>
+
+    <div id="quiz"></div>
+    <div id="finalMessage" class="final-message"></div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      😣 <b>답답하다</b> : 일이 풀리지 않거나 마음이 시원하지 않은 느낌<br>
+      😮‍💨 <b>갑갑하다</b> : 몸이나 공간이 꽉 막히고 조여 불편한 느낌<br>
+      🧭 <b>막막하다</b> : 어떻게 해야 할지 방법이나 앞길이 보이지 않는 느낌<br>
+      🥹 <b>먹먹하다</b> : 슬프거나 벅찬 감정으로 가슴이 꽉 찬 듯한 느낌
+    </section>
+
+    <button class="reset" onclick="resetQuiz()">처음부터 다시 풀기</button>
+  </main>
+
+  <script>
+    const questions = [{"q": "처음 보는 어려운 문제를 앞에 두고 어디서부터 시작해야 할지 몰랐어요.", "choices": ["답답하다", "갑갑하다", "막막하다", "먹먹하다"], "answer": 2, "explanation": "앞으로 어떻게 해야 할지 방법이 떠오르지 않을 때는 ‘막막하다’라고 해요."}, {"q": "하고 싶은 말이 있는데 잘 설명되지 않아 마음이 꽉 막힌 것 같았어요.", "choices": ["답답하다", "갑갑하다", "막막하다", "먹먹하다"], "answer": 0, "explanation": "일이 잘 풀리지 않거나 마음이 시원하지 않을 때는 ‘답답하다’가 알맞아요."}, {"q": "친한 친구가 멀리 이사 간다는 말을 듣자 가슴이 뭉클하고 말이 나오지 않았어요.", "choices": ["답답하다", "갑갑하다", "막막하다", "먹먹하다"], "answer": 3, "explanation": "슬프거나 벅찬 감정이 밀려와 가슴이 꽉 찬 듯할 때는 ‘먹먹하다’예요."}, {"q": "목이 너무 꽉 끼는 옷을 입으니 숨쉬기가 불편했어요.", "choices": ["답답하다", "갑갑하다", "막막하다", "먹먹하다"], "answer": 1, "explanation": "옷이나 공간이 꽉 조여 불편하고 숨 막히는 느낌은 ‘갑갑하다’예요."}, {"q": "창문을 닫은 방 안에 공기가 잘 통하지 않아 불편했어요.", "choices": ["막막하다", "먹먹하다", "갑갑하다", "답답하다"], "answer": 3, "explanation": "공기가 통하지 않거나 마음이 시원하지 않은 느낌은 ‘답답하다’라고 해요."}, {"q": "작은 상자 안에 오래 있으니 공간이 좁고 숨이 막히는 것 같았어요.", "choices": ["갑갑하다", "막막하다", "답답하다", "먹먹하다"], "answer": 0, "explanation": "좁거나 꽉 막힌 공간 때문에 불편한 느낌은 ‘갑갑하다’예요."}, {"q": "길을 잃었는데 지도도 없고 어디로 가야 할지 알 수 없었어요.", "choices": ["먹먹하다", "막막하다", "답답하다", "갑갑하다"], "answer": 1, "explanation": "해결 방법이나 갈 길이 보이지 않을 때는 ‘막막하다’가 알맞아요."}, {"q": "졸업식에서 선생님의 마지막 인사를 들으니 가슴이 꽉 차오르는 느낌이 들었어요.", "choices": ["갑갑하다", "막막하다", "먹먹하다", "답답하다"], "answer": 2, "explanation": "슬프고 벅찬 감정이 올라와 말이 잘 나오지 않을 때는 ‘먹먹하다’예요."}, {"q": "마스크와 목도리를 너무 꽉 하고 있으니 숨쉬기가 힘들었어요.", "choices": ["갑갑하다", "먹먹하다", "막막하다", "답답하다"], "answer": 0, "explanation": "몸이 꽉 조여 숨이 막히고 불편한 느낌은 ‘갑갑하다’예요."}, {"q": "감동적인 편지를 읽자 눈물이 나고 가슴이 꽉 찬 느낌이 들었어요.", "choices": ["막막하다", "답답하다", "먹먹하다", "갑갑하다"], "answer": 2, "explanation": "감정이 북받쳐 가슴이 꽉 찬 듯한 느낌은 ‘먹먹하다’예요."}, {"q": "친구가 내 말을 자꾸 오해해서 속마음을 알아주지 못하니 속상했어요.", "choices": ["먹먹하다", "갑갑하다", "막막하다", "답답하다"], "answer": 3, "explanation": "마음이 잘 전달되지 않아 속이 시원하지 않은 상태는 ‘답답하다’예요."}, {"q": "갑자기 해야 할 일이 너무 많아 무엇부터 해야 할지 떠오르지 않았어요.", "choices": ["갑갑하다", "막막하다", "먹먹하다", "답답하다"], "answer": 1, "explanation": "어디서부터 손대야 할지 모를 때는 ‘막막하다’라고 해요."}];
+    let score = 0;
+    let done = 0;
+    const answered = Array(questions.length).fill(false);
+
+    function renderQuiz(){
+      const quiz=document.getElementById("quiz");
+      quiz.innerHTML="";
+
+      questions.forEach((item,qi)=>{
+        const section=document.createElement("section");
+        section.className="question";
+
+        const title=document.createElement("h2");
+        title.textContent=`${qi+1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices=document.createElement("div");
+        choices.className="choices";
+
+        item.choices.forEach((text,ci)=>{
+          const button=document.createElement("button");
+          button.className="choice";
+          button.textContent=`${ci+1}. ${text}`;
+          button.addEventListener("click",()=>checkAnswer(qi,ci,button,section));
+          choices.appendChild(button);
+        });
+
+        const result=document.createElement("div");
+        result.className="result";
+
+        const explain=document.createElement("div");
+        explain.className="explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(qi,ci,selected,section){
+      if(answered[qi]) return;
+
+      answered[qi]=true;
+      done++;
+
+      const item=questions[qi];
+      const buttons=section.querySelectorAll(".choice");
+      const result=section.querySelector(".result");
+      const explain=section.querySelector(".explain");
+
+      buttons.forEach((button,index)=>{
+        button.disabled=true;
+        if(index===item.answer) button.classList.add("correct");
+      });
+
+      if(ci===item.answer){
+        score++;
+        result.textContent="⭕ 정답이에요!";
+      }else{
+        selected.classList.add("wrong");
+        result.textContent=`❌ 정답은 ‘${item.choices[item.answer]}’예요.`;
+      }
+
+      explain.textContent=`💡 ${item.explanation}`;
+      explain.style.display="block";
+
+      document.getElementById("score").textContent=score;
+      document.getElementById("done").textContent=done;
+
+      if(done===questions.length) showFinalMessage();
+    }
+
+    function showFinalMessage(){
+      const box=document.getElementById("finalMessage");
+
+      if(score===12){
+        box.textContent="🎉 12문제를 모두 맞혔어요! 네 가지 마음 상태의 차이를 정확히 알고 있네요.";
+      }else if(score>=9){
+        box.textContent=`👏 ${score}문제를 맞혔어요! 헷갈린 문제만 다시 살펴보세요.`;
+      }else{
+        box.textContent=`🌱 ${score}문제를 맞혔어요. 아래 정리를 읽고 다시 도전해 보세요!`;
+      }
+
+      box.style.display="block";
+      box.scrollIntoView({behavior:"smooth",block:"center"});
+    }
+
+    function resetQuiz(){
+      score=0;
+      done=0;
+      answered.fill(false);
+
+      document.getElementById("score").textContent="0";
+      document.getElementById("done").textContent="0";
+      document.getElementById("finalMessage").style.display="none";
+
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
