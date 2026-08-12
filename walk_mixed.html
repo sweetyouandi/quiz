@@ -1,0 +1,520 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="아장아장, 성큼성큼, 뚜벅뚜벅은 어떻게 다를까요? 작은 걸음, 큰 보폭, 힘 있고 꾸준한 걸음을 12문제로 구별해 보세요.">
+  <title>아장아장·성큼성큼·뚜벅뚜벅 차이 퀴즈 12문제 | 엄마의 말공부</title>
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
+      background:#f8f9fd;
+      color:#333;
+    }
+    .wrap{
+      width:min(720px,100%);
+      margin:0 auto;
+      padding:22px 15px 45px;
+    }
+    .hero{
+      padding:27px 18px;
+      margin-bottom:20px;
+      text-align:center;
+      background:linear-gradient(135deg,#e9eaf8,#fce9ed);
+      border-radius:24px;
+      box-shadow:0 7px 20px rgba(0,0,0,.08);
+    }
+    .hero h1{
+      margin:0 0 10px;
+      font-size:26px;
+      line-height:1.45;
+    }
+    .hero p{
+      margin:0;
+      font-size:17px;
+      line-height:1.6;
+    }
+    .progress{
+      position:sticky;
+      top:8px;
+      z-index:10;
+      margin-bottom:16px;
+      padding:12px 16px;
+      text-align:center;
+      color:#fff;
+      background:#525b72;
+      border-radius:15px;
+      font-size:17px;
+      font-weight:700;
+      box-shadow:0 5px 15px rgba(0,0,0,.15);
+    }
+    .question{
+      margin-bottom:16px;
+      padding:20px;
+      background:#fff;
+      border-radius:20px;
+      box-shadow:0 5px 16px rgba(0,0,0,.07);
+    }
+    .question h2{
+      margin:0 0 14px;
+      font-size:20px;
+      line-height:1.55;
+    }
+    .choices{
+      display:grid;
+      gap:10px;
+    }
+    .choice{
+      width:100%;
+      padding:14px 15px;
+      border:2px solid #e1e4ec;
+      border-radius:14px;
+      background:#fcfdff;
+      text-align:left;
+      font-size:18px;
+      cursor:pointer;
+      transition:.15s;
+    }
+    .choice:hover:not(:disabled){
+      background:#f0f2f8;
+      transform:translateY(-1px);
+    }
+    .choice:disabled{cursor:default}
+    .choice.correct{
+      border-color:#5dbb7a;
+      background:#def7e6;
+      color:#176536;
+      font-weight:700;
+    }
+    .choice.wrong{
+      border-color:#e07373;
+      background:#ffe3e3;
+      color:#982626;
+      font-weight:700;
+    }
+    .result{
+      min-height:25px;
+      margin-top:12px;
+      font-size:17px;
+      font-weight:700;
+      line-height:1.5;
+    }
+    .explain{
+      display:none;
+      margin-top:8px;
+      padding:11px 13px;
+      background:#fff8df;
+      border-radius:11px;
+      font-size:16px;
+      line-height:1.55;
+    }
+    .final-message{
+      display:none;
+      margin-top:20px;
+      padding:22px;
+      background:#fff0f4;
+      border-radius:20px;
+      text-align:center;
+      font-size:19px;
+      font-weight:700;
+      line-height:1.75;
+      box-shadow:0 5px 16px rgba(0,0,0,.06);
+    }
+    .final-score{
+      display:block;
+      margin:5px 0 8px;
+      font-size:31px;
+    }
+    .buttons{
+      display:none;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin:18px 0 0;
+    }
+    .action-btn{
+      padding:14px 12px;
+      border:0;
+      border-radius:14px;
+      font-size:17px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .reset{
+      background:#75809a;
+      color:#fff;
+    }
+    .random{
+      background:#e8edf8;
+      color:#3f4960;
+    }
+    .summary{
+      margin-top:24px;
+      padding:21px;
+      background:#f1f2f9;
+      border-radius:20px;
+      font-size:17px;
+      line-height:1.9;
+    }
+    .summary h3{
+      margin:0 0 9px;
+      font-size:21px;
+    }
+    @media(max-width:430px){
+      .hero h1{font-size:22px}
+      .question h2{font-size:19px}
+      .choice{font-size:17px}
+      .buttons{grid-template-columns:1fr}
+    }
+  </style>
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="아장아장·성큼성큼·뚜벅뚜벅 차이 퀴즈 12문제 | 엄마의 말공부">
+  <meta property="og:description" content="아장아장, 성큼성큼, 뚜벅뚜벅은 어떻게 다를까요? 작은 걸음, 큰 보폭, 힘 있고 꾸준한 걸음을 12문제로 구별해 보세요.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="아장아장·성큼성큼·뚜벅뚜벅 차이 퀴즈 12문제 | 엄마의 말공부">
+  <meta name="twitter:description" content="아장아장, 성큼성큼, 뚜벅뚜벅은 어떻게 다를까요? 작은 걸음, 큰 보폭, 힘 있고 꾸준한 걸음을 12문제로 구별해 보세요.">
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1 id="quizTitle">📖 엄마의 말공부 퀴즈</h1>
+      <p id="quizSubtitle">알맞은 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 ·
+      푼 문제 <span id="done">0</span>/<span id="total">0</span>
+    </div>
+
+    <div id="quiz"></div>
+
+    <div id="finalMessage" class="final-message"></div>
+
+    <div id="buttons" class="buttons">
+      <button class="action-btn reset" onclick="restartOriginal()">🔄 다시 풀기</button>
+      <button class="action-btn random" onclick="restartRandom()">🎲 랜덤으로 풀기</button>
+    </div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      <div id="summaryContent"></div>
+    </section>
+  </main>
+
+  <script>
+    /*
+      ================================
+      1. 아래 QUIZ_CONFIG만 바꾸면 됩니다.
+      ================================
+    */
+
+    const QUIZ_CONFIG = {
+  "title": "📖 아장아장·성큼성큼·뚜벅뚜벅 퀴즈",
+  "subtitle": "걷는 모습에 알맞은 말을 골라 보세요!",
+  "summary": [
+    {
+      "emoji": "👶",
+      "word": "아장아장",
+      "meaning": "어린아이가 작은 걸음으로 몸을 조금씩 흔들며 걷는 모양"
+    },
+    {
+      "emoji": "🦒",
+      "word": "성큼성큼",
+      "meaning": "다리를 크게 벌려 큰 걸음으로 시원스럽게 걷는 모양"
+    },
+    {
+      "emoji": "🚶",
+      "word": "뚜벅뚜벅",
+      "meaning": "발을 힘 있게 내디디며 꾸준하고 또렷하게 걷는 모양이나 소리"
+    }
+  ],
+  "questions": [
+    {
+        "q": "키가 큰 아빠가 긴 다리로 몇 걸음 만에 길 건너편까지 갔어요. 알맞은 말은?",
+        "choices": [
+            "아장아장",
+            "성큼성큼",
+            "뚜벅뚜벅"
+        ],
+        "answer": 1,
+        "explanation": "‘성큼성큼’은 다리를 크게 벌려 큰 걸음으로 시원스럽게 걷는 모습을 나타내요."
+    },
+    {
+        "q": "돌이 지난 아기가 두 팔로 균형을 잡으며 작은 걸음으로 천천히 걸어왔어요. 알맞은 말은?",
+        "choices": [
+            "아장아장",
+            "성큼성큼",
+            "뚜벅뚜벅"
+        ],
+        "answer": 0,
+        "explanation": "‘아장아장’은 어린아이가 몸을 조금씩 흔들며 작은 걸음으로 걷는 모습을 나타내요."
+    },
+    {
+        "q": "민이는 학교 가는 길을 일정한 걸음으로 씩씩하게 걸었어요. 알맞은 말은?",
+        "choices": [
+            "아장아장",
+            "성큼성큼",
+            "뚜벅뚜벅"
+        ],
+        "answer": 2,
+        "explanation": "‘뚜벅뚜벅’은 발을 힘 있게 내디디며 꾸준하고 또렷하게 걷는 모습을 나타내요."
+    },
+    {
+        "q": "동생이 엄마 손을 놓고 짧은 다리로 조심조심 걸음을 옮겼어요. 알맞은 말은?",
+        "choices": [
+            "성큼성큼",
+            "아장아장",
+            "뚜벅뚜벅"
+        ],
+        "answer": 1,
+        "explanation": "작은 아이가 서툴지만 귀엽게 한 걸음씩 걷는 모습에는 ‘아장아장’이 어울려요."
+    },
+    {
+        "q": "군인들이 발소리를 맞추며 힘차고 규칙적으로 걸어갔어요. 알맞은 말은?",
+        "choices": [
+            "뚜벅뚜벅",
+            "아장아장",
+            "성큼성큼"
+        ],
+        "answer": 0,
+        "explanation": "발을 힘주어 규칙적으로 걷는 모습과 소리에는 ‘뚜벅뚜벅’이 어울려요."
+    },
+    {
+        "q": "등산객이 가파른 길도 망설이지 않고 큰 보폭으로 올라갔어요. 알맞은 말은?",
+        "choices": [
+            "아장아장",
+            "뚜벅뚜벅",
+            "성큼성큼"
+        ],
+        "answer": 2,
+        "explanation": "큰 걸음으로 힘차고 빠르게 나아가는 모습에는 ‘성큼성큼’이 잘 어울려요."
+    },
+    {
+        "q": "아기 오리가 엄마 오리 뒤를 따라 작은 걸음으로 귀엽게 걸었어요. 알맞은 말은?",
+        "choices": [
+            "아장아장",
+            "성큼성큼",
+            "뚜벅뚜벅"
+        ],
+        "answer": 0,
+        "explanation": "작고 귀여운 존재가 짧은 걸음으로 걷는 모습도 ‘아장아장’이라고 표현할 수 있어요."
+    },
+    {
+        "q": "형은 늦었다며 다리를 크게 내디뎌 운동장 출입문으로 향했어요. 알맞은 말은?",
+        "choices": [
+            "아장아장",
+            "성큼성큼",
+            "뚜벅뚜벅"
+        ],
+        "answer": 1,
+        "explanation": "다리를 크게 벌려 빠르고 시원하게 걷는 모습이므로 ‘성큼성큼’이 알맞아요."
+    },
+    {
+        "q": "아이는 비가 와도 우산을 쓰고 멈추지 않은 채 집까지 계속 걸었어요. 알맞은 말은?",
+        "choices": [
+            "아장아장",
+            "성큼성큼",
+            "뚜벅뚜벅"
+        ],
+        "answer": 2,
+        "explanation": "한 걸음씩 꾸준하고 힘 있게 걸어가는 모습은 ‘뚜벅뚜벅’이라고 해요."
+    },
+    {
+        "q": "기린이 긴 다리로 넓은 초원을 큰 걸음으로 지나갔어요. 알맞은 말은?",
+        "choices": [
+            "성큼성큼",
+            "아장아장",
+            "뚜벅뚜벅"
+        ],
+        "answer": 0,
+        "explanation": "긴 다리로 큰 보폭을 내며 걷는 장면은 ‘성큼성큼’으로 표현해요."
+    },
+    {
+        "q": "구두를 신은 선생님이 복도를 힘 있게 걸어오자 발소리가 또렷하게 들렸어요. 알맞은 말은?",
+        "choices": [
+            "아장아장",
+            "뚜벅뚜벅",
+            "성큼성큼"
+        ],
+        "answer": 1,
+        "explanation": "발을 디딜 때 나는 또렷한 소리와 힘 있는 걸음은 ‘뚜벅뚜벅’으로 표현해요."
+    },
+    {
+        "q": "두 살배기 아이가 새 신발을 신고 방 안을 천천히 돌아다녔어요. 알맞은 말은?",
+        "choices": [
+            "성큼성큼",
+            "뚜벅뚜벅",
+            "아장아장"
+        ],
+        "answer": 2,
+        "explanation": "어린아이가 작은 걸음으로 서툴게 걷는 모습이므로 ‘아장아장’이 알맞아요."
+    }
+]
+};
+
+    /*
+      ================================
+      2. 아래 코드는 수정하지 않아도 됩니다.
+      ================================
+    */
+
+    const originalQuestions = deepCopy(QUIZ_CONFIG.questions);
+    let currentQuestions = deepCopy(originalQuestions);
+    let score = 0;
+    let done = 0;
+    let answered = [];
+
+    function deepCopy(data){
+      return JSON.parse(JSON.stringify(data));
+    }
+
+    function shuffle(array){
+      for(let i=array.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [array[i],array[j]]=[array[j],array[i]];
+      }
+      return array;
+    }
+
+    function initPage(){
+      document.getElementById("quizTitle").textContent = QUIZ_CONFIG.title;
+      document.getElementById("quizSubtitle").textContent = QUIZ_CONFIG.subtitle;
+      document.getElementById("total").textContent = originalQuestions.length;
+
+      const summaryBox = document.getElementById("summaryContent");
+      summaryBox.innerHTML = QUIZ_CONFIG.summary.map(item =>
+        `${item.emoji} <b>${item.word}</b> : ${item.meaning}`
+      ).join("<br>");
+
+      renderQuiz();
+    }
+
+    function renderQuiz(){
+      score=0;
+      done=0;
+      answered=Array(currentQuestions.length).fill(false);
+
+      document.getElementById("score").textContent="0";
+      document.getElementById("done").textContent="0";
+      document.getElementById("total").textContent=currentQuestions.length;
+      document.getElementById("finalMessage").style.display="none";
+      document.getElementById("buttons").style.display="none";
+
+      const quiz=document.getElementById("quiz");
+      quiz.innerHTML="";
+
+      currentQuestions.forEach((item,qi)=>{
+        const section=document.createElement("section");
+        section.className="question";
+
+        const title=document.createElement("h2");
+        title.textContent=`${qi+1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices=document.createElement("div");
+        choices.className="choices";
+
+        item.choices.forEach((text,ci)=>{
+          const button=document.createElement("button");
+          button.className="choice";
+          button.textContent=`${ci+1}. ${text}`;
+          button.addEventListener("click",()=>checkAnswer(qi,ci,button,section));
+          choices.appendChild(button);
+        });
+
+        const result=document.createElement("div");
+        result.className="result";
+
+        const explain=document.createElement("div");
+        explain.className="explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(qi,ci,selected,section){
+      if(answered[qi]) return;
+
+      answered[qi]=true;
+      done++;
+
+      const item=currentQuestions[qi];
+      const buttons=section.querySelectorAll(".choice");
+      const result=section.querySelector(".result");
+      const explain=section.querySelector(".explain");
+
+      buttons.forEach((button,index)=>{
+        button.disabled=true;
+        if(index===item.answer) button.classList.add("correct");
+      });
+
+      if(ci===item.answer){
+        score++;
+        result.textContent="⭕ 정답이에요!";
+      }else{
+        selected.classList.add("wrong");
+        result.textContent=`❌ 정답은 ‘${item.choices[item.answer]}’이에요.`;
+      }
+
+      explain.textContent=`💡 ${item.explanation}`;
+      explain.style.display="block";
+
+      document.getElementById("score").textContent=score;
+      document.getElementById("done").textContent=done;
+
+      if(done===currentQuestions.length){
+        showFinalMessage();
+      }
+    }
+
+    function showFinalMessage(){
+      const box=document.getElementById("finalMessage");
+      const total=currentQuestions.length;
+      const ratio=score/total;
+      let message="";
+
+      if(score===total){
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>🎉 말 박사네요! 모두 정확히 알고 있어요.`;
+      }else if(ratio>=0.8){
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>👏 정말 잘했어요! 조금만 더 하면 만점이에요.`;
+      }else if(ratio>=0.55){
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>🌟 잘했어요! 헷갈린 문제만 다시 살펴보세요.`;
+      }else{
+        message=`🏆 결과<span class="final-score">${score} / ${total}</span>🌱 다시 도전하면 더 잘할 수 있어요!`;
+      }
+
+      box.innerHTML=message;
+      box.style.display="block";
+      document.getElementById("buttons").style.display="grid";
+      box.scrollIntoView({behavior:"smooth",block:"center"});
+    }
+
+    function restartOriginal(){
+      currentQuestions=deepCopy(originalQuestions);
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function restartRandom(){
+      currentQuestions=shuffle(deepCopy(originalQuestions));
+
+      currentQuestions.forEach(item=>{
+        const correctText=item.choices[item.answer];
+        item.choices=shuffle([...item.choices]);
+        item.answer=item.choices.indexOf(correctText);
+      });
+
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    initPage();
+  </script>
+</body>
+</html>
