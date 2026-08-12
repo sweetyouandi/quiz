@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>냠냠·우걱우걱·깨작깨작·야금야금 퀴즈</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:#fff9f5;color:#333}
+    .wrap{width:min(720px,100%);margin:0 auto;padding:22px 15px 45px}
+    .hero{padding:27px 18px;margin-bottom:20px;text-align:center;background:linear-gradient(135deg,#ffe9d8,#f8e8f1);border-radius:24px;box-shadow:0 7px 20px rgba(0,0,0,.08)}
+    .hero h1{margin:0 0 10px;font-size:25px;line-height:1.45}
+    .hero p{margin:0;font-size:17px;line-height:1.6}
+    .progress{position:sticky;top:8px;z-index:10;margin-bottom:16px;padding:12px 16px;text-align:center;color:#fff;background:#6c4a38;border-radius:15px;font-size:17px;font-weight:700;box-shadow:0 5px 15px rgba(0,0,0,.15)}
+    .question{margin-bottom:16px;padding:20px;background:#fff;border-radius:20px;box-shadow:0 5px 16px rgba(0,0,0,.07)}
+    .question h2{margin:0 0 14px;font-size:20px;line-height:1.55}
+    .choices{display:grid;gap:10px}
+    .choice{width:100%;padding:14px 15px;border:2px solid #eadfd8;border-radius:14px;background:#fffdfc;text-align:left;font-size:18px;cursor:pointer;transition:.15s}
+    .choice:hover:not(:disabled){background:#fff2eb;transform:translateY(-1px)}
+    .choice:disabled{cursor:default}
+    .choice.correct{border-color:#5dbb7a;background:#def7e6;color:#176536;font-weight:700}
+    .choice.wrong{border-color:#e07373;background:#ffe3e3;color:#982626;font-weight:700}
+    .result{min-height:25px;margin-top:12px;font-size:17px;font-weight:700;line-height:1.5}
+    .explain{display:none;margin-top:8px;padding:11px 13px;background:#fff8df;border-radius:11px;font-size:16px;line-height:1.55}
+    .summary{margin-top:24px;padding:21px;background:#fff0e6;border-radius:20px;font-size:17px;line-height:1.9}
+    .summary h3{margin:0 0 9px;font-size:21px}
+    .final-message{display:none;margin-top:18px;padding:18px;background:#fff0f4;border-radius:18px;text-align:center;font-size:19px;font-weight:700;line-height:1.6}
+    .reset{display:block;margin:24px auto 0;padding:13px 24px;border:0;border-radius:14px;background:#bd7f5a;color:white;font-size:17px;font-weight:700;cursor:pointer}
+    @media(max-width:430px){.hero h1{font-size:21px}.question h2{font-size:19px}.choice{font-size:17px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>🍚 냠냠·우걱우걱<br>깨작깨작·야금야금</h1>
+      <p>먹는 모습과 양을 떠올리며 알맞은 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 · 푼 문제 <span id="done">0</span>/12
+    </div>
+
+    <div id="quiz"></div>
+    <div id="finalMessage" class="final-message"></div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      😋 <b>냠냠</b> : 음식을 맛있고 즐겁게 먹는 모습<br>
+      🍖 <b>우걱우걱</b> : 큰 입으로 많이 넣고 거칠고 빠르게 씹는 모습<br>
+      🥄 <b>깨작깨작</b> : 먹기 싫어 조금씩 건드리며 성의 없이 먹는 모습<br>
+      🐿️ <b>야금야금</b> : 음식을 조금씩 자꾸 베어 먹는 모습
+    </section>
+
+    <button class="reset" onclick="resetQuiz()">처음부터 다시 풀기</button>
+  </main>
+
+  <script>
+    const questions = [{"q": "민이는 맛있는 밥을 기분 좋게 먹으며 즐거워했어요.", "choices": ["우걱우걱", "냠냠", "깨작깨작", "야금야금"], "answer": 1, "explanation": "음식을 맛있고 즐겁게 먹는 모습을 귀엽게 나타낼 때는 ‘냠냠’이에요."}, {"q": "민이는 밥이 먹기 싫은지 조금씩 건드리기만 하고 잘 먹지 않았어요.", "choices": ["냠냠", "우걱우걱", "야금야금", "깨작깨작"], "answer": 3, "explanation": "음식을 조금씩 건드리며 성의 없이 먹는 모습은 ‘깨작깨작’이에요."}, {"q": "준이는 배가 고팠는지 큰 입으로 음식을 많이 넣어 빠르게 씹었어요.", "choices": ["우걱우걱", "냠냠", "깨작깨작", "야금야금"], "answer": 0, "explanation": "음식을 입에 많이 넣고 거칠고 빠르게 씹는 모습은 ‘우걱우걱’이에요."}, {"q": "다람쥐가 도토리를 아주 조금씩 베어 먹었어요.", "choices": ["냠냠", "우걱우걱", "야금야금", "깨작깨작"], "answer": 2, "explanation": "음식을 조금씩 자꾸 베어 먹는 모습은 ‘야금야금’이에요."}, {"q": "아빠는 급하게 식사를 하느라 고기를 큰 입으로 씹어 먹었어요.", "choices": ["야금야금", "냠냠", "깨작깨작", "우걱우걱"], "answer": 3, "explanation": "큰 입으로 많이 넣고 힘차게 씹는 모습은 ‘우걱우걱’이에요."}, {"q": "아기가 바나나를 맛있게 먹으며 웃었어요.", "choices": ["냠냠", "야금야금", "우걱우걱", "깨작깨작"], "answer": 0, "explanation": "아이가 음식을 맛있게 먹는 모습을 표현할 때는 ‘냠냠’이 잘 어울려요."}, {"q": "민이는 초콜릿을 아껴 먹으려고 모서리부터 조금씩 베어 먹었어요.", "choices": ["깨작깨작", "야금야금", "냠냠", "우걱우걱"], "answer": 1, "explanation": "한꺼번에 먹지 않고 조금씩 계속 베어 먹는 모습은 ‘야금야금’이에요."}, {"q": "준이는 채소가 싫다며 젓가락으로 조금씩 집었다 놓았다 했어요.", "choices": ["우걱우걱", "야금야금", "깨작깨작", "냠냠"], "answer": 2, "explanation": "먹고 싶지 않아 음식을 조금씩 만지작거리며 먹는 모습은 ‘깨작깨작’이에요."}, {"q": "토끼가 당근 끝부분을 조금씩 여러 번 베어 먹었어요.", "choices": ["야금야금", "우걱우걱", "냠냠", "깨작깨작"], "answer": 0, "explanation": "작은 양을 조금씩 계속 베어 먹는 모습은 ‘야금야금’이에요."}, {"q": "배고픈 곰이 빵을 한입 가득 넣고 거칠게 씹었어요.", "choices": ["깨작깨작", "야금야금", "우걱우걱", "냠냠"], "answer": 2, "explanation": "많은 양을 입에 넣고 빠르게 씹는 모습은 ‘우걱우걱’이에요."}, {"q": "민이는 입맛이 없는지 밥알 몇 개만 집어 먹었어요.", "choices": ["야금야금", "우걱우걱", "냠냠", "깨작깨작"], "answer": 3, "explanation": "입맛이 없어 음식을 조금씩 성의 없이 먹는 모습은 ‘깨작깨작’이에요."}, {"q": "친구들이 간식을 맛있게 먹으며 즐거워했어요.", "choices": ["깨작깨작", "냠냠", "야금야금", "우걱우걱"], "answer": 1, "explanation": "맛있게 먹는 모습을 친근하고 귀엽게 나타내는 말은 ‘냠냠’이에요."}];
+    let score = 0;
+    let done = 0;
+    const answered = Array(questions.length).fill(false);
+
+    function renderQuiz(){
+      const quiz=document.getElementById("quiz");
+      quiz.innerHTML="";
+
+      questions.forEach((item,qi)=>{
+        const section=document.createElement("section");
+        section.className="question";
+
+        const title=document.createElement("h2");
+        title.textContent=`${qi+1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices=document.createElement("div");
+        choices.className="choices";
+
+        item.choices.forEach((text,ci)=>{
+          const button=document.createElement("button");
+          button.className="choice";
+          button.textContent=`${ci+1}. ${text}`;
+          button.addEventListener("click",()=>checkAnswer(qi,ci,button,section));
+          choices.appendChild(button);
+        });
+
+        const result=document.createElement("div");
+        result.className="result";
+        const explain=document.createElement("div");
+        explain.className="explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(qi,ci,selected,section){
+      if(answered[qi]) return;
+
+      answered[qi]=true;
+      done++;
+
+      const item=questions[qi];
+      const buttons=section.querySelectorAll(".choice");
+      const result=section.querySelector(".result");
+      const explain=section.querySelector(".explain");
+
+      buttons.forEach((button,index)=>{
+        button.disabled=true;
+        if(index===item.answer) button.classList.add("correct");
+      });
+
+      if(ci===item.answer){
+        score++;
+        result.textContent="⭕ 정답이에요!";
+      }else{
+        selected.classList.add("wrong");
+        result.textContent=`❌ 정답은 ‘${item.choices[item.answer]}’이에요.`;
+      }
+
+      explain.textContent=`💡 ${item.explanation}`;
+      explain.style.display="block";
+
+      document.getElementById("score").textContent=score;
+      document.getElementById("done").textContent=done;
+
+      if(done===questions.length) showFinalMessage();
+    }
+
+    function showFinalMessage(){
+      const box=document.getElementById("finalMessage");
+
+      if(score===12){
+        box.textContent="🎉 12문제를 모두 맞혔어요! 네 가지 먹는 모습의 차이를 정확히 알고 있네요.";
+      }else if(score>=9){
+        box.textContent=`👏 ${score}문제를 맞혔어요! 헷갈린 문제만 다시 살펴보세요.`;
+      }else{
+        box.textContent=`🌱 ${score}문제를 맞혔어요. 아래 정리를 읽고 다시 도전해 보세요!`;
+      }
+
+      box.style.display="block";
+      box.scrollIntoView({behavior:"smooth",block:"center"});
+    }
+
+    function resetQuiz(){
+      score=0;
+      done=0;
+      answered.fill(false);
+
+      document.getElementById("score").textContent="0";
+      document.getElementById("done").textContent="0";
+      document.getElementById("finalMessage").style.display="none";
+
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
