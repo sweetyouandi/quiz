@@ -1,0 +1,312 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>보글보글·바글바글·팔팔·지글지글 퀴즈</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
+      background: #fff9f2;
+      color: #333;
+    }
+
+    .wrap {
+      width: min(720px, 100%);
+      margin: 0 auto;
+      padding: 22px 15px 45px;
+    }
+
+    .hero {
+      padding: 27px 18px;
+      margin-bottom: 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #fff0c8, #ffe1d7);
+      border-radius: 24px;
+      box-shadow: 0 7px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 27px;
+      line-height: 1.45;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .progress {
+      position: sticky;
+      top: 8px;
+      z-index: 10;
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      text-align: center;
+      color: white;
+      background: #4b423b;
+      border-radius: 15px;
+      font-size: 17px;
+      font-weight: 700;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+
+    .question {
+      margin-bottom: 16px;
+      padding: 20px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 5px 16px rgba(0, 0, 0, 0.07);
+    }
+
+    .question h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      line-height: 1.55;
+    }
+
+    .choices {
+      display: grid;
+      gap: 10px;
+    }
+
+    .choice {
+      width: 100%;
+      padding: 14px 15px;
+      border: 2px solid #eadfd4;
+      border-radius: 14px;
+      background: #fffdfb;
+      text-align: left;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .choice:hover:not(:disabled) {
+      background: #fff4e8;
+      transform: translateY(-1px);
+    }
+
+    .choice:disabled { cursor: default; }
+
+    .choice.correct {
+      border-color: #5dbb7a;
+      background: #def7e6;
+      color: #176536;
+      font-weight: 700;
+    }
+
+    .choice.wrong {
+      border-color: #e07373;
+      background: #ffe3e3;
+      color: #982626;
+      font-weight: 700;
+    }
+
+    .result {
+      min-height: 25px;
+      margin-top: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .explain {
+      display: none;
+      margin-top: 8px;
+      padding: 11px 13px;
+      background: #fff7dc;
+      border-radius: 11px;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .summary {
+      margin-top: 24px;
+      padding: 21px;
+      background: #fff3df;
+      border-radius: 20px;
+      font-size: 17px;
+      line-height: 1.9;
+    }
+
+    .summary h3 {
+      margin: 0 0 9px;
+      font-size: 21px;
+    }
+
+    .final-message {
+      display: none;
+      margin-top: 18px;
+      padding: 18px;
+      background: #fff0f4;
+      border-radius: 18px;
+      text-align: center;
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .reset {
+      display: block;
+      margin: 24px auto 0;
+      padding: 13px 24px;
+      border: 0;
+      border-radius: 14px;
+      background: #ec8b57;
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    @media (max-width: 430px) {
+      .hero h1 { font-size: 23px; }
+      .question h2 { font-size: 19px; }
+      .choice { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>🍲 보글보글·바글바글<br>팔팔·지글지글</h1>
+      <p>끓거나 굽는 모습을 떠올리며 알맞은 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 · 푼 문제 <span id="done">0</span>/12
+    </div>
+
+    <div id="quiz"></div>
+    <div id="finalMessage" class="final-message"></div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      🍲 <b>보글보글</b> : 작은 거품이 잇따라 올라오며 끓는 모습<br>
+      🫕 <b>바글바글</b> : 많은 거품이 한꺼번에 일어나며 끓는 모습<br>
+      ♨️ <b>팔팔</b> : 물이 매우 뜨겁고 힘차게 끓는 상태<br>
+      🍳 <b>지글지글</b> : 음식이 뜨거운 기름에 익으며 나는 소리
+    </section>
+
+    <button class="reset" onclick="resetQuiz()">처음부터 다시 풀기</button>
+  </main>
+
+  <script>
+    const questions = [{"q": "프라이팬에서 삼겹살이 익으며 소리를 냈어요.", "choices": ["보글보글", "지글지글", "바글바글", "팔팔"], "answer": 1, "explanation": "음식이 뜨거운 기름에 구워지며 나는 소리는 ‘지글지글’이에요."}, {"q": "냄비 속 국이 작은 거품을 내며 끓고 있어요.", "choices": ["바글바글", "팔팔", "지글지글", "보글보글"], "answer": 3, "explanation": "작은 거품이 잇따라 올라오며 끓는 모습은 ‘보글보글’이에요."}, {"q": "물을 강한 불에 오래 끓였더니 아주 뜨겁게 끓었어요.", "choices": ["팔팔", "보글보글", "바글바글", "지글지글"], "answer": 0, "explanation": "물이 매우 세고 힘차게 끓는 상태는 ‘팔팔’이라고 해요."}, {"q": "라면이 냄비 가득 거품을 내며 세차게 끓고 있어요.", "choices": ["보글보글", "팔팔", "바글바글", "지글지글"], "answer": 2, "explanation": "많은 거품이 한꺼번에 일어나며 끓는 모습은 ‘바글바글’이에요."}, {"q": "된장찌개에서 작은 거품이 계속 올라왔어요.", "choices": ["바글바글", "팔팔", "지글지글", "보글보글"], "answer": 3, "explanation": "찌개가 작은 거품을 내며 끓을 때는 ‘보글보글’이 잘 어울려요."}, {"q": "계란프라이를 하자 프라이팬에서 맛있는 소리가 났어요.", "choices": ["보글보글", "지글지글", "바글바글", "팔팔"], "answer": 1, "explanation": "프라이팬에서 음식이 익으며 나는 소리는 ‘지글지글’이에요."}, {"q": "콩나물국이 냄비 가득 거품을 내며 끓고 있어요.", "choices": ["보글보글", "팔팔", "바글바글", "지글지글"], "answer": 2, "explanation": "냄비 전체에서 많은 거품이 일며 끓는 모습은 ‘바글바글’이에요."}, {"q": "주전자의 물이 김을 내며 아주 세게 끓었어요.", "choices": ["팔팔", "보글보글", "바글바글", "지글지글"], "answer": 0, "explanation": "물이 김을 내며 매우 힘차게 끓으면 ‘팔팔 끓는다’고 해요."}, {"q": "햄을 굽자 기름에서 소리가 계속 났어요.", "choices": ["지글지글", "보글보글", "바글바글", "팔팔"], "answer": 0, "explanation": "햄이나 고기가 기름에 구워지며 나는 소리는 ‘지글지글’이에요."}, {"q": "물이 끓어 김이 세차게 올라왔어요.", "choices": ["보글보글", "바글바글", "팔팔", "지글지글"], "answer": 2, "explanation": "물이 아주 뜨겁고 세차게 끓는 상태는 ‘팔팔’이에요."}, {"q": "떡국이 냄비 안에서 거품을 많이 내며 끓고 있어요.", "choices": ["보글보글", "바글바글", "팔팔", "지글지글"], "answer": 1, "explanation": "많은 거품이 복잡하게 일어나며 끓는 모습은 ‘바글바글’이에요."}, {"q": "수프가 천천히 작은 거품을 내며 끓고 있어요.", "choices": ["바글바글", "팔팔", "지글지글", "보글보글"], "answer": 3, "explanation": "작은 거품이 부드럽게 올라오며 끓는 모습은 ‘보글보글’이에요."}];
+
+    let score = 0;
+    let done = 0;
+    const answered = Array(questions.length).fill(false);
+
+    function renderQuiz() {
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = "";
+
+      questions.forEach((item, questionIndex) => {
+        const section = document.createElement("section");
+        section.className = "question";
+
+        const title = document.createElement("h2");
+        title.textContent = `${questionIndex + 1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices = document.createElement("div");
+        choices.className = "choices";
+
+        item.choices.forEach((choiceText, choiceIndex) => {
+          const button = document.createElement("button");
+          button.className = "choice";
+          button.textContent = `${choiceIndex + 1}. ${choiceText}`;
+          button.addEventListener("click", () => {
+            checkAnswer(questionIndex, choiceIndex, button, section);
+          });
+          choices.appendChild(button);
+        });
+
+        const result = document.createElement("div");
+        result.className = "result";
+
+        const explain = document.createElement("div");
+        explain.className = "explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(questionIndex, choiceIndex, selectedButton, section) {
+      if (answered[questionIndex]) return;
+
+      answered[questionIndex] = true;
+      done += 1;
+
+      const item = questions[questionIndex];
+      const buttons = section.querySelectorAll(".choice");
+      const result = section.querySelector(".result");
+      const explain = section.querySelector(".explain");
+
+      buttons.forEach((button, index) => {
+        button.disabled = true;
+        if (index === item.answer) {
+          button.classList.add("correct");
+        }
+      });
+
+      if (choiceIndex === item.answer) {
+        score += 1;
+        result.textContent = "⭕ 정답이에요!";
+      } else {
+        selectedButton.classList.add("wrong");
+        result.textContent = `❌ 정답은 ‘${item.choices[item.answer]}’이에요.`;
+      }
+
+      explain.textContent = `💡 ${item.explanation}`;
+      explain.style.display = "block";
+
+      document.getElementById("score").textContent = score;
+      document.getElementById("done").textContent = done;
+
+      if (done === questions.length) {
+        showFinalMessage();
+      }
+    }
+
+    function showFinalMessage() {
+      const box = document.getElementById("finalMessage");
+
+      if (score === 12) {
+        box.textContent = "🎉 12문제를 모두 맞혔어요! 끓고 굽는 모습의 차이를 정확히 알고 있네요.";
+      } else if (score >= 9) {
+        box.textContent = `👏 ${score}문제를 맞혔어요! 헷갈린 문제만 다시 살펴보세요.`;
+      } else {
+        box.textContent = `🌱 ${score}문제를 맞혔어요. 아래 정리를 읽고 다시 도전해 보세요!`;
+      }
+
+      box.style.display = "block";
+      box.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function resetQuiz() {
+      score = 0;
+      done = 0;
+      answered.fill(false);
+      document.getElementById("score").textContent = "0";
+      document.getElementById("done").textContent = "0";
+      document.getElementById("finalMessage").style.display = "none";
+      renderQuiz();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
