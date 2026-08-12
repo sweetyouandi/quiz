@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>소르르·쿨쿨·새근새근·드르렁드르렁 퀴즈</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:#f8f9fd;color:#333}
+    .wrap{width:min(720px,100%);margin:0 auto;padding:22px 15px 45px}
+    .hero{padding:27px 18px;margin-bottom:20px;text-align:center;background:linear-gradient(135deg,#e7ebf8,#f5eafa);border-radius:24px;box-shadow:0 7px 20px rgba(0,0,0,.08)}
+    .hero h1{margin:0 0 10px;font-size:25px;line-height:1.45}
+    .hero p{margin:0;font-size:17px;line-height:1.6}
+    .progress{position:sticky;top:8px;z-index:10;margin-bottom:16px;padding:12px 16px;text-align:center;color:#fff;background:#505a70;border-radius:15px;font-size:17px;font-weight:700;box-shadow:0 5px 15px rgba(0,0,0,.15)}
+    .question{margin-bottom:16px;padding:20px;background:#fff;border-radius:20px;box-shadow:0 5px 16px rgba(0,0,0,.07)}
+    .question h2{margin:0 0 14px;font-size:20px;line-height:1.55}
+    .choices{display:grid;gap:10px}
+    .choice{width:100%;padding:14px 15px;border:2px solid #dfe3ec;border-radius:14px;background:#fcfdff;text-align:left;font-size:18px;cursor:pointer;transition:.15s}
+    .choice:hover:not(:disabled){background:#f0f3fa;transform:translateY(-1px)}
+    .choice:disabled{cursor:default}
+    .choice.correct{border-color:#5dbb7a;background:#def7e6;color:#176536;font-weight:700}
+    .choice.wrong{border-color:#e07373;background:#ffe3e3;color:#982626;font-weight:700}
+    .result{min-height:25px;margin-top:12px;font-size:17px;font-weight:700;line-height:1.5}
+    .explain{display:none;margin-top:8px;padding:11px 13px;background:#fff8df;border-radius:11px;font-size:16px;line-height:1.55}
+    .summary{margin-top:24px;padding:21px;background:#eef0f8;border-radius:20px;font-size:17px;line-height:1.9}
+    .summary h3{margin:0 0 9px;font-size:21px}
+    .final-message{display:none;margin-top:18px;padding:18px;background:#fff0f4;border-radius:18px;text-align:center;font-size:19px;font-weight:700;line-height:1.6}
+    .reset{display:block;margin:24px auto 0;padding:13px 24px;border:0;border-radius:14px;background:#7582a0;color:white;font-size:17px;font-weight:700;cursor:pointer}
+    @media(max-width:430px){.hero h1{font-size:21px}.question h2{font-size:19px}.choice{font-size:17px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>😴 소르르·쿨쿨<br>새근새근·드르렁드르렁</h1>
+      <p>잠드는 모습과 잠자는 소리를 떠올리며 알맞은 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 · 푼 문제 <span id="done">0</span>/12
+    </div>
+
+    <div id="quiz"></div>
+    <div id="finalMessage" class="final-message"></div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      🌙 <b>소르르</b> : 자기도 모르게 부드럽고 천천히 잠드는 모습<br>
+      💤 <b>쿨쿨</b> : 걱정 없이 깊고 편안하게 자는 모습<br>
+      👶 <b>새근새근</b> : 아기나 아이가 작고 고른 숨소리를 내며 자는 모습<br>
+      📣 <b>드르렁드르렁</b> : 잠을 자며 크고 거친 코 고는 소리를 내는 모습
+    </section>
+
+    <button class="reset" onclick="resetQuiz()">처음부터 다시 풀기</button>
+  </main>
+
+  <script>
+    const questions = [{"q": "아기는 작은 숨소리를 규칙적으로 내며 편안하게 자고 있었어요.", "choices": ["소르르", "쿨쿨", "새근새근", "드르렁드르렁"], "answer": 2, "explanation": "아기나 아이가 가볍고 고른 숨소리를 내며 자는 모습은 ‘새근새근’이에요."}, {"q": "민이는 엄마가 책을 읽어 주자 눈이 천천히 감기며 잠이 들었어요.", "choices": ["소르르", "쿨쿨", "새근새근", "드르렁드르렁"], "answer": 0, "explanation": "자기도 모르게 부드럽고 천천히 잠드는 모습은 ‘소르르’예요."}, {"q": "아빠는 잠이 들자 코를 아주 크게 골기 시작했어요.", "choices": ["소르르", "쿨쿨", "새근새근", "드르렁드르렁"], "answer": 3, "explanation": "잠을 자며 크고 거친 코 고는 소리를 낼 때는 ‘드르렁드르렁’이라고 해요."}, {"q": "준이는 낮잠 시간에 이불을 덮고 깊이 잠들어 있었어요.", "choices": ["소르르", "쿨쿨", "새근새근", "드르렁드르렁"], "answer": 1, "explanation": "걱정 없이 깊이 잘 자는 모습은 ‘쿨쿨’이라고 해요."}, {"q": "따뜻한 차를 마신 민이는 소파에 기대어 자신도 모르게 잠들었어요.", "choices": ["새근새근", "드르렁드르렁", "쿨쿨", "소르르"], "answer": 3, "explanation": "편안한 상태에서 어느새 부드럽게 잠드는 모습은 ‘소르르’예요."}, {"q": "강아지는 산책을 마친 뒤 방석 위에서 깊이 잠들었어요.", "choices": ["쿨쿨", "새근새근", "소르르", "드르렁드르렁"], "answer": 0, "explanation": "깊고 편안하게 자는 모습을 나타낼 때는 ‘쿨쿨’이 잘 어울려요."}, {"q": "동생은 작은 가슴을 규칙적으로 오르내리며 조용히 자고 있었어요.", "choices": ["드르렁드르렁", "새근새근", "소르르", "쿨쿨"], "answer": 1, "explanation": "작고 고른 숨소리를 내며 조용히 자는 모습은 ‘새근새근’이에요."}, {"q": "할아버지는 피곤하셨는지 잠든 뒤 큰 코 고는 소리를 내셨어요.", "choices": ["쿨쿨", "새근새근", "드르렁드르렁", "소르르"], "answer": 2, "explanation": "크고 반복적인 코 고는 소리는 ‘드르렁드르렁’이에요."}, {"q": "고양이는 햇볕이 드는 자리에서 세상모르고 깊이 자고 있었어요.", "choices": ["쿨쿨", "드르렁드르렁", "새근새근", "소르르"], "answer": 0, "explanation": "편안하게 깊이 잠든 모습은 ‘쿨쿨’이에요."}, {"q": "삼촌은 낮잠을 자며 방 안이 울릴 만큼 코를 크게 골았어요.", "choices": ["새근새근", "소르르", "드르렁드르렁", "쿨쿨"], "answer": 2, "explanation": "방 안이 울릴 만큼 크게 코를 고는 소리는 ‘드르렁드르렁’이 알맞아요."}, {"q": "버스를 타고 가던 민이는 창문에 기대어 눈이 스르르 감겼어요.", "choices": ["드르렁드르렁", "쿨쿨", "새근새근", "소르르"], "answer": 3, "explanation": "눈이 천천히 감기며 자연스럽게 잠드는 모습은 ‘소르르’라고 해요."}, {"q": "아기는 엄마 품에서 가볍고 일정한 숨소리를 내며 잠들어 있었어요.", "choices": ["쿨쿨", "새근새근", "드르렁드르렁", "소르르"], "answer": 1, "explanation": "아기가 작고 규칙적인 숨소리로 편안히 자는 모습은 ‘새근새근’이에요."}];
+    let score = 0;
+    let done = 0;
+    const answered = Array(questions.length).fill(false);
+
+    function renderQuiz(){
+      const quiz=document.getElementById("quiz");
+      quiz.innerHTML="";
+
+      questions.forEach((item,qi)=>{
+        const section=document.createElement("section");
+        section.className="question";
+
+        const title=document.createElement("h2");
+        title.textContent=`${qi+1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices=document.createElement("div");
+        choices.className="choices";
+
+        item.choices.forEach((text,ci)=>{
+          const button=document.createElement("button");
+          button.className="choice";
+          button.textContent=`${ci+1}. ${text}`;
+          button.addEventListener("click",()=>checkAnswer(qi,ci,button,section));
+          choices.appendChild(button);
+        });
+
+        const result=document.createElement("div");
+        result.className="result";
+
+        const explain=document.createElement("div");
+        explain.className="explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(qi,ci,selected,section){
+      if(answered[qi]) return;
+
+      answered[qi]=true;
+      done++;
+
+      const item=questions[qi];
+      const buttons=section.querySelectorAll(".choice");
+      const result=section.querySelector(".result");
+      const explain=section.querySelector(".explain");
+
+      buttons.forEach((button,index)=>{
+        button.disabled=true;
+        if(index===item.answer) button.classList.add("correct");
+      });
+
+      if(ci===item.answer){
+        score++;
+        result.textContent="⭕ 정답이에요!";
+      }else{
+        selected.classList.add("wrong");
+        result.textContent=`❌ 정답은 ‘${item.choices[item.answer]}’이에요.`;
+      }
+
+      explain.textContent=`💡 ${item.explanation}`;
+      explain.style.display="block";
+
+      document.getElementById("score").textContent=score;
+      document.getElementById("done").textContent=done;
+
+      if(done===questions.length) showFinalMessage();
+    }
+
+    function showFinalMessage(){
+      const box=document.getElementById("finalMessage");
+
+      if(score===12){
+        box.textContent="🎉 12문제를 모두 맞혔어요! 네 가지 잠자는 모습과 소리의 차이를 정확히 알고 있네요.";
+      }else if(score>=9){
+        box.textContent=`👏 ${score}문제를 맞혔어요! 헷갈린 문제만 다시 살펴보세요.`;
+      }else{
+        box.textContent=`🌱 ${score}문제를 맞혔어요. 아래 정리를 읽고 다시 도전해 보세요!`;
+      }
+
+      box.style.display="block";
+      box.scrollIntoView({behavior:"smooth",block:"center"});
+    }
+
+    function resetQuiz(){
+      score=0;
+      done=0;
+      answered.fill(false);
+
+      document.getElementById("score").textContent="0";
+      document.getElementById("done").textContent="0";
+      document.getElementById("finalMessage").style.display="none";
+
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
