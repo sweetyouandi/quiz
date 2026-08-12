@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>토닥토닥·쓰담쓰담·살살·쓱쓱 퀴즈</title>
+  <style>
+    :root {
+      --bg: #fffaf6;
+      --card: #ffffff;
+      --text: #2f2f2f;
+      --sub: #6f6f6f;
+      --line: #eadfd8;
+      --accent: #f28f79;
+      --accent-soft: #fff0eb;
+      --correct: #2f9e66;
+      --correct-bg: #eaf8f1;
+      --wrong: #d9485f;
+      --wrong-bg: #fff0f3;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+                   "Noto Sans KR", "Malgun Gothic", sans-serif;
+      background: linear-gradient(180deg, #fff8f3 0%, #fffdfb 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(92%, 680px);
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: #b4533f;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 5vw, 34px);
+      line-height: 1.35;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      color: var(--sub);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .progress-box {
+      background: #f3ece8;
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 18px 0 12px;
+    }
+
+    .progress {
+      height: 100%;
+      width: 0;
+      background: var(--accent);
+      transition: width .25s ease;
+    }
+
+    .status {
+      display: flex;
+      justify-content: space-between;
+      color: var(--sub);
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 12px 32px rgba(118, 82, 63, 0.08);
+    }
+
+    .question-number {
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .question {
+      margin: 0 0 20px;
+      font-size: clamp(20px, 4.8vw, 25px);
+      line-height: 1.55;
+      letter-spacing: -0.035em;
+      font-weight: 800;
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+    }
+
+    .option {
+      width: 100%;
+      border: 2px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fff;
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease;
+    }
+
+    .option:hover {
+      transform: translateY(-1px);
+      border-color: #efb7aa;
+    }
+
+    .option:disabled { cursor: default; }
+
+    .option.correct {
+      border-color: var(--correct);
+      background: var(--correct-bg);
+      color: #187a4a;
+    }
+
+    .option.wrong {
+      border-color: var(--wrong);
+      background: var(--wrong-bg);
+      color: #b12f45;
+    }
+
+    .feedback {
+      min-height: 58px;
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      font-size: 16px;
+      line-height: 1.55;
+      display: none;
+    }
+
+    .feedback.show { display: block; }
+    .feedback.correct {
+      background: var(--correct-bg);
+      color: #187a4a;
+    }
+    .feedback.wrong {
+      background: var(--wrong-bg);
+      color: #a92d42;
+    }
+
+    .next-btn, .restart-btn {
+      width: 100%;
+      margin-top: 16px;
+      border: 0;
+      border-radius: 16px;
+      padding: 16px;
+      background: var(--accent);
+      color: white;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .next-btn:disabled {
+      background: #d8c6bf;
+      cursor: default;
+    }
+
+    .result {
+      text-align: center;
+      display: none;
+    }
+
+    .result.show { display: block; }
+    .quiz.hide { display: none; }
+
+    .result-emoji {
+      font-size: 58px;
+      margin-bottom: 8px;
+    }
+
+    .score {
+      font-size: 46px;
+      font-weight: 900;
+      color: var(--accent);
+      margin: 8px 0;
+    }
+
+    .result-message {
+      color: var(--sub);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .word-guide {
+      margin-top: 22px;
+      background: #fff;
+      border: 1px dashed #e2c9bf;
+      border-radius: 18px;
+      padding: 18px;
+      text-align: left;
+    }
+
+    .word-guide h2 {
+      font-size: 18px;
+      margin: 0 0 12px;
+    }
+
+    .word-guide p {
+      margin: 8px 0;
+      color: #555;
+      line-height: 1.65;
+      font-size: 15px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 22px;
+      color: #9a8f89;
+      font-size: 13px;
+    }
+
+    @media (max-width: 480px) {
+      .wrap { width: 94%; padding-top: 20px; }
+      .card { padding: 20px 17px; border-radius: 18px; }
+      .option { font-size: 17px; padding: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="badge">엄마의 말공부 퀴즈</div>
+      <h1>토닥토닥 · 쓰담쓰담<br>살살 · 쓱쓱의 차이</h1>
+      <p class="subtitle">문장을 읽고 가장 잘 어울리는 표현을 골라 보세요.</p>
+    </section>
+
+    <section id="quiz" class="quiz">
+      <div class="progress-box">
+        <div id="progress" class="progress"></div>
+      </div>
+      <div class="status">
+        <span id="questionCount">1 / 10</span>
+        <span id="scoreCount">점수 0</span>
+      </div>
+
+      <div class="card">
+        <div id="questionNumber" class="question-number">문제 1</div>
+        <h2 id="question" class="question"></h2>
+        <div id="options" class="options"></div>
+        <div id="feedback" class="feedback"></div>
+        <button id="nextBtn" class="next-btn" disabled>다음 문제</button>
+      </div>
+    </section>
+
+    <section id="result" class="result">
+      <div class="card">
+        <div id="resultEmoji" class="result-emoji">🎉</div>
+        <h2>퀴즈 완료!</h2>
+        <div id="finalScore" class="score">0점</div>
+        <p id="resultMessage" class="result-message"></p>
+        <button id="restartBtn" class="restart-btn">다시 풀기</button>
+
+        <div class="word-guide">
+          <h2>표현을 다시 살펴봐요</h2>
+          <p><strong>토닥토닥</strong> : 손으로 가볍게 여러 번 두드리는 모습</p>
+          <p><strong>쓰담쓰담</strong> : 손으로 부드럽고 다정하게 쓰다듬는 모습</p>
+          <p><strong>살살</strong> : 힘을 세게 주지 않고 조심스럽게 하는 모습</p>
+          <p><strong>쓱쓱</strong> : 손이나 물건을 한쪽으로 여러 번 문지르거나 움직이는 모습</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>문장을 천천히 읽으면 답이 더 잘 보여요 😊</footer>
+  </main>
+
+  <script>
+    const quizData = [
+      {
+        question: "지우개로 연필 자국을 여러 번 문질러 지웠어요.",
+        options: ["쓰담쓰담", "쓱쓱", "토닥토닥"],
+        answer: "쓱쓱",
+        explanation: "물건을 한쪽으로 여러 번 문지르는 모습은 ‘쓱쓱’이에요."
+      },
+      {
+        question: "엄마가 울고 있는 아이의 등을 다정하게 두드려 주었어요.",
+        options: ["토닥토닥", "쓱쓱", "살살"],
+        answer: "토닥토닥",
+        explanation: "등을 가볍게 여러 번 두드리는 모습은 ‘토닥토닥’이에요."
+      },
+      {
+        question: "상처 난 곳은 아프지 않도록 조심해서 만져야 해요.",
+        options: ["쓱쓱", "토닥토닥", "살살"],
+        answer: "살살",
+        explanation: "힘을 세게 주지 않고 조심스럽게 하는 모습은 ‘살살’이에요."
+      },
+      {
+        question: "아이의 머리를 손으로 부드럽게 만져 주었어요.",
+        options: ["토닥토닥", "쓰담쓰담", "쓱쓱"],
+        answer: "쓰담쓰담",
+        explanation: "손으로 부드럽고 다정하게 쓰다듬는 모습은 ‘쓰담쓰담’이에요."
+      },
+      {
+        question: "아기가 잠들 수 있도록 등을 가볍게 두드려 주었어요.",
+        options: ["살살", "쓱쓱", "토닥토닥"],
+        answer: "토닥토닥",
+        explanation: "등을 가볍게 반복해서 두드릴 때는 ‘토닥토닥’이 잘 어울려요."
+      },
+      {
+        question: "책상 위의 먼지를 걸레로 여러 번 닦았어요.",
+        options: ["쓱쓱", "토닥토닥", "쓰담쓰담"],
+        answer: "쓱쓱",
+        explanation: "걸레로 문지르며 닦는 모습은 ‘쓱쓱’이에요."
+      },
+      {
+        question: "강아지의 머리를 다정하게 쓰다듬어 주었어요.",
+        options: ["살살", "쓰담쓰담", "쓱쓱"],
+        answer: "쓰담쓰담",
+        explanation: "사랑하는 마음으로 부드럽게 쓰다듬는 모습은 ‘쓰담쓰담’이에요."
+      },
+      {
+        question: "뜨거운 국이 넘치지 않도록 조심해서 옮겼어요.",
+        options: ["살살", "토닥토닥", "쓰담쓰담"],
+        answer: "살살",
+        explanation: "힘을 줄이고 조심조심 움직이는 모습은 ‘살살’이에요."
+      },
+      {
+        question: "친구가 슬퍼하자 등을 가볍게 두드리며 위로했어요.",
+        options: ["살살", "쓱쓱", "토닥토닥"],
+        answer: "토닥토닥",
+        explanation: "위로하며 등을 가볍게 두드리는 모습은 ‘토닥토닥’이에요."
+      },
+      {
+        question: "로션을 피부에 힘을 주지 않고 부드럽게 펴 발랐어요.",
+        options: ["살살", "쓱쓱", "쓰담쓰담"],
+        answer: "살살",
+        explanation: "세게 문지르지 않고 조심스럽게 바를 때는 ‘살살’이 잘 어울려요."
+      }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+    let answered = false;
+
+    const quizEl = document.getElementById("quiz");
+    const resultEl = document.getElementById("result");
+    const questionEl = document.getElementById("question");
+    const questionNumberEl = document.getElementById("questionNumber");
+    const questionCountEl = document.getElementById("questionCount");
+    const scoreCountEl = document.getElementById("scoreCount");
+    const optionsEl = document.getElementById("options");
+    const feedbackEl = document.getElementById("feedback");
+    const nextBtn = document.getElementById("nextBtn");
+    const progressEl = document.getElementById("progress");
+    const finalScoreEl = document.getElementById("finalScore");
+    const resultMessageEl = document.getElementById("resultMessage");
+    const resultEmojiEl = document.getElementById("resultEmoji");
+    const restartBtn = document.getElementById("restartBtn");
+
+    function renderQuestion() {
+      answered = false;
+      nextBtn.disabled = true;
+      feedbackEl.className = "feedback";
+      feedbackEl.textContent = "";
+
+      const item = quizData[currentIndex];
+
+      questionNumberEl.textContent = `문제 ${currentIndex + 1}`;
+      questionCountEl.textContent = `${currentIndex + 1} / ${quizData.length}`;
+      scoreCountEl.textContent = `점수 ${score}`;
+      questionEl.textContent = item.question;
+      progressEl.style.width = `${(currentIndex / quizData.length) * 100}%`;
+
+      optionsEl.innerHTML = "";
+
+      item.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.className = "option";
+        button.textContent = `${index + 1}. ${option}`;
+        button.addEventListener("click", () => selectAnswer(button, option));
+        optionsEl.appendChild(button);
+      });
+
+      nextBtn.textContent = currentIndex === quizData.length - 1 ? "결과 보기" : "다음 문제";
+    }
+
+    function selectAnswer(selectedButton, selectedOption) {
+      if (answered) return;
+      answered = true;
+
+      const item = quizData[currentIndex];
+      const buttons = [...document.querySelectorAll(".option")];
+
+      buttons.forEach(button => {
+        button.disabled = true;
+        const optionText = button.textContent.replace(/^\d+\.\s*/, "");
+        if (optionText === item.answer) {
+          button.classList.add("correct");
+        }
+      });
+
+      if (selectedOption === item.answer) {
+        score += 10;
+        selectedButton.classList.add("correct");
+        feedbackEl.className = "feedback show correct";
+        feedbackEl.innerHTML = `⭕ 정답이에요!<br>${item.explanation}`;
+      } else {
+        selectedButton.classList.add("wrong");
+        feedbackEl.className = "feedback show wrong";
+        feedbackEl.innerHTML = `❌ 아쉬워요. 정답은 <strong>${item.answer}</strong>예요.<br>${item.explanation}`;
+      }
+
+      scoreCountEl.textContent = `점수 ${score}`;
+      nextBtn.disabled = false;
+    }
+
+    function showResult() {
+      quizEl.classList.add("hide");
+      resultEl.classList.add("show");
+      progressEl.style.width = "100%";
+      finalScoreEl.textContent = `${score}점`;
+
+      if (score === 100) {
+        resultEmojiEl.textContent = "🏆";
+        resultMessageEl.textContent = "모든 문제를 맞혔어요! 표현의 차이를 아주 정확하게 알고 있네요.";
+      } else if (score >= 80) {
+        resultEmojiEl.textContent = "🎉";
+        resultMessageEl.textContent = "정말 잘했어요! 헷갈린 표현만 한 번 더 살펴보면 완벽해요.";
+      } else if (score >= 60) {
+        resultEmojiEl.textContent = "👏";
+        resultMessageEl.textContent = "잘했어요! 문장에서 손의 움직임과 힘의 세기를 생각해 보세요.";
+      } else {
+        resultEmojiEl.textContent = "🌱";
+        resultMessageEl.textContent = "괜찮아요. 표현의 뜻을 다시 읽고 한 번 더 풀어 보면 금방 익힐 수 있어요.";
+      }
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (!answered) return;
+
+      if (currentIndex < quizData.length - 1) {
+        currentIndex += 1;
+        renderQuestion();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        showResult();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+
+    restartBtn.addEventListener("click", () => {
+      currentIndex = 0;
+      score = 0;
+      resultEl.classList.remove("show");
+      quizEl.classList.remove("hide");
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    renderQuestion();
+  </script>
+</body>
+</html>
