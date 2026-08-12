@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사뿐사뿐·총총·쿵쿵·살금살금 퀴즈</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:#f8fbf8;color:#333}
+    .wrap{width:min(720px,100%);margin:0 auto;padding:22px 15px 45px}
+    .hero{padding:27px 18px;margin-bottom:20px;text-align:center;background:linear-gradient(135deg,#e7f2e7,#f8eddf);border-radius:24px;box-shadow:0 7px 20px rgba(0,0,0,.08)}
+    .hero h1{margin:0 0 10px;font-size:25px;line-height:1.45}
+    .hero p{margin:0;font-size:17px;line-height:1.6}
+    .progress{position:sticky;top:8px;z-index:10;margin-bottom:16px;padding:12px 16px;text-align:center;color:#fff;background:#526554;border-radius:15px;font-size:17px;font-weight:700;box-shadow:0 5px 15px rgba(0,0,0,.15)}
+    .question{margin-bottom:16px;padding:20px;background:#fff;border-radius:20px;box-shadow:0 5px 16px rgba(0,0,0,.07)}
+    .question h2{margin:0 0 14px;font-size:20px;line-height:1.55}
+    .choices{display:grid;gap:10px}
+    .choice{width:100%;padding:14px 15px;border:2px solid #dfe8df;border-radius:14px;background:#fcfffc;text-align:left;font-size:18px;cursor:pointer;transition:.15s}
+    .choice:hover:not(:disabled){background:#f0f7f0;transform:translateY(-1px)}
+    .choice:disabled{cursor:default}
+    .choice.correct{border-color:#5dbb7a;background:#def7e6;color:#176536;font-weight:700}
+    .choice.wrong{border-color:#e07373;background:#ffe3e3;color:#982626;font-weight:700}
+    .result{min-height:25px;margin-top:12px;font-size:17px;font-weight:700;line-height:1.5}
+    .explain{display:none;margin-top:8px;padding:11px 13px;background:#fff8df;border-radius:11px;font-size:16px;line-height:1.55}
+    .summary{margin-top:24px;padding:21px;background:#eef6ee;border-radius:20px;font-size:17px;line-height:1.9}
+    .summary h3{margin:0 0 9px;font-size:21px}
+    .final-message{display:none;margin-top:18px;padding:18px;background:#fff0f4;border-radius:18px;text-align:center;font-size:19px;font-weight:700;line-height:1.6}
+    .reset{display:block;margin:24px auto 0;padding:13px 24px;border:0;border-radius:14px;background:#748b76;color:white;font-size:17px;font-weight:700;cursor:pointer}
+    @media(max-width:430px){.hero h1{font-size:21px}.question h2{font-size:19px}.choice{font-size:17px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>👣 사뿐사뿐·총총<br>쿵쿵·살금살금</h1>
+      <p>걷는 모습과 발소리를 떠올리며 알맞은 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 · 푼 문제 <span id="done">0</span>/12
+    </div>
+
+    <div id="quiz"></div>
+    <div id="finalMessage" class="final-message"></div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      🩰 <b>사뿐사뿐</b> : 발을 가볍고 부드럽게 내디디며 걷는 모습<br>
+      🐦 <b>총총</b> : 짧고 빠른 걸음으로 바쁘게 걷는 모습<br>
+      🦖 <b>쿵쿵</b> : 무겁고 힘찬 발걸음으로 큰 소리를 내는 모습<br>
+      🤫 <b>살금살금</b> : 들키거나 소리가 나지 않게 조심스럽게 걷는 모습
+    </section>
+
+    <button class="reset" onclick="resetQuiz()">처음부터 다시 풀기</button>
+  </main>
+
+  <script>
+    const questions = [{"q": "아기 새가 짧은 다리로 빠르게 작은 걸음을 옮겼어요.", "choices": ["사뿐사뿐", "쿵쿵", "총총", "살금살금"], "answer": 2, "explanation": "짧고 빠른 걸음으로 바쁘게 걷는 모습은 ‘총총’이에요."}, {"q": "민이는 잠든 동생이 깰까 봐 발소리를 죽이며 걸었어요.", "choices": ["살금살금", "사뿐사뿐", "총총", "쿵쿵"], "answer": 0, "explanation": "들키거나 소리가 나지 않게 조심스럽게 걷는 모습은 ‘살금살금’이에요."}, {"q": "민이는 발레 연습을 하며 발끝으로 가볍고 조용하게 걸었어요.", "choices": ["총총", "쿵쿵", "살금살금", "사뿐사뿐"], "answer": 3, "explanation": "발을 가볍고 부드럽게 내디디며 걷는 모습은 ‘사뿐사뿐’이에요."}, {"q": "아빠가 무거운 상자를 들고 계단을 힘주어 올라갔어요.", "choices": ["사뿐사뿐", "쿵쿵", "총총", "살금살금"], "answer": 1, "explanation": "무겁고 힘찬 발걸음으로 큰 소리를 내며 걷는 모습은 ‘쿵쿵’이에요."}, {"q": "고양이가 방석 위를 가볍게 밟으며 다가왔어요.", "choices": ["살금살금", "총총", "쿵쿵", "사뿐사뿐"], "answer": 3, "explanation": "가볍고 부드럽게 발을 옮기는 모습은 ‘사뿐사뿐’이 잘 어울려요."}, {"q": "화가 난 아이가 바닥을 세게 밟으며 방으로 들어갔어요.", "choices": ["쿵쿵", "총총", "사뿐사뿐", "살금살금"], "answer": 0, "explanation": "발을 세게 내디뎌 큰 소리를 내는 모습은 ‘쿵쿵’이에요."}, {"q": "참새들이 마당에서 짧은 걸음으로 바쁘게 움직였어요.", "choices": ["살금살금", "총총", "쿵쿵", "사뿐사뿐"], "answer": 1, "explanation": "작은 보폭으로 빠르게 움직이는 모습은 ‘총총’이에요."}, {"q": "민이는 엄마를 놀라게 하려고 뒤에서 조용히 다가갔어요.", "choices": ["쿵쿵", "총총", "살금살금", "사뿐사뿐"], "answer": 2, "explanation": "남이 알아차리지 못하게 조심조심 걷는 모습은 ‘살금살금’이에요."}, {"q": "공룡 흉내를 내던 준이가 바닥을 세게 밟으며 걸었어요.", "choices": ["쿵쿵", "총총", "살금살금", "사뿐사뿐"], "answer": 0, "explanation": "무겁고 큰 발소리를 내며 걷는 모습은 ‘쿵쿵’이에요."}, {"q": "무용수가 무대 위를 가볍고 우아하게 걸어갔어요.", "choices": ["쿵쿵", "살금살금", "사뿐사뿐", "총총"], "answer": 2, "explanation": "가볍고 우아하게 걷는 모습은 ‘사뿐사뿐’이에요."}, {"q": "도둑 역할을 맡은 아이가 들키지 않으려고 조심히 걸었어요.", "choices": ["쿵쿵", "사뿐사뿐", "총총", "살금살금"], "answer": 3, "explanation": "소리를 내지 않고 몰래 다가가는 모습은 ‘살금살금’이에요."}, {"q": "민이는 늦을까 봐 작은 걸음으로 재빨리 엄마를 따라갔어요.", "choices": ["쿵쿵", "총총", "사뿐사뿐", "살금살금"], "answer": 1, "explanation": "짧은 걸음으로 재빠르게 걷는 모습은 ‘총총’이에요."}];
+    let score = 0;
+    let done = 0;
+    const answered = Array(questions.length).fill(false);
+
+    function renderQuiz(){
+      const quiz=document.getElementById("quiz");
+      quiz.innerHTML="";
+
+      questions.forEach((item,qi)=>{
+        const section=document.createElement("section");
+        section.className="question";
+
+        const title=document.createElement("h2");
+        title.textContent=`${qi+1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices=document.createElement("div");
+        choices.className="choices";
+
+        item.choices.forEach((text,ci)=>{
+          const button=document.createElement("button");
+          button.className="choice";
+          button.textContent=`${ci+1}. ${text}`;
+          button.addEventListener("click",()=>checkAnswer(qi,ci,button,section));
+          choices.appendChild(button);
+        });
+
+        const result=document.createElement("div");
+        result.className="result";
+
+        const explain=document.createElement("div");
+        explain.className="explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(qi,ci,selected,section){
+      if(answered[qi]) return;
+
+      answered[qi]=true;
+      done++;
+
+      const item=questions[qi];
+      const buttons=section.querySelectorAll(".choice");
+      const result=section.querySelector(".result");
+      const explain=section.querySelector(".explain");
+
+      buttons.forEach((button,index)=>{
+        button.disabled=true;
+        if(index===item.answer) button.classList.add("correct");
+      });
+
+      if(ci===item.answer){
+        score++;
+        result.textContent="⭕ 정답이에요!";
+      }else{
+        selected.classList.add("wrong");
+        result.textContent=`❌ 정답은 ‘${item.choices[item.answer]}’이에요.`;
+      }
+
+      explain.textContent=`💡 ${item.explanation}`;
+      explain.style.display="block";
+
+      document.getElementById("score").textContent=score;
+      document.getElementById("done").textContent=done;
+
+      if(done===questions.length) showFinalMessage();
+    }
+
+    function showFinalMessage(){
+      const box=document.getElementById("finalMessage");
+
+      if(score===12){
+        box.textContent="🎉 12문제를 모두 맞혔어요! 네 가지 걷는 모습의 차이를 정확히 알고 있네요.";
+      }else if(score>=9){
+        box.textContent=`👏 ${score}문제를 맞혔어요! 헷갈린 문제만 다시 살펴보세요.`;
+      }else{
+        box.textContent=`🌱 ${score}문제를 맞혔어요. 아래 정리를 읽고 다시 도전해 보세요!`;
+      }
+
+      box.style.display="block";
+      box.scrollIntoView({behavior:"smooth",block:"center"});
+    }
+
+    function resetQuiz(){
+      score=0;
+      done=0;
+      answered.fill(false);
+
+      document.getElementById("score").textContent="0";
+      document.getElementById("done").textContent="0";
+      document.getElementById("finalMessage").style.display="none";
+
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
