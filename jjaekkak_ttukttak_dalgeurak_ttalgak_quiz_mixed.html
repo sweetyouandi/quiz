@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>째깍째깍·똑딱똑딱·달그락달그락·딸깍딸깍 퀴즈</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:#f8f9fc;color:#333}
+    .wrap{width:min(720px,100%);margin:0 auto;padding:22px 15px 45px}
+    .hero{padding:27px 18px;margin-bottom:20px;text-align:center;background:linear-gradient(135deg,#e8edf7,#fff0df);border-radius:24px;box-shadow:0 7px 20px rgba(0,0,0,.08)}
+    .hero h1{margin:0 0 10px;font-size:25px;line-height:1.45}
+    .hero p{margin:0;font-size:17px;line-height:1.6}
+    .progress{position:sticky;top:8px;z-index:10;margin-bottom:16px;padding:12px 16px;text-align:center;color:#fff;background:#485364;border-radius:15px;font-size:17px;font-weight:700;box-shadow:0 5px 15px rgba(0,0,0,.15)}
+    .question{margin-bottom:16px;padding:20px;background:#fff;border-radius:20px;box-shadow:0 5px 16px rgba(0,0,0,.07)}
+    .question h2{margin:0 0 14px;font-size:20px;line-height:1.55}
+    .choices{display:grid;gap:10px}
+    .choice{width:100%;padding:14px 15px;border:2px solid #dfe4eb;border-radius:14px;background:#fcfdff;text-align:left;font-size:18px;cursor:pointer;transition:.15s}
+    .choice:hover:not(:disabled){background:#f0f4fa;transform:translateY(-1px)}
+    .choice:disabled{cursor:default}
+    .choice.correct{border-color:#5dbb7a;background:#def7e6;color:#176536;font-weight:700}
+    .choice.wrong{border-color:#e07373;background:#ffe3e3;color:#982626;font-weight:700}
+    .result{min-height:25px;margin-top:12px;font-size:17px;font-weight:700;line-height:1.5}
+    .explain{display:none;margin-top:8px;padding:11px 13px;background:#fff8df;border-radius:11px;font-size:16px;line-height:1.55}
+    .summary{margin-top:24px;padding:21px;background:#eef2f8;border-radius:20px;font-size:17px;line-height:1.9}
+    .summary h3{margin:0 0 9px;font-size:21px}
+    .final-message{display:none;margin-top:18px;padding:18px;background:#fff0f4;border-radius:18px;text-align:center;font-size:19px;font-weight:700;line-height:1.6}
+    .reset{display:block;margin:24px auto 0;padding:13px 24px;border:0;border-radius:14px;background:#66758b;color:white;font-size:17px;font-weight:700;cursor:pointer}
+    @media(max-width:430px){.hero h1{font-size:21px}.question h2{font-size:19px}.choice{font-size:17px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>⏰ 째깍째깍·똑딱똑딱<br>달그락달그락·딸깍딸깍</h1>
+      <p>소리가 나는 물건과 상황을 떠올리며 알맞은 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 · 푼 문제 <span id="done">0</span>/12
+    </div>
+
+    <div id="quiz"></div>
+    <div id="finalMessage" class="final-message"></div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      ⏰ <b>째깍째깍</b> : 시계가 또렷하고 규칙적으로 가는 소리<br>
+      ⌚ <b>똑딱똑딱</b> : 작은 시계가 가볍고 규칙적으로 내는 소리<br>
+      🔑 <b>달그락달그락</b> : 딱딱한 물건 여러 개가 가볍게 부딪히는 소리<br>
+      🖱️ <b>딸깍딸깍</b> : 스위치나 버튼이 맞물리며 나는 짧은 소리
+    </section>
+
+    <button class="reset" onclick="resetQuiz()">처음부터 다시 풀기</button>
+  </main>
+
+  <script>
+    const questions = [{"q": "벽시계의 초침이 일정하게 움직이며 소리를 냈어요.", "choices": ["똑딱똑딱", "째깍째깍", "달그락달그락", "딸깍딸깍"], "answer": 1, "explanation": "시계가 규칙적으로 가며 나는 또렷한 소리는 ‘째깍째깍’이 잘 어울려요."}, {"q": "서랍 안에서 열쇠와 동전이 서로 부딪혔어요.", "choices": ["째깍째깍", "똑딱똑딱", "딸깍딸깍", "달그락달그락"], "answer": 3, "explanation": "딱딱한 물건 여러 개가 가볍게 부딪히는 소리는 ‘달그락달그락’이에요."}, {"q": "컴퓨터 마우스 버튼을 연달아 눌렀어요.", "choices": ["딸깍딸깍", "똑딱똑딱", "달그락달그락", "째깍째깍"], "answer": 0, "explanation": "버튼을 누르며 나는 짧고 가벼운 소리는 ‘딸깍딸깍’이라고 해요."}, {"q": "작은 탁상시계가 조용한 방에서 규칙적으로 소리를 냈어요.", "choices": ["째깍째깍", "달그락달그락", "똑딱똑딱", "딸깍딸깍"], "answer": 2, "explanation": "작은 시계가 가볍고 규칙적으로 내는 소리는 ‘똑딱똑딱’이라고 해요."}, {"q": "장난감 시계가 작고 가벼운 소리를 반복해서 냈어요.", "choices": ["똑딱똑딱", "달그락달그락", "째깍째깍", "딸깍딸깍"], "answer": 0, "explanation": "작은 시계의 가벼운 반복 소리는 ‘똑딱똑딱’이 잘 어울려요."}, {"q": "초침이 한 칸씩 움직일 때마다 분명한 소리가 났어요.", "choices": ["딸깍딸깍", "똑딱똑딱", "달그락달그락", "째깍째깍"], "answer": 3, "explanation": "초침이 규칙적으로 움직이며 내는 소리는 ‘째깍째깍’이 알맞아요."}, {"q": "전등 스위치를 여러 번 눌렀더니 짧은 소리가 났어요.", "choices": ["째깍째깍", "똑딱똑딱", "딸깍딸깍", "달그락달그락"], "answer": 2, "explanation": "스위치나 단추가 맞물리며 나는 짧고 단단한 소리는 ‘딸깍딸깍’이에요."}, {"q": "찬장 문을 열자 그릇들이 서로 가볍게 부딪혔어요.", "choices": ["똑딱똑딱", "달그락달그락", "딸깍딸깍", "째깍째깍"], "answer": 1, "explanation": "그릇처럼 단단한 물건들이 흔들리며 부딪히는 소리는 ‘달그락달그락’이에요."}, {"q": "가방 속 구슬들이 움직일 때마다 서로 부딪혔어요.", "choices": ["딸깍딸깍", "째깍째깍", "똑딱똑딱", "달그락달그락"], "answer": 3, "explanation": "여러 개의 단단한 물건이 흔들리며 부딪히는 소리는 ‘달그락달그락’이에요."}, {"q": "큰 괘종시계가 밤새 일정한 소리를 내며 갔어요.", "choices": ["째깍째깍", "달그락달그락", "딸깍딸깍", "똑딱똑딱"], "answer": 0, "explanation": "큰 시계가 규칙적으로 내는 또렷한 소리는 ‘째깍째깍’이라고 해요."}, {"q": "리모컨 버튼을 누를 때마다 짧은 소리가 났어요.", "choices": ["달그락달그락", "째깍째깍", "딸깍딸깍", "똑딱똑딱"], "answer": 2, "explanation": "버튼이나 장치가 맞물리며 나는 짧은 소리는 ‘딸깍딸깍’이에요."}, {"q": "작은 손목시계를 귀에 대니 가벼운 소리가 들렸어요.", "choices": ["달그락달그락", "똑딱똑딱", "딸깍딸깍", "째깍째깍"], "answer": 1, "explanation": "작은 시계의 가볍고 규칙적인 소리는 ‘똑딱똑딱’이에요."}];
+    let score = 0;
+    let done = 0;
+    const answered = Array(questions.length).fill(false);
+
+    function renderQuiz(){
+      const quiz=document.getElementById("quiz");
+      quiz.innerHTML="";
+      questions.forEach((item,qi)=>{
+        const section=document.createElement("section");
+        section.className="question";
+
+        const title=document.createElement("h2");
+        title.textContent=`${qi+1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices=document.createElement("div");
+        choices.className="choices";
+
+        item.choices.forEach((text,ci)=>{
+          const button=document.createElement("button");
+          button.className="choice";
+          button.textContent=`${ci+1}. ${text}`;
+          button.addEventListener("click",()=>checkAnswer(qi,ci,button,section));
+          choices.appendChild(button);
+        });
+
+        const result=document.createElement("div");
+        result.className="result";
+        const explain=document.createElement("div");
+        explain.className="explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(qi,ci,selected,section){
+      if(answered[qi]) return;
+      answered[qi]=true;
+      done++;
+
+      const item=questions[qi];
+      const buttons=section.querySelectorAll(".choice");
+      const result=section.querySelector(".result");
+      const explain=section.querySelector(".explain");
+
+      buttons.forEach((button,index)=>{
+        button.disabled=true;
+        if(index===item.answer) button.classList.add("correct");
+      });
+
+      if(ci===item.answer){
+        score++;
+        result.textContent="⭕ 정답이에요!";
+      }else{
+        selected.classList.add("wrong");
+        result.textContent=`❌ 정답은 ‘${item.choices[item.answer]}’이에요.`;
+      }
+
+      explain.textContent=`💡 ${item.explanation}`;
+      explain.style.display="block";
+      document.getElementById("score").textContent=score;
+      document.getElementById("done").textContent=done;
+
+      if(done===questions.length) showFinalMessage();
+    }
+
+    function showFinalMessage(){
+      const box=document.getElementById("finalMessage");
+      if(score===12){
+        box.textContent="🎉 12문제를 모두 맞혔어요! 네 가지 소리의 차이를 정확히 알고 있네요.";
+      }else if(score>=9){
+        box.textContent=`👏 ${score}문제를 맞혔어요! 헷갈린 문제만 다시 살펴보세요.`;
+      }else{
+        box.textContent=`🌱 ${score}문제를 맞혔어요. 아래 정리를 읽고 다시 도전해 보세요!`;
+      }
+      box.style.display="block";
+      box.scrollIntoView({behavior:"smooth",block:"center"});
+    }
+
+    function resetQuiz(){
+      score=0;
+      done=0;
+      answered.fill(false);
+      document.getElementById("score").textContent="0";
+      document.getElementById("done").textContent="0";
+      document.getElementById("finalMessage").style.display="none";
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
