@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>뻐끔뻐끔·오물오물·우물우물·냠냠 퀴즈</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      background: #fffaf3;
+      color: #333;
+    }
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+    .hero {
+      background: linear-gradient(135deg, #dff5ff, #ffe3ef);
+      border-radius: 24px;
+      padding: 26px 20px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      margin-bottom: 22px;
+    }
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      line-height: 1.4;
+    }
+    .hero p {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+    .question {
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 5px 16px rgba(0,0,0,0.07);
+    }
+    .question h2 {
+      font-size: 20px;
+      margin: 0 0 14px;
+      line-height: 1.5;
+    }
+    .choices {
+      display: grid;
+      gap: 10px;
+    }
+    button.choice {
+      width: 100%;
+      border: 2px solid #d7e6ef;
+      background: #fbfdff;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.2s;
+      text-align: left;
+    }
+    button.choice:hover {
+      background: #f0f8ff;
+    }
+    button.choice.correct {
+      background: #dff7e6;
+      border-color: #5fbf7f;
+      color: #176536;
+      font-weight: 700;
+    }
+    button.choice.wrong {
+      background: #ffe2e2;
+      border-color: #e06a6a;
+      color: #9b2222;
+      font-weight: 700;
+    }
+    .result {
+      margin-top: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      min-height: 24px;
+    }
+    .summary {
+      background: #eef8ff;
+      border-radius: 20px;
+      padding: 20px;
+      margin-top: 24px;
+      line-height: 1.8;
+      font-size: 17px;
+    }
+    .summary strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 20px;
+    }
+    .reset {
+      display: block;
+      margin: 24px auto 0;
+      border: none;
+      border-radius: 14px;
+      padding: 13px 22px;
+      background: #ff9f68;
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .score-box {
+      position: sticky;
+      bottom: 12px;
+      background: #333;
+      color: #fff;
+      border-radius: 18px;
+      padding: 14px 18px;
+      text-align: center;
+      font-size: 18px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>🐟 뻐끔뻐끔·오물오물<br>우물우물·냠냠</h1>
+      <p>문장을 읽고 가장 잘 어울리는 말을 골라 보세요!</p>
+    </section>
+
+    <div id="quiz"></div>
+
+    <section class="summary">
+      <strong>🌱 한 번에 정리해요</strong>
+      🐟 <b>뻐끔뻐끔</b> : 입을 자꾸 벌렸다 닫았다 하는 모습<br>
+      🍪 <b>오물오물</b> : 음식을 입안에서 작게 씹는 모습<br>
+      😶 <b>우물우물</b> : 입안에 음식이 있거나 머뭇거리며 말이 또렷하지 않은 모습<br>
+      😋 <b>냠냠</b> : 맛있게 먹는 모습을 귀엽게 나타내는 말
+    </section>
+
+    <button class="reset" onclick="resetQuiz()">다시 풀기</button>
+
+    <div class="score-box">
+      맞힌 문제 <span id="score">0</span> / 10
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        q: "토끼가 맛있게 당근을 먹고 있어요.",
+        choices: ["우물우물", "뻐끔뻐끔", "냠냠", "오물오물"],
+        answer: 2
+      },
+      {
+        q: "금붕어가 입을 계속 벌렸다 닫았다 하고 있어요.",
+        choices: ["뻐끔뻐끔", "오물오물", "냠냠", "우물우물"],
+        answer: 0
+      },
+      {
+        q: "사탕을 입안에서 천천히 씹고 있어요.",
+        choices: ["우물우물", "냠냠", "뻐끔뻐끔", "오물오물"],
+        answer: 3
+      },
+      {
+        q: "입안에 음식을 가득 넣고 말을 하려니 잘 안 들려요.",
+        choices: ["뻐끔뻐끔", "우물우물", "오물오물", "냠냠"],
+        answer: 1
+      },
+      {
+        q: "쿠키를 입안에서 작게작게 씹고 있어요.",
+        choices: ["우물우물", "오물오물", "냠냠", "뻐끔뻐끔"],
+        answer: 1
+      },
+      {
+        q: "아기가 바나나를 맛있게 먹고 있어요.",
+        choices: ["오물오물", "우물우물", "뻐끔뻐끔", "냠냠"],
+        answer: 3
+      },
+      {
+        q: "물고기가 물속에서 입을 계속 움직여요.",
+        choices: ["뻐끔뻐끔", "냠냠", "우물우물", "오물오물"],
+        answer: 0
+      },
+      {
+        q: "입에 밥이 가득 들어 있어서 말이 잘 안 나와요.",
+        choices: ["뻐끔뻐끔", "냠냠", "우물우물", "오물오물"],
+        answer: 2
+      },
+      {
+        q: "엄마가 “우리 맛있게 ○○ 먹자!”라고 말했어요.",
+        choices: ["뻐끔뻐끔", "냠냠", "우물우물", "오물오물"],
+        answer: 1
+      },
+      {
+        q: "작은 과자를 천천히 씹으며 먹고 있어요.",
+        choices: ["오물오물", "뻐끔뻐끔", "우물우물", "냠냠"],
+        answer: 0
+      }
+    ];
+
+    let score = 0;
+    const answered = new Array(questions.length).fill(false);
+    const quiz = document.getElementById("quiz");
+
+    function renderQuiz() {
+      quiz.innerHTML = "";
+      questions.forEach((item, index) => {
+        const box = document.createElement("section");
+        box.className = "question";
+
+        const title = document.createElement("h2");
+        title.textContent = `${index + 1}. ${item.q}`;
+        box.appendChild(title);
+
+        const choices = document.createElement("div");
+        choices.className = "choices";
+
+        item.choices.forEach((choice, choiceIndex) => {
+          const btn = document.createElement("button");
+          btn.className = "choice";
+          btn.textContent = `${choiceIndex + 1}. ${choice}`;
+          btn.onclick = () => checkAnswer(index, choiceIndex, btn, box);
+          choices.appendChild(btn);
+        });
+
+        const result = document.createElement("div");
+        result.className = "result";
+
+        box.appendChild(choices);
+        box.appendChild(result);
+        quiz.appendChild(box);
+      });
+    }
+
+    function checkAnswer(questionIndex, choiceIndex, button, box) {
+      if (answered[questionIndex]) return;
+
+      answered[questionIndex] = true;
+      const correctIndex = questions[questionIndex].answer;
+      const buttons = box.querySelectorAll(".choice");
+      const result = box.querySelector(".result");
+
+      buttons.forEach((btn, index) => {
+        btn.disabled = true;
+        if (index === correctIndex) btn.classList.add("correct");
+      });
+
+      if (choiceIndex === correctIndex) {
+        score++;
+        result.textContent = "⭕ 정답이에요!";
+      } else {
+        button.classList.add("wrong");
+        result.textContent = `❌ 정답은 '${questions[questionIndex].choices[correctIndex]}'이에요.`;
+      }
+
+      document.getElementById("score").textContent = score;
+    }
+
+    function resetQuiz() {
+      score = 0;
+      answered.fill(false);
+      document.getElementById("score").textContent = "0";
+      renderQuiz();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
