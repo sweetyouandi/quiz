@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>퐁당·첨벙·졸졸·콸콸 퀴즈</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:#f4fbff;color:#333}
+    .wrap{width:min(720px,100%);margin:0 auto;padding:22px 15px 45px}
+    .hero{padding:27px 18px;margin-bottom:20px;text-align:center;background:linear-gradient(135deg,#dff4ff,#e9f1ff);border-radius:24px;box-shadow:0 7px 20px rgba(0,0,0,.08)}
+    .hero h1{margin:0 0 10px;font-size:25px;line-height:1.45}
+    .hero p{margin:0;font-size:17px;line-height:1.6}
+    .progress{position:sticky;top:8px;z-index:10;margin-bottom:16px;padding:12px 16px;text-align:center;color:#fff;background:#356b83;border-radius:15px;font-size:17px;font-weight:700;box-shadow:0 5px 15px rgba(0,0,0,.15)}
+    .question{margin-bottom:16px;padding:20px;background:#fff;border-radius:20px;box-shadow:0 5px 16px rgba(0,0,0,.07)}
+    .question h2{margin:0 0 14px;font-size:20px;line-height:1.55}
+    .choices{display:grid;gap:10px}
+    .choice{width:100%;padding:14px 15px;border:2px solid #dbeaf1;border-radius:14px;background:#fcfeff;text-align:left;font-size:18px;cursor:pointer;transition:.15s}
+    .choice:hover:not(:disabled){background:#edf8fc;transform:translateY(-1px)}
+    .choice:disabled{cursor:default}
+    .choice.correct{border-color:#5dbb7a;background:#def7e6;color:#176536;font-weight:700}
+    .choice.wrong{border-color:#e07373;background:#ffe3e3;color:#982626;font-weight:700}
+    .result{min-height:25px;margin-top:12px;font-size:17px;font-weight:700;line-height:1.5}
+    .explain{display:none;margin-top:8px;padding:11px 13px;background:#fff8df;border-radius:11px;font-size:16px;line-height:1.55}
+    .summary{margin-top:24px;padding:21px;background:#eaf7fc;border-radius:20px;font-size:17px;line-height:1.9}
+    .summary h3{margin:0 0 9px;font-size:21px}
+    .final-message{display:none;margin-top:18px;padding:18px;background:#fff0f4;border-radius:18px;text-align:center;font-size:19px;font-weight:700;line-height:1.6}
+    .reset{display:block;margin:24px auto 0;padding:13px 24px;border:0;border-radius:14px;background:#4f91af;color:white;font-size:17px;font-weight:700;cursor:pointer}
+    @media(max-width:430px){.hero h1{font-size:22px}.question h2{font-size:19px}.choice{font-size:17px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>💧 퐁당·첨벙<br>졸졸·콸콸</h1>
+      <p>물이 떨어지고 흐르는 모습을 떠올리며 알맞은 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 · 푼 문제 <span id="done">0</span>/12
+    </div>
+
+    <div id="quiz"></div>
+    <div id="finalMessage" class="final-message"></div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      🪨 <b>퐁당</b> : 작은 물건이 물에 가볍게 떨어지는 소리<br>
+      🏊 <b>첨벙</b> : 사람이나 큰 물체가 물에 닿아 물이 크게 튀는 소리<br>
+      🏞️ <b>졸졸</b> : 적은 양의 물이 가늘고 부드럽게 흐르는 소리<br>
+      🚿 <b>콸콸</b> : 많은 물이 힘차고 세게 쏟아지는 소리
+    </section>
+
+    <button class="reset" onclick="resetQuiz()">처음부터 다시 풀기</button>
+  </main>
+
+  <script>
+    const questions = [{"q": "준이가 물웅덩이를 힘껏 밟자 물이 사방으로 튀었어요.", "choices": ["퐁당", "졸졸", "첨벙", "콸콸"], "answer": 2, "explanation": "사람이나 큰 물체가 물에 닿아 물이 크게 튀는 모습과 소리는 ‘첨벙’이에요."}, {"q": "작은 돌멩이를 연못에 던지자 물속으로 가볍게 빠졌어요.", "choices": ["퐁당", "첨벙", "졸졸", "콸콸"], "answer": 0, "explanation": "작은 물건이 물에 가볍게 떨어질 때 나는 소리는 ‘퐁당’이에요."}, {"q": "수도꼭지를 크게 틀자 물이 세차게 쏟아져 나왔어요.", "choices": ["퐁당", "첨벙", "졸졸", "콸콸"], "answer": 3, "explanation": "많은 물이 힘차고 세게 쏟아지는 소리는 ‘콸콸’이에요."}, {"q": "산에서 내려온 작은 시냇물이 돌 사이로 조용히 흘렀어요.", "choices": ["퐁당", "졸졸", "첨벙", "콸콸"], "answer": 1, "explanation": "적은 양의 물이 가늘고 부드럽게 흐르는 소리는 ‘졸졸’이에요."}, {"q": "개구리가 연못으로 뛰어들며 작은 소리를 냈어요.", "choices": ["졸졸", "콸콸", "첨벙", "퐁당"], "answer": 3, "explanation": "개구리처럼 작은 것이 물속으로 떨어질 때는 ‘퐁당’이 잘 어울려요."}, {"q": "화분 밑 구멍에서 물이 가늘게 계속 흘러나왔어요.", "choices": ["졸졸", "콸콸", "퐁당", "첨벙"], "answer": 0, "explanation": "물이 적은 양으로 가늘게 이어져 흐르면 ‘졸졸’이라고 해요."}, {"q": "민이가 수영장 물속으로 뛰어들자 물이 크게 튀었어요.", "choices": ["졸졸", "첨벙", "퐁당", "콸콸"], "answer": 1, "explanation": "사람이 물에 들어가며 큰 물보라가 일 때는 ‘첨벙’이에요."}, {"q": "폭포에서 많은 물이 아래로 힘차게 떨어졌어요.", "choices": ["첨벙", "졸졸", "콸콸", "퐁당"], "answer": 2, "explanation": "많은 물이 거세게 흐르거나 쏟아지는 소리는 ‘콸콸’이에요."}, {"q": "정수기에서 컵으로 물이 가늘게 흘러 들어갔어요.", "choices": ["첨벙", "콸콸", "퐁당", "졸졸"], "answer": 3, "explanation": "물이 가늘고 조용하게 흘러가는 소리는 ‘졸졸’이에요."}, {"q": "큰 호스에서 물이 세차게 쏟아져 마당을 적셨어요.", "choices": ["졸졸", "콸콸", "퐁당", "첨벙"], "answer": 1, "explanation": "큰 양의 물이 힘차게 쏟아질 때는 ‘콸콸’이라고 해요."}, {"q": "동전을 분수대에 던지자 물속으로 가볍게 들어갔어요.", "choices": ["콸콸", "첨벙", "퐁당", "졸졸"], "answer": 2, "explanation": "작은 동전이 물에 떨어지는 소리는 ‘퐁당’이에요."}, {"q": "강아지가 개울에 뛰어들며 물을 크게 튀겼어요.", "choices": ["첨벙", "콸콸", "졸졸", "퐁당"], "answer": 0, "explanation": "몸이 물에 닿아 물이 크게 튀는 모습은 ‘첨벙’이에요."}];
+    let score = 0;
+    let done = 0;
+    const answered = Array(questions.length).fill(false);
+
+    function renderQuiz(){
+      const quiz=document.getElementById("quiz");
+      quiz.innerHTML="";
+
+      questions.forEach((item,qi)=>{
+        const section=document.createElement("section");
+        section.className="question";
+
+        const title=document.createElement("h2");
+        title.textContent=`${qi+1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices=document.createElement("div");
+        choices.className="choices";
+
+        item.choices.forEach((text,ci)=>{
+          const button=document.createElement("button");
+          button.className="choice";
+          button.textContent=`${ci+1}. ${text}`;
+          button.addEventListener("click",()=>checkAnswer(qi,ci,button,section));
+          choices.appendChild(button);
+        });
+
+        const result=document.createElement("div");
+        result.className="result";
+        const explain=document.createElement("div");
+        explain.className="explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(qi,ci,selected,section){
+      if(answered[qi]) return;
+
+      answered[qi]=true;
+      done++;
+
+      const item=questions[qi];
+      const buttons=section.querySelectorAll(".choice");
+      const result=section.querySelector(".result");
+      const explain=section.querySelector(".explain");
+
+      buttons.forEach((button,index)=>{
+        button.disabled=true;
+        if(index===item.answer) button.classList.add("correct");
+      });
+
+      if(ci===item.answer){
+        score++;
+        result.textContent="⭕ 정답이에요!";
+      }else{
+        selected.classList.add("wrong");
+        result.textContent=`❌ 정답은 ‘${item.choices[item.answer]}’이에요.`;
+      }
+
+      explain.textContent=`💡 ${item.explanation}`;
+      explain.style.display="block";
+
+      document.getElementById("score").textContent=score;
+      document.getElementById("done").textContent=done;
+
+      if(done===questions.length) showFinalMessage();
+    }
+
+    function showFinalMessage(){
+      const box=document.getElementById("finalMessage");
+
+      if(score===12){
+        box.textContent="🎉 12문제를 모두 맞혔어요! 네 가지 물소리의 차이를 정확히 알고 있네요.";
+      }else if(score>=9){
+        box.textContent=`👏 ${score}문제를 맞혔어요! 헷갈린 문제만 다시 살펴보세요.`;
+      }else{
+        box.textContent=`🌱 ${score}문제를 맞혔어요. 아래 정리를 읽고 다시 도전해 보세요!`;
+      }
+
+      box.style.display="block";
+      box.scrollIntoView({behavior:"smooth",block:"center"});
+    }
+
+    function resetQuiz(){
+      score=0;
+      done=0;
+      answered.fill(false);
+
+      document.getElementById("score").textContent="0";
+      document.getElementById("done").textContent="0";
+      document.getElementById("finalMessage").style.display="none";
+
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
