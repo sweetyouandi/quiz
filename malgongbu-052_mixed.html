@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>데굴데굴·또르르·빙글빙글·빙빙 퀴즈</title>
+  <style>
+    :root {
+      --bg: #f7fbff;
+      --card: #ffffff;
+      --text: #2f3440;
+      --sub: #6f7785;
+      --line: #dce8f2;
+      --accent: #5b8def;
+      --accent-soft: #edf4ff;
+      --correct: #2f9e66;
+      --correct-bg: #eaf8f1;
+      --wrong: #d9485f;
+      --wrong-bg: #fff0f3;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+                   "Noto Sans KR", "Malgun Gothic", sans-serif;
+      background: linear-gradient(180deg, #f3f9ff 0%, #ffffff 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(92%, 680px);
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: #3f6fcf;
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 5vw, 34px);
+      line-height: 1.35;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      color: var(--sub);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .progress-box {
+      background: #e7eef7;
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 18px 0 12px;
+    }
+
+    .progress {
+      height: 100%;
+      width: 0;
+      background: var(--accent);
+      transition: width .25s ease;
+    }
+
+    .status {
+      display: flex;
+      justify-content: space-between;
+      color: var(--sub);
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 12px 32px rgba(68, 104, 148, 0.09);
+    }
+
+    .question-number {
+      color: var(--accent);
+      font-weight: 900;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .question {
+      margin: 0 0 20px;
+      font-size: clamp(20px, 4.8vw, 25px);
+      line-height: 1.55;
+      letter-spacing: -0.035em;
+      font-weight: 800;
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+    }
+
+    .option {
+      width: 100%;
+      border: 2px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fff;
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: left;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease;
+    }
+
+    .option:hover {
+      transform: translateY(-1px);
+      border-color: #9cbcf4;
+    }
+
+    .option:disabled { cursor: default; }
+
+    .option.correct {
+      border-color: var(--correct);
+      background: var(--correct-bg);
+      color: #187a4a;
+    }
+
+    .option.wrong {
+      border-color: var(--wrong);
+      background: var(--wrong-bg);
+      color: #b12f45;
+    }
+
+    .feedback {
+      min-height: 58px;
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      font-size: 16px;
+      line-height: 1.55;
+      display: none;
+    }
+
+    .feedback.show { display: block; }
+    .feedback.correct {
+      background: var(--correct-bg);
+      color: #187a4a;
+    }
+    .feedback.wrong {
+      background: var(--wrong-bg);
+      color: #a92d42;
+    }
+
+    .next-btn, .restart-btn {
+      width: 100%;
+      margin-top: 16px;
+      border: 0;
+      border-radius: 16px;
+      padding: 16px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .next-btn:disabled {
+      background: #c7d3e4;
+      cursor: default;
+    }
+
+    .result {
+      text-align: center;
+      display: none;
+    }
+
+    .result.show { display: block; }
+    .quiz.hide { display: none; }
+
+    .result-emoji {
+      font-size: 58px;
+      margin-bottom: 8px;
+    }
+
+    .score {
+      font-size: 46px;
+      font-weight: 900;
+      color: var(--accent);
+      margin: 8px 0;
+    }
+
+    .result-message {
+      color: var(--sub);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .word-guide {
+      margin-top: 22px;
+      background: #fff;
+      border: 1px dashed #bfd0e6;
+      border-radius: 18px;
+      padding: 18px;
+      text-align: left;
+    }
+
+    .word-guide h2 {
+      font-size: 18px;
+      margin: 0 0 12px;
+    }
+
+    .word-guide p {
+      margin: 8px 0;
+      color: #555;
+      line-height: 1.65;
+      font-size: 15px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 22px;
+      color: #8c96a3;
+      font-size: 13px;
+    }
+
+    @media (max-width: 480px) {
+      .wrap { width: 94%; padding-top: 20px; }
+      .card { padding: 20px 17px; border-radius: 18px; }
+      .option { font-size: 17px; padding: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="badge">엄마의 말공부 퀴즈</div>
+      <h1>데굴데굴 · 또르르<br>빙글빙글 · 빙빙의 차이</h1>
+      <p class="subtitle">문장을 읽고 가장 잘 어울리는 표현을 골라 보세요.</p>
+    </section>
+
+    <section id="quiz" class="quiz">
+      <div class="progress-box">
+        <div id="progress" class="progress"></div>
+      </div>
+      <div class="status">
+        <span id="questionCount">1 / 10</span>
+        <span id="scoreCount">점수 0</span>
+      </div>
+
+      <div class="card">
+        <div id="questionNumber" class="question-number">문제 1</div>
+        <h2 id="question" class="question"></h2>
+        <div id="options" class="options"></div>
+        <div id="feedback" class="feedback"></div>
+        <button id="nextBtn" class="next-btn" disabled>다음 문제</button>
+      </div>
+    </section>
+
+    <section id="result" class="result">
+      <div class="card">
+        <div id="resultEmoji" class="result-emoji">🎉</div>
+        <h2>퀴즈 완료!</h2>
+        <div id="finalScore" class="score">0점</div>
+        <p id="resultMessage" class="result-message"></p>
+        <button id="restartBtn" class="restart-btn">다시 풀기</button>
+
+        <div class="word-guide">
+          <h2>표현을 다시 살펴봐요</h2>
+          <p><strong>데굴데굴</strong> : 크거나 둥근 물체가 계속 굴러가는 모습</p>
+          <p><strong>또르르</strong> : 작고 가벼운 물체가 매끄럽게 굴러가는 모습</p>
+          <p><strong>빙글빙글</strong> : 보기 좋게 여러 번 둥글게 도는 모습</p>
+          <p><strong>빙빙</strong> : 같은 곳을 중심으로 계속 빠르게 도는 모습</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>물체의 크기와 도는 모습을 떠올려 보세요 😊</footer>
+  </main>
+
+  <script>
+    const quizData = [
+      {
+        question: "발레리나가 제자리에서 우아하게 몸을 돌고 있어요.",
+        options: ["또르르", "빙글빙글", "데굴데굴"],
+        answer: "빙글빙글",
+        explanation: "몸이 보기 좋게 여러 번 둥글게 도는 모습은 ‘빙글빙글’이에요."
+      },
+      {
+        question: "공이 언덕 아래로 굴러 내려갔어요.",
+        options: ["데굴데굴", "빙빙", "또르르"],
+        answer: "데굴데굴",
+        explanation: "공처럼 둥근 물체가 계속 굴러가는 모습은 ‘데굴데굴’이에요."
+      },
+      {
+        question: "선풍기가 계속 돌며 바람을 보내고 있어요.",
+        options: ["데굴데굴", "빙글빙글", "빙빙"],
+        answer: "빙빙",
+        explanation: "같은 곳을 중심으로 계속 빠르게 도는 모습은 ‘빙빙’이에요."
+      },
+      {
+        question: "구슬이 바닥을 따라 작은 소리를 내며 굴러갔어요.",
+        options: ["데굴데굴", "또르르", "빙빙"],
+        answer: "또르르",
+        explanation: "작고 가벼운 구슬이 매끄럽게 굴러가는 모습은 ‘또르르’예요."
+      },
+      {
+        question: "호박이 바닥에서 크게 굴러갔어요.",
+        options: ["또르르", "빙빙", "데굴데굴"],
+        answer: "데굴데굴",
+        explanation: "호박처럼 크고 둥근 물체가 굴러갈 때는 ‘데굴데굴’이에요."
+      },
+      {
+        question: "리본이 바람을 타고 예쁘게 돌고 있어요.",
+        options: ["빙글빙글", "또르르", "데굴데굴"],
+        answer: "빙글빙글",
+        explanation: "리본이 예쁘게 둥글게 도는 모습은 ‘빙글빙글’이 잘 어울려요."
+      },
+      {
+        question: "연필이 책상에서 굴러 바닥으로 떨어졌어요.",
+        options: ["데굴데굴", "또르르", "빙빙"],
+        answer: "또르르",
+        explanation: "연필처럼 가볍고 작은 물건이 매끄럽게 굴러갈 때는 ‘또르르’가 잘 어울려요."
+      },
+      {
+        question: "놀이공원 회전목마가 계속 돌고 있어요.",
+        options: ["빙빙", "데굴데굴", "또르르"],
+        answer: "빙빙",
+        explanation: "회전목마처럼 한곳을 중심으로 계속 도는 모습은 ‘빙빙’이에요."
+      },
+      {
+        question: "큰 공이 바닥을 따라 힘차게 굴러갔어요.",
+        options: ["빙글빙글", "빙빙", "데굴데굴"],
+        answer: "데굴데굴",
+        explanation: "큰 공이 바닥을 따라 계속 굴러가는 모습은 ‘데굴데굴’이에요."
+      },
+      {
+        question: "강아지가 신나서 제자리에서 계속 돌고 있어요.",
+        options: ["빙글빙글", "또르르", "데굴데굴"],
+        answer: "빙글빙글",
+        explanation: "강아지가 몸을 둥글게 돌며 움직이는 모습은 ‘빙글빙글’이에요."
+      }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+    let answered = false;
+
+    const quizEl = document.getElementById("quiz");
+    const resultEl = document.getElementById("result");
+    const questionEl = document.getElementById("question");
+    const questionNumberEl = document.getElementById("questionNumber");
+    const questionCountEl = document.getElementById("questionCount");
+    const scoreCountEl = document.getElementById("scoreCount");
+    const optionsEl = document.getElementById("options");
+    const feedbackEl = document.getElementById("feedback");
+    const nextBtn = document.getElementById("nextBtn");
+    const progressEl = document.getElementById("progress");
+    const finalScoreEl = document.getElementById("finalScore");
+    const resultMessageEl = document.getElementById("resultMessage");
+    const resultEmojiEl = document.getElementById("resultEmoji");
+    const restartBtn = document.getElementById("restartBtn");
+
+    function renderQuestion() {
+      answered = false;
+      nextBtn.disabled = true;
+      feedbackEl.className = "feedback";
+      feedbackEl.textContent = "";
+
+      const item = quizData[currentIndex];
+
+      questionNumberEl.textContent = `문제 ${currentIndex + 1}`;
+      questionCountEl.textContent = `${currentIndex + 1} / ${quizData.length}`;
+      scoreCountEl.textContent = `점수 ${score}`;
+      questionEl.textContent = item.question;
+      progressEl.style.width = `${(currentIndex / quizData.length) * 100}%`;
+
+      optionsEl.innerHTML = "";
+
+      item.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.className = "option";
+        button.textContent = `${index + 1}. ${option}`;
+        button.addEventListener("click", () => selectAnswer(button, option));
+        optionsEl.appendChild(button);
+      });
+
+      nextBtn.textContent = currentIndex === quizData.length - 1 ? "결과 보기" : "다음 문제";
+    }
+
+    function selectAnswer(selectedButton, selectedOption) {
+      if (answered) return;
+      answered = true;
+
+      const item = quizData[currentIndex];
+      const buttons = [...document.querySelectorAll(".option")];
+
+      buttons.forEach(button => {
+        button.disabled = true;
+        const optionText = button.textContent.replace(/^\d+\.\s*/, "");
+        if (optionText === item.answer) {
+          button.classList.add("correct");
+        }
+      });
+
+      if (selectedOption === item.answer) {
+        score += 10;
+        selectedButton.classList.add("correct");
+        feedbackEl.className = "feedback show correct";
+        feedbackEl.innerHTML = `⭕ 정답이에요!<br>${item.explanation}`;
+      } else {
+        selectedButton.classList.add("wrong");
+        feedbackEl.className = "feedback show wrong";
+        feedbackEl.innerHTML = `❌ 아쉬워요. 정답은 <strong>${item.answer}</strong>예요.<br>${item.explanation}`;
+      }
+
+      scoreCountEl.textContent = `점수 ${score}`;
+      nextBtn.disabled = false;
+    }
+
+    function showResult() {
+      quizEl.classList.add("hide");
+      resultEl.classList.add("show");
+      finalScoreEl.textContent = `${score}점`;
+
+      if (score === 100) {
+        resultEmojiEl.textContent = "🏆";
+        resultMessageEl.textContent = "모든 문제를 맞혔어요! 굴러가는 모습과 도는 모습을 정확히 구분했네요.";
+      } else if (score >= 80) {
+        resultEmojiEl.textContent = "🎉";
+        resultMessageEl.textContent = "정말 잘했어요! 헷갈린 표현만 한 번 더 살펴보면 완벽해요.";
+      } else if (score >= 60) {
+        resultEmojiEl.textContent = "👏";
+        resultMessageEl.textContent = "잘했어요! 물체의 크기와 움직이는 방법을 떠올려 보세요.";
+      } else {
+        resultEmojiEl.textContent = "🌱";
+        resultMessageEl.textContent = "괜찮아요. 표현의 뜻을 다시 읽고 한 번 더 풀면 금방 익힐 수 있어요.";
+      }
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (!answered) return;
+
+      if (currentIndex < quizData.length - 1) {
+        currentIndex += 1;
+        renderQuestion();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        showResult();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+
+    restartBtn.addEventListener("click", () => {
+      currentIndex = 0;
+      score = 0;
+      resultEl.classList.remove("show");
+      quizEl.classList.remove("hide");
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    renderQuestion();
+  </script>
+</body>
+</html>

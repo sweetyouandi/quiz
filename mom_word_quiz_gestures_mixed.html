@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>두리번두리번·갸웃갸웃·끄덕끄덕·절레절레</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
+      background: #fff9f1;
+      color: #2f2f2f;
+      line-height: 1.6;
+    }
+    .wrap {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      padding: 20px 16px 60px;
+    }
+    .hero {
+      background: linear-gradient(135deg, #fff1b8, #ffd9c7);
+      border-radius: 24px;
+      padding: 28px 22px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(90, 65, 40, 0.08);
+      margin-bottom: 22px;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(255,255,255,.8);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: clamp(25px, 6vw, 38px);
+      line-height: 1.3;
+      margin: 4px 0 10px;
+      word-break: keep-all;
+    }
+    .hero p { margin: 0; font-size: 16px; }
+    .meaning {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    .meaning div {
+      background: #fff;
+      border-radius: 16px;
+      padding: 13px;
+      box-shadow: 0 5px 16px rgba(90, 65, 40, 0.06);
+      font-size: 14px;
+    }
+    .meaning strong { display:block; font-size: 17px; margin-bottom: 3px; }
+    .question {
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 7px 20px rgba(90, 65, 40, 0.07);
+      border: 2px solid transparent;
+    }
+    .question.correct { border-color: #79c58a; }
+    .question.wrong { border-color: #ef8b8b; }
+    .qnum {
+      color: #8a5f3d;
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .qtext {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      word-break: keep-all;
+    }
+    .options {
+      display: grid;
+      gap: 9px;
+    }
+    label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fffaf4;
+      border: 1.5px solid #eadfce;
+      border-radius: 14px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: .15s ease;
+      font-size: 16px;
+    }
+    label:hover { transform: translateY(-1px); border-color: #d6b98d; }
+    input[type="radio"] { width: 19px; height: 19px; accent-color: #d88452; }
+    .explain {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .correct .explain { display:block; background:#edf9ef; color:#26713a; }
+    .wrong .explain { display:block; background:#fff0f0; color:#9f3535; }
+    .actions {
+      position: sticky;
+      bottom: 12px;
+      display: flex;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    button {
+      flex: 1;
+      border: 0;
+      border-radius: 15px;
+      padding: 15px 10px;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(90,65,40,.13);
+    }
+    #checkBtn { background: #e98555; color: white; }
+    #resetBtn { background: #fff; color: #7a5b43; border: 1px solid #e3d5c6; }
+    #result {
+      display: none;
+      margin-top: 22px;
+      background: #5d8f6f;
+      color: white;
+      border-radius: 22px;
+      padding: 24px 18px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 21px;
+      box-shadow: 0 8px 24px rgba(58,100,73,.18);
+    }
+    .small { font-size: 14px; font-weight: 500; margin-top: 5px; }
+    @media (max-width: 480px) {
+      .meaning { grid-template-columns: 1fr; }
+      .question { padding: 17px 15px; }
+      .qtext { font-size: 17px; }
+      label { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="badge">엄마의 말공부 · 몸짓말 퀴즈</div>
+    <h1>두리번두리번, 갸웃갸웃,<br>끄덕끄덕, 절레절레</h1>
+    <p>문장을 읽고 가장 잘 어울리는 말을 골라 보세요.</p>
+  </section>
+
+  <section class="meaning">
+    <div><strong>👀 두리번두리번</strong>이곳저곳을 자꾸 살펴보는 모습</div>
+    <div><strong>🤔 갸웃갸웃</strong>궁금하거나 잘 몰라 고개를 기울이는 모습</div>
+    <div><strong>😊 끄덕끄덕</strong>맞다고 하거나 동의하며 고개를 위아래로 움직이는 모습</div>
+    <div><strong>🙅 절레절레</strong>아니라고 하거나 싫다는 뜻으로 고개를 좌우로 흔드는 모습</div>
+  </section>
+
+  <main id="quiz"></main>
+
+  <div id="result"></div>
+
+  <div class="actions">
+    <button id="resetBtn" type="button">다시 풀기</button>
+    <button id="checkBtn" type="button">정답 확인</button>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    text: "선생님 말씀을 듣고 “네!” 하며 고개를 위아래로 움직였어요.",
+    options: ["절레절레", "두리번두리번", "끄덕끄덕", "갸웃갸웃"],
+    answer: "끄덕끄덕"
+  },
+  {
+    text: "엄마를 찾으며 여기저기를 살펴보고 있어요.",
+    options: ["두리번두리번", "끄덕끄덕", "절레절레", "갸웃갸웃"],
+    answer: "두리번두리번"
+  },
+  {
+    text: "“나는 안 먹을래.” 하며 고개를 좌우로 흔들었어요.",
+    options: ["두리번두리번", "끄덕끄덕", "갸웃갸웃", "절레절레"],
+    answer: "절레절레"
+  },
+  {
+    text: "친구가 어려운 문제를 내자 “음… 왜 그럴까?” 하며 고개를 기울였어요.",
+    options: ["절레절레", "갸웃갸웃", "두리번두리번", "끄덕끄덕"],
+    answer: "갸웃갸웃"
+  },
+  {
+    text: "숨어 있는 고양이를 찾으려고 이쪽저쪽 살펴봤어요.",
+    options: ["절레절레", "두리번두리번", "끄덕끄덕", "갸웃갸웃"],
+    answer: "두리번두리번"
+  },
+  {
+    text: "“정말 하늘이 초록색일까?” 하며 고개를 살짝 기울였어요.",
+    options: ["끄덕끄덕", "절레절레", "두리번두리번", "갸웃갸웃"],
+    answer: "갸웃갸웃"
+  },
+  {
+    text: "친구의 좋은 생각을 듣고 “좋아!” 하며 고개를 위아래로 움직였어요.",
+    options: ["끄덕끄덕", "두리번두리번", "절레절레", "갸웃갸웃"],
+    answer: "끄덕끄덕"
+  },
+  {
+    text: "엄마가 “사탕 더 먹을래?”라고 묻자 “아니!” 하며 고개를 흔들었어요.",
+    options: ["두리번두리번", "끄덕끄덕", "절레절레", "갸웃갸웃"],
+    answer: "절레절레"
+  },
+  {
+    text: "새소리가 들려 어디에서 나는지 주변을 살펴봤어요.",
+    options: ["끄덕끄덕", "두리번두리번", "절레절레", "갸웃갸웃"],
+    answer: "두리번두리번"
+  },
+  {
+    text: "처음 보는 장난감을 보고 “이건 어떻게 가지고 놀지?” 하며 생각했어요.",
+    options: ["갸웃갸웃", "절레절레", "끄덕끄덕", "두리번두리번"],
+    answer: "갸웃갸웃"
+  }
+];
+
+const quiz = document.getElementById("quiz");
+
+questions.forEach((q, index) => {
+  const box = document.createElement("section");
+  box.className = "question";
+  box.dataset.answer = q.answer;
+
+  const optionHtml = q.options.map((opt, i) => `
+    <label>
+      <input type="radio" name="q${index}" value="${opt}">
+      <span>${["①","②","③","④"][i]} ${opt}</span>
+    </label>
+  `).join("");
+
+  box.innerHTML = `
+    <div class="qnum">문제 ${index + 1}</div>
+    <div class="qtext">${q.text}</div>
+    <div class="options">${optionHtml}</div>
+    <div class="explain"></div>
+  `;
+  quiz.appendChild(box);
+});
+
+document.getElementById("checkBtn").addEventListener("click", () => {
+  let score = 0;
+  let unanswered = 0;
+  const boxes = document.querySelectorAll(".question");
+
+  boxes.forEach((box, index) => {
+    box.classList.remove("correct", "wrong");
+    const selected = box.querySelector("input:checked");
+    const explain = box.querySelector(".explain");
+    const answer = box.dataset.answer;
+
+    if (!selected) {
+      unanswered++;
+      explain.textContent = `정답은 ‘${answer}’예요.`;
+      box.classList.add("wrong");
+    } else if (selected.value === answer) {
+      score++;
+      explain.textContent = `정답! ‘${answer}’이 가장 잘 어울려요.`;
+      box.classList.add("correct");
+    } else {
+      explain.textContent = `아쉬워요. 정답은 ‘${answer}’예요.`;
+      box.classList.add("wrong");
+    }
+  });
+
+  const result = document.getElementById("result");
+  const messages = [
+    "몸짓말을 다시 천천히 살펴봐요 🌱",
+    "조금만 더 생각하면 금방 알 수 있어요 😊",
+    "좋아요! 몸짓말의 차이가 보이기 시작했어요 👏",
+    "아주 잘했어요! 말의 느낌을 잘 알고 있네요 🎉"
+  ];
+  const msg = score === 10 ? messages[3] : score >= 7 ? messages[2] : score >= 4 ? messages[1] : messages[0];
+
+  result.innerHTML = `${score}점 / 10점<div class="small">${msg}${unanswered ? `<br>고르지 않은 문제가 ${unanswered}개 있어요.` : ""}</div>`;
+  result.style.display = "block";
+  result.scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+  document.querySelectorAll(".question").forEach(box => box.classList.remove("correct", "wrong"));
+  const result = document.getElementById("result");
+  result.style.display = "none";
+  result.innerHTML = "";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+</script>
+</body>
+</html>
