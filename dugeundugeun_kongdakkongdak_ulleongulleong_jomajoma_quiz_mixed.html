@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>두근두근·콩닥콩닥·울렁울렁·조마조마 퀴즈</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:#fff8fa;color:#333}
+    .wrap{width:min(720px,100%);margin:0 auto;padding:22px 15px 45px}
+    .hero{padding:27px 18px;margin-bottom:20px;text-align:center;background:linear-gradient(135deg,#f9e1e7,#f5eafa);border-radius:24px;box-shadow:0 7px 20px rgba(0,0,0,.08)}
+    .hero h1{margin:0 0 10px;font-size:25px;line-height:1.45}
+    .hero p{margin:0;font-size:17px;line-height:1.6}
+    .progress{position:sticky;top:8px;z-index:10;margin-bottom:16px;padding:12px 16px;text-align:center;color:#fff;background:#744b57;border-radius:15px;font-size:17px;font-weight:700;box-shadow:0 5px 15px rgba(0,0,0,.15)}
+    .question{margin-bottom:16px;padding:20px;background:#fff;border-radius:20px;box-shadow:0 5px 16px rgba(0,0,0,.07)}
+    .question h2{margin:0 0 14px;font-size:20px;line-height:1.55}
+    .choices{display:grid;gap:10px}
+    .choice{width:100%;padding:14px 15px;border:2px solid #eadde1;border-radius:14px;background:#fffdfd;text-align:left;font-size:18px;cursor:pointer;transition:.15s}
+    .choice:hover:not(:disabled){background:#fff0f4;transform:translateY(-1px)}
+    .choice:disabled{cursor:default}
+    .choice.correct{border-color:#5dbb7a;background:#def7e6;color:#176536;font-weight:700}
+    .choice.wrong{border-color:#e07373;background:#ffe3e3;color:#982626;font-weight:700}
+    .result{min-height:25px;margin-top:12px;font-size:17px;font-weight:700;line-height:1.5}
+    .explain{display:none;margin-top:8px;padding:11px 13px;background:#fff8df;border-radius:11px;font-size:16px;line-height:1.55}
+    .summary{margin-top:24px;padding:21px;background:#faedf1;border-radius:20px;font-size:17px;line-height:1.9}
+    .summary h3{margin:0 0 9px;font-size:21px}
+    .final-message{display:none;margin-top:18px;padding:18px;background:#fff0f4;border-radius:18px;text-align:center;font-size:19px;font-weight:700;line-height:1.6}
+    .reset{display:block;margin:24px auto 0;padding:13px 24px;border:0;border-radius:14px;background:#b56c7b;color:white;font-size:17px;font-weight:700;cursor:pointer}
+    @media(max-width:430px){.hero h1{font-size:21px}.question h2{font-size:19px}.choice{font-size:17px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>💓 두근두근·콩닥콩닥<br>울렁울렁·조마조마</h1>
+      <p>가슴과 마음의 움직임을 떠올리며 알맞은 말을 골라 보세요!</p>
+    </section>
+
+    <div class="progress">
+      맞힌 문제 <span id="score">0</span>개 · 푼 문제 <span id="done">0</span>/12
+    </div>
+
+    <div id="quiz"></div>
+    <div id="finalMessage" class="final-message"></div>
+
+    <section class="summary">
+      <h3>🌱 한 번에 정리해요</h3>
+      💓 <b>두근두근</b> : 기대하거나 긴장해서 가슴이 크게 뛰는 느낌<br>
+      🐇 <b>콩닥콩닥</b> : 놀라거나 겁이 나서 심장이 빠르게 뛰는 느낌<br>
+      🌊 <b>울렁울렁</b> : 속이 메스껍거나 감정이 북받쳐 흔들리는 느낌<br>
+      😟 <b>조마조마</b> : 무슨 일이 생길까 봐 마음을 졸이며 불안한 느낌
+    </section>
+
+    <button class="reset" onclick="resetQuiz()">처음부터 다시 풀기</button>
+  </main>
+
+  <script>
+    const questions = [{"q": "갑자기 큰 소리가 나자 준이의 심장이 빠르게 뛰었어요.", "choices": ["두근두근", "울렁울렁", "콩닥콩닥", "조마조마"], "answer": 2, "explanation": "놀라거나 겁이 나서 심장이 작고 빠르게 뛰는 느낌은 ‘콩닥콩닥’이에요."}, {"q": "내일 소풍을 간다는 생각에 민이의 가슴이 설레며 뛰었어요.", "choices": ["두근두근", "콩닥콩닥", "울렁울렁", "조마조마"], "answer": 0, "explanation": "기대하거나 긴장해서 가슴이 크게 뛰는 느낌은 ‘두근두근’이에요."}, {"q": "공이 창문 가까이 날아가자 깨질까 봐 마음이 불안했어요.", "choices": ["두근두근", "콩닥콩닥", "울렁울렁", "조마조마"], "answer": 3, "explanation": "무슨 일이 생길까 봐 마음을 졸이며 불안한 느낌은 ‘조마조마’예요."}, {"q": "배를 타고 흔들리자 속이 메스껍고 어지러웠어요.", "choices": ["두근두근", "울렁울렁", "콩닥콩닥", "조마조마"], "answer": 1, "explanation": "속이 메스껍거나 감정이 북받쳐 흔들리는 느낌은 ‘울렁울렁’이에요."}, {"q": "무대에 오르기 전 민이는 기대와 긴장으로 가슴이 뛰었어요.", "choices": ["울렁울렁", "조마조마", "콩닥콩닥", "두근두근"], "answer": 3, "explanation": "설렘과 긴장이 섞여 가슴이 뛰는 느낌은 ‘두근두근’이에요."}, {"q": "회전목마를 오래 탔더니 속이 메스껍고 흔들리는 것 같았어요.", "choices": ["울렁울렁", "조마조마", "두근두근", "콩닥콩닥"], "answer": 0, "explanation": "멀미처럼 속이 메스껍고 흔들리는 느낌은 ‘울렁울렁’이에요."}, {"q": "어두운 방에서 갑자기 문이 열리자 심장이 빠르게 뛰었어요.", "choices": ["울렁울렁", "콩닥콩닥", "두근두근", "조마조마"], "answer": 1, "explanation": "깜짝 놀라 심장이 빠르고 작게 뛰는 모습은 ‘콩닥콩닥’이에요."}, {"q": "동생이 높은 곳에 올라가자 떨어질까 봐 마음을 졸였어요.", "choices": ["콩닥콩닥", "울렁울렁", "조마조마", "두근두근"], "answer": 2, "explanation": "위험한 일이 생길까 봐 불안하게 지켜보는 느낌은 ‘조마조마’예요."}, {"q": "슬픈 영화를 보니 가슴이 벅차고 속에서 감정이 올라왔어요.", "choices": ["울렁울렁", "콩닥콩닥", "조마조마", "두근두근"], "answer": 0, "explanation": "감정이 북받쳐 마음속이 흔들리는 느낌도 ‘울렁울렁’이라고 해요."}, {"q": "시험 결과를 기다리며 떨어졌을까 봐 계속 걱정했어요.", "choices": ["울렁울렁", "두근두근", "조마조마", "콩닥콩닥"], "answer": 2, "explanation": "결과가 나쁘지 않을까 걱정하며 마음을 졸이는 느낌은 ‘조마조마’예요."}, {"q": "좋아하는 친구에게 편지를 주려니 가슴이 설레며 뛰었어요.", "choices": ["조마조마", "콩닥콩닥", "울렁울렁", "두근두근"], "answer": 3, "explanation": "좋아하는 마음이나 기대 때문에 가슴이 뛰는 느낌은 ‘두근두근’이에요."}, {"q": "강아지가 갑자기 짖자 민이의 심장이 빠르게 뛰었어요.", "choices": ["조마조마", "콩닥콩닥", "울렁울렁", "두근두근"], "answer": 1, "explanation": "놀람이나 두려움 때문에 심장이 빠르게 뛰면 ‘콩닥콩닥’이 잘 어울려요."}];
+    let score = 0;
+    let done = 0;
+    const answered = Array(questions.length).fill(false);
+
+    function renderQuiz(){
+      const quiz=document.getElementById("quiz");
+      quiz.innerHTML="";
+
+      questions.forEach((item,qi)=>{
+        const section=document.createElement("section");
+        section.className="question";
+
+        const title=document.createElement("h2");
+        title.textContent=`${qi+1}. ${item.q}`;
+        section.appendChild(title);
+
+        const choices=document.createElement("div");
+        choices.className="choices";
+
+        item.choices.forEach((text,ci)=>{
+          const button=document.createElement("button");
+          button.className="choice";
+          button.textContent=`${ci+1}. ${text}`;
+          button.addEventListener("click",()=>checkAnswer(qi,ci,button,section));
+          choices.appendChild(button);
+        });
+
+        const result=document.createElement("div");
+        result.className="result";
+
+        const explain=document.createElement("div");
+        explain.className="explain";
+
+        section.appendChild(choices);
+        section.appendChild(result);
+        section.appendChild(explain);
+        quiz.appendChild(section);
+      });
+    }
+
+    function checkAnswer(qi,ci,selected,section){
+      if(answered[qi]) return;
+
+      answered[qi]=true;
+      done++;
+
+      const item=questions[qi];
+      const buttons=section.querySelectorAll(".choice");
+      const result=section.querySelector(".result");
+      const explain=section.querySelector(".explain");
+
+      buttons.forEach((button,index)=>{
+        button.disabled=true;
+        if(index===item.answer) button.classList.add("correct");
+      });
+
+      if(ci===item.answer){
+        score++;
+        result.textContent="⭕ 정답이에요!";
+      }else{
+        selected.classList.add("wrong");
+        result.textContent=`❌ 정답은 ‘${item.choices[item.answer]}’이에요.`;
+      }
+
+      explain.textContent=`💡 ${item.explanation}`;
+      explain.style.display="block";
+
+      document.getElementById("score").textContent=score;
+      document.getElementById("done").textContent=done;
+
+      if(done===questions.length) showFinalMessage();
+    }
+
+    function showFinalMessage(){
+      const box=document.getElementById("finalMessage");
+
+      if(score===12){
+        box.textContent="🎉 12문제를 모두 맞혔어요! 네 가지 마음의 움직임을 정확히 알고 있네요.";
+      }else if(score>=9){
+        box.textContent=`👏 ${score}문제를 맞혔어요! 헷갈린 문제만 다시 살펴보세요.`;
+      }else{
+        box.textContent=`🌱 ${score}문제를 맞혔어요. 아래 정리를 읽고 다시 도전해 보세요!`;
+      }
+
+      box.style.display="block";
+      box.scrollIntoView({behavior:"smooth",block:"center"});
+    }
+
+    function resetQuiz(){
+      score=0;
+      done=0;
+      answered.fill(false);
+
+      document.getElementById("score").textContent="0";
+      document.getElementById("done").textContent="0";
+      document.getElementById("finalMessage").style.display="none";
+
+      renderQuiz();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
