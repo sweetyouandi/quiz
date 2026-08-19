@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>씩씩거리다·발끈·울컥·부글부글 퀴즈</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:#fbf8fa;color:#413941}
+.wrap{width:min(720px,100%);margin:0 auto;padding:22px 15px 48px}
+.hero{padding:28px 18px;text-align:center;background:linear-gradient(135deg,#f2e8ee,#fff1e8);border-radius:24px;box-shadow:0 7px 20px rgba(86,57,72,.08)}
+.hero h1{font-size:28px;line-height:1.45;margin:0 0 8px}
+.hero p{margin:0;color:#776b74;line-height:1.65}
+.meaning{margin:18px 0;background:#fff;border-radius:20px;padding:18px;border:1px solid #eee4e9;line-height:1.8}
+.meaning b{color:#865f72}
+.progress{height:10px;background:#f0e6eb;border-radius:99px;overflow:hidden;margin:16px 0 8px}
+.progressbar{height:100%;width:0;background:#a8738b;transition:.25s}
+.status{display:flex;justify-content:space-between;color:#80727a;font-size:14px;margin:8px 2px 14px}
+.card{background:#fff;border-radius:22px;padding:22px;border:1px solid #eee4e9;box-shadow:0 6px 18px rgba(86,57,72,.06)}
+.qnum{color:#966d80;font-size:14px;font-weight:800;margin-bottom:8px}
+.question{font-size:21px;line-height:1.55;margin:0 0 18px;word-break:keep-all}
+.options{display:grid;gap:10px}
+.option{border:1px solid #e7dce2;background:#fffdfd;border-radius:15px;padding:14px 15px;text-align:left;font-size:17px;cursor:pointer;color:#413941}
+.option:hover{background:#faf3f6}.option.correct{background:#edf8e9;border-color:#9cc48c}.option.wrong{background:#fff0ed;border-color:#e7a69b}.option:disabled{cursor:default}
+.feedback{display:none;margin-top:15px;padding:14px;border-radius:14px;background:#f8f4f6;line-height:1.65}
+.next{width:100%;margin-top:16px;border:0;border-radius:15px;padding:14px;background:#93687c;color:#fff;font-size:17px;font-weight:800;cursor:pointer}.next:disabled{opacity:.45}
+.result{display:none;background:#fff;border-radius:22px;padding:28px 20px;text-align:center;border:1px solid #eee4e9}
+.result.show{display:block}.scorebig{font-size:27px;font-weight:900;color:#855c70}
+.summary{margin-top:18px;text-align:left;background:#fbf4f7;border-radius:18px;padding:17px;line-height:1.85}
+.restart{margin-top:17px;border:0;border-radius:14px;background:#de9274;color:#fff;padding:13px 22px;font-weight:800;font-size:16px}
+footer{text-align:center;color:#8c8087;font-size:13px;margin-top:20px}
+</style>
+</head>
+<body>
+<main class="wrap">
+<section class="hero">
+<h1>📖 씩씩거리다·발끈·울컥·부글부글</h1>
+<p>모두 화가 날 때 쓸 수 있지만 느낌은 달라요.<br>문장을 읽고 가장 잘 어울리는 표현을 골라 보세요.</p>
+</section>
+
+<section class="meaning">
+<b>씩씩거리다</b> · 화가 나거나 흥분해서 거친 숨을 자꾸 세게 내쉬는 모습<br>
+<b>발끈</b> · 어떤 말이나 행동에 자극받아 갑자기 성을 내는 모습<br>
+<b>울컥</b> · 분노·슬픔 같은 강한 감정이 갑자기 치밀어 오르는 순간<br>
+<b>부글부글</b> · 분하거나 언짢은 마음이 속에서 계속 끓어오르는 느낌
+</section>
+
+<div class="progress"><div id="progressBar" class="progressbar"></div></div>
+<div class="status"><span id="count">1 / 12</span><span id="score">점수 0</span></div>
+
+<section id="quizCard" class="card">
+<div id="qnum" class="qnum"></div>
+<h2 id="question" class="question"></h2>
+<div id="options" class="options"></div>
+<div id="feedback" class="feedback"></div>
+<button id="nextBtn" class="next" disabled>다음 문제</button>
+</section>
+
+<section id="result" class="result">
+<div style="font-size:48px">🎉</div>
+<h2>퀴즈 완료!</h2>
+<div id="finalScore" class="scorebig"></div>
+<div class="summary">
+💗 <b>씩씩거리다</b> — 화가 나서 거친 숨을 반복해서 내쉬기<br>
+💗 <b>발끈</b> — 순간적으로 갑자기 화내기<br>
+💗 <b>울컥</b> — 강한 감정이 갑자기 치밀기<br>
+💗 <b>부글부글</b> — 속에서 화가 계속 끓어오르기
+</div>
+<button id="restartBtn" class="restart">다시 풀기</button>
+</section>
+
+<footer>화가 ‘어떻게 나타나는지’를 떠올리면 차이가 더 잘 보여요 😊</footer>
+</main>
+
+<script>
+const questions = [{"question": "친구가 내 그림을 놀리자 순간 얼굴이 붉어지며 “왜 그런 말을 해!” 하고 화를 냈어요.", "options": ["씩씩거리다", "발끈", "울컥", "부글부글"], "answer": 1, "explanation": "어떤 말이나 행동에 자극받아 갑자기 성을 내는 모습에는 ‘발끈’이 잘 어울려요."}, {"question": "억울한 일을 떠올리니 속에서는 화가 좀처럼 가라앉지 않고 계속 끓어올랐어요.", "options": ["울컥", "씩씩거리다", "발끈", "부글부글"], "answer": 3, "explanation": "분하거나 언짢은 마음이 한동안 속에서 계속 끓어오르는 느낌은 ‘부글부글’이에요."}, {"question": "속상한 이야기를 듣는 순간 눈물이 날 것처럼 감정이 갑자기 목까지 치밀었어요.", "options": ["울컥", "발끈", "부글부글", "씩씩거리다"], "answer": 0, "explanation": "슬픔이나 분노 같은 강한 감정이 갑자기 치밀어 오르는 순간에는 ‘울컥’이 잘 어울려요."}, {"question": "동생에게 화가 난 아이가 말을 하지 않고 코로 거친 숨을 세게 내쉬며 씩씩거렸어요.", "options": ["발끈", "울컥", "씩씩거리다", "부글부글"], "answer": 2, "explanation": "화가 나거나 흥분해서 거친 숨을 자꾸 세게 내쉬는 모습은 ‘씩씩거리다’라고 해요."}, {"question": "내 차례인데 친구가 새치기하자 바로 “내가 먼저였어!” 하며 화를 냈어요.", "options": ["부글부글", "씩씩거리다", "울컥", "발끈"], "answer": 3, "explanation": "어떤 말이나 행동에 자극받아 즉시 화를 내는 모습은 ‘발끈’이에요."}, {"question": "칭찬 한마디를 듣자 그동안 힘들었던 기억이 떠올라 갑자기 눈물이 차올랐어요.", "options": ["울컥", "발끈", "부글부글", "씩씩거리다"], "answer": 0, "explanation": "감동이나 슬픔처럼 격한 감정이 한순간에 치밀어 오를 때 ‘울컥’이라고 해요."}, {"question": "잘못한 사람에게 아무 말도 못 했지만 생각할수록 속에서 분한 마음이 계속 끓었어요.", "options": ["씩씩거리다", "발끈", "부글부글", "울컥"], "answer": 2, "explanation": "겉으로 바로 터뜨리지 않아도 속에서 화가 계속 끓어오르는 상태는 ‘부글부글’이 잘 어울려요."}, {"question": "경기에서 진 아이가 몹시 화가 나서 한동안 거친 숨을 반복해서 내쉬며 씩씩거렸어요.", "options": ["부글부글", "씩씩거리다", "발끈", "울컥"], "answer": 1, "explanation": "화를 내며 거친 숨을 자꾸 반복해서 내쉬는 모습은 ‘씩씩거리다’예요."}, {"question": "엄마가 오해해서 꾸중하자 억울한 마음이 순간 확 치밀어 눈물이 날 뻔했어요.", "options": ["발끈", "부글부글", "울컥", "씩씩거리다"], "answer": 2, "explanation": "억울함이나 서러움처럼 강한 감정이 갑자기 솟구치는 순간에는 ‘울컥’이 자연스러워요."}, {"question": "친구가 장난으로 내 물건을 숨겼다는 말을 듣자 곧바로 목소리를 높이며 화를 냈어요.", "options": ["발끈", "씩씩거리다", "울컥", "부글부글"], "answer": 0, "explanation": "무언가에 자극받아 갑자기 성을 내는 모습은 ‘발끈’이라고 해요."}, {"question": "사과도 받지 못한 일을 생각할수록 마음속에서 화가 계속 끓는 것 같았어요.", "options": ["울컥", "씩씩거리다", "발끈", "부글부글"], "answer": 3, "explanation": "분한 감정이 금방 사라지지 않고 마음속에서 계속 끓는 느낌은 ‘부글부글’이에요."}, {"question": "형과 다툰 뒤 아이가 입을 다문 채 거친 숨을 내쉬며 씩씩거리면서 방으로 들어갔어요.", "options": ["울컥", "씩씩거리다", "부글부글", "발끈"], "answer": 1, "explanation": "화가 나서 숨을 세차고 거칠게 반복해서 쉬는 모습에는 ‘씩씩거리다’가 잘 어울려요."}];
+let current=0,score=0,answered=false;
+const qnum=document.getElementById("qnum"),question=document.getElementById("question"),options=document.getElementById("options"),
+feedback=document.getElementById("feedback"),nextBtn=document.getElementById("nextBtn"),progressBar=document.getElementById("progressBar"),
+count=document.getElementById("count"),scoreEl=document.getElementById("score"),quizCard=document.getElementById("quizCard"),
+result=document.getElementById("result"),finalScore=document.getElementById("finalScore");
+function render(){
+ answered=false;nextBtn.disabled=true;feedback.style.display="none";feedback.textContent="";options.innerHTML="";
+ const item=questions[current];
+ qnum.textContent=`문제 ${current+1}`;
+ question.textContent=item.question;
+ count.textContent=`${current+1} / ${questions.length}`;
+ scoreEl.textContent=`점수 ${score}`;
+ progressBar.style.width=`${(current/questions.length)*100}%`;
+ item.options.forEach((txt,i)=>{
+   const b=document.createElement("button");
+   b.className="option";
+   b.textContent=`${["①","②","③","④"][i]} ${txt}`;
+   b.onclick=()=>choose(i,b);
+   options.appendChild(b);
+ });
+}
+function choose(i,selected){
+ if(answered)return;
+ answered=true;nextBtn.disabled=false;
+ const item=questions[current];
+ [...options.children].forEach((b,idx)=>{b.disabled=true;if(idx===item.answer)b.classList.add("correct")});
+ if(i===item.answer){score++;feedback.textContent=`⭕ 정답이에요! ${item.explanation}`;}
+ else{selected.classList.add("wrong");feedback.textContent=`❌ 정답은 ‘${item.options[item.answer]}’이에요. ${item.explanation}`;}
+ scoreEl.textContent=`점수 ${score}`;feedback.style.display="block";
+}
+nextBtn.onclick=()=>{
+ if(!answered)return;
+ if(current<questions.length-1){current++;render();window.scrollTo({top:0,behavior:"smooth"});}
+ else{quizCard.style.display="none";result.classList.add("show");progressBar.style.width="100%";finalScore.textContent=`${score} / ${questions.length}`;window.scrollTo({top:0,behavior:"smooth"});}
+};
+document.getElementById("restartBtn").onclick=()=>{
+ current=0;score=0;result.classList.remove("show");quizCard.style.display="block";render();window.scrollTo({top:0,behavior:"smooth"});
+};
+render();
+</script>
+</body>
+</html>
