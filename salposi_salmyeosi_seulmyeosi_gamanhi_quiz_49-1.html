@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>쿡쿡·콕콕·톡톡·툭툭 퀴즈</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:#faf8fc;color:#3e3943}
+.wrap{width:min(720px,100%);margin:0 auto;padding:22px 15px 48px}
+.hero{padding:28px 18px;text-align:center;background:linear-gradient(135deg,#eee7f8,#fff0e9);border-radius:24px;box-shadow:0 7px 20px rgba(70,53,90,.08)}
+.hero h1{font-size:28px;line-height:1.45;margin:0 0 8px}
+.hero p{margin:0;color:#746b79;line-height:1.65}
+.meaning{margin:18px 0;background:#fff;border-radius:20px;padding:18px;border:1px solid #ece6ef;line-height:1.75}
+.meaning b{color:#6f5688}
+.progress{height:10px;background:#eee8f2;border-radius:99px;overflow:hidden;margin:16px 0 8px}
+.progressbar{height:100%;width:0;background:#9271ad;transition:.25s}
+.status{display:flex;justify-content:space-between;color:#7a7180;font-size:14px;margin:8px 2px 14px}
+.card{background:#fff;border-radius:22px;padding:22px;border:1px solid #ece6ef;box-shadow:0 6px 18px rgba(70,53,90,.06)}
+.qnum{color:#85679f;font-size:14px;font-weight:800;margin-bottom:8px}
+.question{font-size:21px;line-height:1.55;margin:0 0 18px;word-break:keep-all}
+.options{display:grid;gap:10px}
+.option{border:1px solid #e2dce6;background:#fdfcfe;border-radius:15px;padding:14px 15px;text-align:left;font-size:17px;cursor:pointer;color:#3e3943}
+.option:hover{background:#f7f2fb}.option.correct{background:#eef8ea;border-color:#9cc48c}.option.wrong{background:#fff0ed;border-color:#e7a69b}.option:disabled{cursor:default}
+.feedback{display:none;margin-top:15px;padding:14px;border-radius:14px;background:#f7f5f8;line-height:1.65}
+.next{width:100%;margin-top:16px;border:0;border-radius:15px;padding:14px;background:#82649c;color:#fff;font-size:17px;font-weight:800;cursor:pointer}.next:disabled{opacity:.45}
+.result{display:none;background:#fff;border-radius:22px;padding:28px 20px;text-align:center;border:1px solid #ece6ef}
+.result.show{display:block}.scorebig{font-size:27px;font-weight:900;color:#76558f}
+.summary{margin-top:18px;text-align:left;background:#faf6fd;border-radius:18px;padding:17px;line-height:1.8}
+.restart{margin-top:17px;border:0;border-radius:14px;background:#e49570;color:#fff;padding:13px 22px;font-weight:800;font-size:16px}
+footer{text-align:center;color:#8b828f;font-size:13px;margin-top:20px}
+</style>
+</head>
+<body>
+<main class="wrap">
+<section class="hero">
+<h1>📖 쿡쿡·콕콕·톡톡·툭툭</h1>
+<p>비슷하게 들리지만 느낌은 달라요.<br>문장을 읽고 가장 잘 어울리는 말을 골라 보세요.</p>
+</section>
+
+<section class="meaning">🌷 <b>살포시</b> · 가볍고 포근하거나 부드럽게 놓고 덮는 느낌<br>🤫 <b>살며시</b> · 소리 나지 않게 조심스럽게 하는 모습<br>👀 <b>슬며시</b> · 남이 눈치채지 못하게 은근히 하는 모습<br>🧘 <b>가만히</b> · 움직이거나 말하지 않고 그대로 있는 모습</section>
+
+<div class="progress"><div id="progressBar" class="progressbar"></div></div>
+<div class="status"><span id="count">1 / 12</span><span id="score">점수 0</span></div>
+
+<section id="quizCard" class="card">
+<div id="qnum" class="qnum"></div>
+<h2 id="question" class="question"></h2>
+<div id="options" class="options"></div>
+<div id="feedback" class="feedback"></div>
+<button id="nextBtn" class="next" disabled>다음 문제</button>
+</section>
+
+<section id="result" class="result">
+<div style="font-size:48px">🎉</div>
+<h2>퀴즈 완료!</h2>
+<div id="finalScore" class="scorebig"></div>
+<div class="summary">🌷 <b>살포시</b> — 가볍고 부드럽게 해요<br>🤫 <b>살며시</b> — 조심스럽고 소리 나지 않게 해요<br>👀 <b>슬며시</b> — 눈치채지 못하게 은근히 해요<br>🧘 <b>가만히</b> — 움직이지 않고 그대로 있어요</div>
+<button id="restartBtn" class="restart">다시 풀기</button>
+</section>
+
+<footer>어디를, 무엇으로, 어떻게 건드리는지 떠올려 보세요 😊</footer>
+</main>
+
+<script>
+const questions=[{"question": "아기가 깨지 않도록 엄마가 방문을 아주 조심스럽고 소리 나지 않게 닫았어요. 가장 잘 어울리는 말은?", "options": ["가만히", "살며시", "살포시", "슬며시"], "answer": 1, "explanation": "남이 알아차리지 않도록 조심스럽고 가볍게 행동하는 모습에는 ‘살며시’가 잘 어울려요."}, {"question": "선생님이 사진을 찍는 동안 민이는 움직이지 않고 그대로 서 있었어요. 가장 잘 어울리는 말은?", "options": ["살포시", "살며시", "슬며시", "가만히"], "answer": 3, "explanation": "움직이거나 말하지 않고 그대로 있는 모습에는 ‘가만히’가 잘 어울려요."}, {"question": "엄마가 잠든 준이의 어깨 위에 이불을 가볍고 포근하게 덮어 주었어요. 가장 잘 어울리는 말은?", "options": ["살포시", "슬며시", "가만히", "살며시"], "answer": 0, "explanation": "가볍고 포근하게 덮거나 놓는 느낌에는 ‘살포시’가 잘 어울려요."}, {"question": "민이가 아무도 눈치채지 못하게 간식 접시를 자기 쪽으로 조금 당겼어요. 가장 잘 어울리는 말은?", "options": ["가만히", "살포시", "슬며시", "살며시"], "answer": 2, "explanation": "남이 알아차리지 못하도록 은근하게 행동하는 모습에는 ‘슬며시’가 잘 어울려요."}, {"question": "준이가 엄마의 눈치를 보며 장난감을 상자 뒤로 몰래 조금 밀어 넣었어요. 가장 잘 어울리는 말은?", "options": ["살포시", "살며시", "가만히", "슬며시"], "answer": 3, "explanation": "눈에 띄지 않게 은근히 움직이는 모습은 ‘슬며시’라고 표현할 수 있어요."}, {"question": "민이가 꽃잎을 손바닥 위에 가볍고 포근한 느낌으로 올려놓았어요. 가장 잘 어울리는 말은?", "options": ["살포시", "슬며시", "가만히", "살며시"], "answer": 0, "explanation": "가볍고 부드럽게 내려놓는 모습에는 ‘살포시’가 자연스러워요."}, {"question": "준이는 자는 고양이를 깨우지 않으려고 손대지 않고 조용히 바라보기만 했어요. 가장 잘 어울리는 말은?", "options": ["슬며시", "살포시", "가만히", "살며시"], "answer": 2, "explanation": "행동하지 않고 조용한 상태로 있는 모습은 ‘가만히’라고 표현할 수 있어요."}, {"question": "민이가 자는 동생을 깨우지 않으려고 발소리를 죽여 조심스럽게 방을 나왔어요. 가장 잘 어울리는 말은?", "options": ["살포시", "살며시", "슬며시", "가만히"], "answer": 1, "explanation": "소리가 나지 않도록 조심스럽게 움직이는 모습은 ‘살며시’라고 표현할 수 있어요."}, {"question": "눈송이가 민이의 장갑 위에 가볍고 포근하게 내려앉았어요. 가장 잘 어울리는 말은?", "options": ["슬며시", "살포시", "가만히", "살며시"], "answer": 1, "explanation": "가볍고 포근하게 내려앉는 모습은 ‘살포시’로 표현할 수 있어요."}, {"question": "친구가 부끄러운 듯 아무 말 없이 내 옆으로 은근히 가까이 다가왔어요. 가장 잘 어울리는 말은?", "options": ["가만히", "살포시", "슬며시", "살며시"], "answer": 2, "explanation": "드러내지 않고 은근하게 움직이는 모습에는 ‘슬며시’가 자연스러워요."}, {"question": "엄마가 잠든 아이의 머리를 깨지 않게 아주 조심스럽게 쓰다듬었어요. 가장 잘 어울리는 말은?", "options": ["살포시", "슬며시", "가만히", "살며시"], "answer": 3, "explanation": "상대가 깨거나 놀라지 않도록 조심스럽게 하는 행동에는 ‘살며시’가 자연스러워요."}, {"question": "엄마가 체온을 재는 동안 아이가 몸을 움직이지 않고 그대로 있었어요. 가장 잘 어울리는 말은?", "options": ["가만히", "살며시", "슬며시", "살포시"], "answer": 0, "explanation": "몸을 움직이지 않고 그대로 있는 상태에는 ‘가만히’가 자연스러워요."}];
+let current=0,score=0,answered=false;
+const qnum=document.getElementById("qnum"),question=document.getElementById("question"),options=document.getElementById("options"),
+feedback=document.getElementById("feedback"),nextBtn=document.getElementById("nextBtn"),progressBar=document.getElementById("progressBar"),
+count=document.getElementById("count"),scoreEl=document.getElementById("score"),quizCard=document.getElementById("quizCard"),
+result=document.getElementById("result"),finalScore=document.getElementById("finalScore");
+
+function render(){
+ answered=false;nextBtn.disabled=true;feedback.style.display="none";feedback.textContent="";options.innerHTML="";
+ const item=questions[current];
+ qnum.textContent=`문제 ${current+1}`;
+ question.textContent=item.question;
+ count.textContent=`${current+1} / ${questions.length}`;
+ scoreEl.textContent=`점수 ${score}`;
+ progressBar.style.width=`${(current/questions.length)*100}%`;
+ item.options.forEach((txt,i)=>{
+   const b=document.createElement("button");
+   b.className="option";
+   b.textContent=`${["①","②","③","④"][i]} ${txt}`;
+   b.onclick=()=>choose(i,b);
+   options.appendChild(b);
+ });
+}
+function choose(i,selected){
+ if(answered)return;
+ answered=true;nextBtn.disabled=false;
+ const item=questions[current];
+ [...options.children].forEach((b,idx)=>{b.disabled=true;if(idx===item.answer)b.classList.add("correct")});
+ if(i===item.answer){score++;feedback.textContent=`⭕ 정답이에요! ${item.explanation}`;}
+ else{selected.classList.add("wrong");feedback.textContent=`❌ 정답은 ‘${item.options[item.answer]}’이에요. ${item.explanation}`;}
+ scoreEl.textContent=`점수 ${score}`;feedback.style.display="block";
+}
+nextBtn.onclick=()=>{
+ if(!answered)return;
+ if(current<questions.length-1){current++;render();window.scrollTo({top:0,behavior:"smooth"});}
+ else{quizCard.style.display="none";result.classList.add("show");progressBar.style.width="100%";finalScore.textContent=`${score} / ${questions.length}`;window.scrollTo({top:0,behavior:"smooth"});}
+};
+document.getElementById("restartBtn").onclick=()=>{
+ current=0;score=0;result.classList.remove("show");quizCard.style.display="block";render();window.scrollTo({top:0,behavior:"smooth"});
+};
+render();
+</script>
+</body>
+</html>
