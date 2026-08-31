@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>쿡쿡·콕콕·톡톡·툭툭 퀴즈</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;background:#faf8fc;color:#3e3943}
+.wrap{width:min(720px,100%);margin:0 auto;padding:22px 15px 48px}
+.hero{padding:28px 18px;text-align:center;background:linear-gradient(135deg,#eee7f8,#fff0e9);border-radius:24px;box-shadow:0 7px 20px rgba(70,53,90,.08)}
+.hero h1{font-size:28px;line-height:1.45;margin:0 0 8px}
+.hero p{margin:0;color:#746b79;line-height:1.65}
+.meaning{margin:18px 0;background:#fff;border-radius:20px;padding:18px;border:1px solid #ece6ef;line-height:1.75}
+.meaning b{color:#6f5688}
+.progress{height:10px;background:#eee8f2;border-radius:99px;overflow:hidden;margin:16px 0 8px}
+.progressbar{height:100%;width:0;background:#9271ad;transition:.25s}
+.status{display:flex;justify-content:space-between;color:#7a7180;font-size:14px;margin:8px 2px 14px}
+.card{background:#fff;border-radius:22px;padding:22px;border:1px solid #ece6ef;box-shadow:0 6px 18px rgba(70,53,90,.06)}
+.qnum{color:#85679f;font-size:14px;font-weight:800;margin-bottom:8px}
+.question{font-size:21px;line-height:1.55;margin:0 0 18px;word-break:keep-all}
+.options{display:grid;gap:10px}
+.option{border:1px solid #e2dce6;background:#fdfcfe;border-radius:15px;padding:14px 15px;text-align:left;font-size:17px;cursor:pointer;color:#3e3943}
+.option:hover{background:#f7f2fb}.option.correct{background:#eef8ea;border-color:#9cc48c}.option.wrong{background:#fff0ed;border-color:#e7a69b}.option:disabled{cursor:default}
+.feedback{display:none;margin-top:15px;padding:14px;border-radius:14px;background:#f7f5f8;line-height:1.65}
+.next{width:100%;margin-top:16px;border:0;border-radius:15px;padding:14px;background:#82649c;color:#fff;font-size:17px;font-weight:800;cursor:pointer}.next:disabled{opacity:.45}
+.result{display:none;background:#fff;border-radius:22px;padding:28px 20px;text-align:center;border:1px solid #ece6ef}
+.result.show{display:block}.scorebig{font-size:27px;font-weight:900;color:#76558f}
+.summary{margin-top:18px;text-align:left;background:#faf6fd;border-radius:18px;padding:17px;line-height:1.8}
+.restart{margin-top:17px;border:0;border-radius:14px;background:#e49570;color:#fff;padding:13px 22px;font-weight:800;font-size:16px}
+footer{text-align:center;color:#8b828f;font-size:13px;margin-top:20px}
+</style>
+</head>
+<body>
+<main class="wrap">
+<section class="hero">
+<h1>📖 쿡쿡·콕콕·톡톡·툭툭</h1>
+<p>비슷하게 들리지만 느낌은 달라요.<br>문장을 읽고 가장 잘 어울리는 말을 골라 보세요.</p>
+</section>
+
+<section class="meaning">
+<b>쿡쿡</b> · 손가락이나 팔꿈치로 자꾸 찌르는 모습<br>
+<b>콕콕</b> · 뾰족한 것으로 작은 지점을 자꾸 찍는 모습<br>
+<b>톡톡</b> · 가볍게 자꾸 두드리거나 작은 것이 부딪치는 모습<br>
+<b>툭툭</b> · 조금 거칠거나 무심하게 자꾸 치거나 털어 내는 모습
+</section>
+
+<div class="progress"><div id="progressBar" class="progressbar"></div></div>
+<div class="status"><span id="count">1 / 12</span><span id="score">점수 0</span></div>
+
+<section id="quizCard" class="card">
+<div id="qnum" class="qnum"></div>
+<h2 id="question" class="question"></h2>
+<div id="options" class="options"></div>
+<div id="feedback" class="feedback"></div>
+<button id="nextBtn" class="next" disabled>다음 문제</button>
+</section>
+
+<section id="result" class="result">
+<div style="font-size:48px">🎉</div>
+<h2>퀴즈 완료!</h2>
+<div id="finalScore" class="scorebig"></div>
+<div class="summary">
+💜 <b>쿡쿡</b> — 몸이나 옆구리 등을 자꾸 찌르기<br>
+💜 <b>콕콕</b> — 뾰족한 것으로 한 점씩 찍기<br>
+💜 <b>톡톡</b> — 손끝 등으로 가볍게 두드리기<br>
+💜 <b>툭툭</b> — 가볍지만 조금 거칠게 치거나 털기
+</div>
+<button id="restartBtn" class="restart">다시 풀기</button>
+</section>
+
+<footer>어디를, 무엇으로, 어떻게 건드리는지 떠올려 보세요 😊</footer>
+</main>
+
+<script>
+const questions=[{"question": "새가 뾰족한 부리로 모이를 하나씩 정확하게 찍어 먹었어요. 가장 잘 어울리는 말은?", "options": ["툭툭", "쿡쿡", "톡톡", "콕콕"], "answer": 3, "explanation": "뾰족한 끝으로 작은 곳을 정확하게 찍거나 찌르는 모습에는 ‘콕콕’이 잘 어울려요."}, {"question": "준이가 바닥에 놓인 공을 발끝으로 가볍게 여러 번 건드렸어요. 가장 잘 어울리는 말은?", "options": ["콕콕", "툭툭", "톡톡", "쿡쿡"], "answer": 1, "explanation": "손이나 발 등으로 가볍게 건드리는 움직임에는 ‘툭툭’이 잘 어울려요."}, {"question": "친구가 손가락 끝으로 내 옆구리를 여러 번 찔렀어요. 가장 잘 어울리는 말은?", "options": ["쿡쿡", "콕콕", "톡톡", "툭툭"], "answer": 0, "explanation": "손가락 끝으로 같은 곳을 자꾸 찌르는 느낌에는 ‘쿡쿡’이 잘 어울려요."}, {"question": "엄마가 아이의 어깨를 손끝으로 가볍게 두드렸어요. 가장 잘 어울리는 말은?", "options": ["툭툭", "쿡쿡", "톡톡", "콕콕"], "answer": 2, "explanation": "손끝으로 가볍게 두드리는 움직임에는 ‘톡톡’이 잘 어울려요."}, {"question": "빗방울이 창문을 가볍게 두드리듯 부딪쳤어요. 가장 잘 어울리는 말은?", "options": ["톡톡", "콕콕", "툭툭", "쿡쿡"], "answer": 0, "explanation": "작은 것이 가볍게 잇따라 부딪치는 느낌은 ‘톡톡’으로 표현할 수 있어요."}, {"question": "연필 끝으로 종이의 점을 하나씩 정확하게 찍었어요. 가장 잘 어울리는 말은?", "options": ["쿡쿡", "톡톡", "콕콕", "툭툭"], "answer": 2, "explanation": "작은 곳을 뾰족한 끝으로 정확하게 찍는 모습은 ‘콕콕’으로 표현할 수 있어요."}, {"question": "나뭇가지에서 익은 열매가 바닥으로 하나둘 떨어졌어요. 가장 잘 어울리는 말은?", "options": ["톡톡", "쿡쿡", "콕콕", "툭툭"], "answer": 3, "explanation": "작은 물건이 하나둘 떨어지는 모습이나 소리에도 ‘툭툭’을 사용할 수 있어요."}, {"question": "민이가 손가락으로 말랑한 쿠션을 여러 번 눌러 찔러 보았어요. 가장 잘 어울리는 말은?", "options": ["톡톡", "쿡쿡", "툭툭", "콕콕"], "answer": 1, "explanation": "손가락 끝으로 여러 번 눌러 찌르는 움직임은 ‘쿡쿡’으로 표현할 수 있어요."}, {"question": "아이가 옷에 묻은 먼지를 손으로 가볍게 여러 번 털어 냈어요. 가장 잘 어울리는 말은?", "options": ["쿡쿡", "콕콕", "툭툭", "톡톡"], "answer": 2, "explanation": "가볍게 치거나 털어 내는 움직임에는 ‘툭툭’이 잘 어울려요."}, {"question": "민이가 친구에게 알리려고 팔을 손끝으로 가볍게 두 번 두드렸어요. 가장 잘 어울리는 말은?", "options": ["톡톡", "툭툭", "쿡쿡", "콕콕"], "answer": 0, "explanation": "가볍게 두드리는 움직임에는 ‘톡톡’이 자연스러워요."}, {"question": "준이가 엄마 팔을 손가락 끝으로 자꾸 찌르며 불렀어요. 가장 잘 어울리는 말은?", "options": ["톡톡", "쿡쿡", "툭툭", "콕콕"], "answer": 1, "explanation": "손가락 끝으로 자꾸 찌르는 움직임에는 ‘쿡쿡’이 자연스러워요."}, {"question": "병아리가 부리로 바닥의 먹이를 하나씩 찍어 먹었어요. 가장 잘 어울리는 말은?", "options": ["쿡쿡", "톡톡", "툭툭", "콕콕"], "answer": 3, "explanation": "부리처럼 뾰족한 것으로 작은 곳을 찍는 움직임에는 ‘콕콕’이 자연스러워요."}];
+let current=0,score=0,answered=false;
+const qnum=document.getElementById("qnum"),question=document.getElementById("question"),options=document.getElementById("options"),
+feedback=document.getElementById("feedback"),nextBtn=document.getElementById("nextBtn"),progressBar=document.getElementById("progressBar"),
+count=document.getElementById("count"),scoreEl=document.getElementById("score"),quizCard=document.getElementById("quizCard"),
+result=document.getElementById("result"),finalScore=document.getElementById("finalScore");
+
+function render(){
+ answered=false;nextBtn.disabled=true;feedback.style.display="none";feedback.textContent="";options.innerHTML="";
+ const item=questions[current];
+ qnum.textContent=`문제 ${current+1}`;
+ question.textContent=item.question;
+ count.textContent=`${current+1} / ${questions.length}`;
+ scoreEl.textContent=`점수 ${score}`;
+ progressBar.style.width=`${(current/questions.length)*100}%`;
+ item.options.forEach((txt,i)=>{
+   const b=document.createElement("button");
+   b.className="option";
+   b.textContent=`${["①","②","③","④"][i]} ${txt}`;
+   b.onclick=()=>choose(i,b);
+   options.appendChild(b);
+ });
+}
+function choose(i,selected){
+ if(answered)return;
+ answered=true;nextBtn.disabled=false;
+ const item=questions[current];
+ [...options.children].forEach((b,idx)=>{b.disabled=true;if(idx===item.answer)b.classList.add("correct")});
+ if(i===item.answer){score++;feedback.textContent=`⭕ 정답이에요! ${item.explanation}`;}
+ else{selected.classList.add("wrong");feedback.textContent=`❌ 정답은 ‘${item.options[item.answer]}’이에요. ${item.explanation}`;}
+ scoreEl.textContent=`점수 ${score}`;feedback.style.display="block";
+}
+nextBtn.onclick=()=>{
+ if(!answered)return;
+ if(current<questions.length-1){current++;render();window.scrollTo({top:0,behavior:"smooth"});}
+ else{quizCard.style.display="none";result.classList.add("show");progressBar.style.width="100%";finalScore.textContent=`${score} / ${questions.length}`;window.scrollTo({top:0,behavior:"smooth"});}
+};
+document.getElementById("restartBtn").onclick=()=>{
+ current=0;score=0;result.classList.remove("show");quizCard.style.display="block";render();window.scrollTo({top:0,behavior:"smooth"});
+};
+render();
+</script>
+</body>
+</html>
