@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>쿵·쿵쾅·쿵쾅쿵쾅·덜컹의 차이 퀴즈</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:#faf8fc;color:#3e3945}
+.wrap{width:min(760px,100%);margin:0 auto;padding:20px 16px 48px}
+.hero{background:#eee7f5;border-radius:24px;padding:26px 20px;text-align:center;margin-bottom:18px}
+.hero .eyebrow{font-size:14px;font-weight:700;color:#76658b;margin-bottom:7px}
+.hero h1{font-size:28px;line-height:1.35;margin:0 0 9px}
+.hero p{margin:0;color:#746b79;line-height:1.65}
+.guide{background:#fff;border:1px solid #e4dcea;border-radius:20px;padding:17px 18px;margin-bottom:18px;line-height:1.75}
+.guide b{color:#655377}
+.card{background:#fff;border:1px solid #e4dcea;border-radius:20px;padding:20px;margin:16px 0;box-shadow:0 5px 16px rgba(69,52,82,.06)}
+.num{font-size:13px;font-weight:800;color:#806b94;margin-bottom:9px}
+.question{font-size:18px;font-weight:800;line-height:1.55;margin-bottom:14px}
+.options{display:grid;gap:9px}
+button.option{width:100%;text-align:left;border:1px solid #e2dbe7;background:#fff;border-radius:14px;padding:13px 14px;font-size:16px;cursor:pointer}
+button.option:hover{background:#f8f3fb}
+button.option.correct{background:#edf8ef;border-color:#8fc79a}
+button.option.wrong{background:#fff0ef;border-color:#e9a4a0}
+.explanation{display:none;margin-top:12px;padding:12px 13px;background:#f7f4f9;border-radius:12px;color:#655d68;line-height:1.6}
+.result{display:none;background:#fff;border:1px solid #e4dcea;border-radius:20px;padding:22px;text-align:center;margin-top:20px}
+.result strong{font-size:25px}
+.reset{margin-top:14px;border:0;border-radius:12px;background:#655377;color:#fff;padding:11px 18px;font-weight:700;cursor:pointer}
+.footer{margin-top:24px;text-align:center;color:#9b919e;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">📖 엄마의 말공부 #50</div>
+    <h1>쿵 · 쿵쾅 · 쿵쾅쿵쾅 · 덜컹</h1>
+    <p>모두 큰 소리처럼 들리지만 소리의 횟수와 움직임은 달라요.<br>장면을 읽고 가장 잘 어울리는 표현을 골라 보세요.</p>
+  </section>
+
+  <section class="guide">
+    💥 <b>쿵</b> — 무거운 것이 한 번 부딪칠 때 나는 묵직한 소리<br>
+    👣 <b>쿵쾅</b> — 크고 묵직한 충격음이 연달아 나는 느낌<br>
+    🏃 <b>쿵쾅쿵쾅</b> — 쿵쾅거리는 큰 소리가 계속 반복되는 느낌<br>
+    🚌 <b>덜컹</b> — 단단한 것이 흔들리거나 부딪치며 나는 소리
+  </section>
+
+  <div id="quiz"></div>
+  <section class="result" id="result"></section>
+  <div class="footer">엄마의 말공부 · 12문제</div>
+</div>
+
+<script>
+const questions = [{"question": "기차가 움직이기 시작하자 객차가 순간 크게 흔들리며 소리가 났어요. 가장 잘 어울리는 말은?", "options": ["쿵", "쿵쾅", "덜컹", "쿵쾅쿵쾅"], "answer": 2, "explanation": "기차나 차 같은 것이 흔들리며 부딪칠 때 나는 소리는 ‘덜컹’으로 표현할 수 있어요."}, {"question": "위층에서 여러 사람이 뛰는 듯 큰 소리가 한동안 계속 반복됐어요. 가장 잘 어울리는 말은?", "options": ["덜컹", "쿵", "쿵쾅쿵쾅", "쿵쾅"], "answer": 2, "explanation": "크고 요란한 충격음이 여러 차례 계속 이어지면 ‘쿵쾅쿵쾅’이라고 표현할 수 있어요."}, {"question": "아이들이 복도를 뛰어다녀 묵직하고 큰 발소리가 계속 반복해서 들렸어요. 가장 잘 어울리는 말은?", "options": ["쿵", "쿵쾅쿵쾅", "덜컹", "쿵쾅"], "answer": 1, "explanation": "‘쿵쾅’ 같은 큰 소리가 여러 번 계속 반복될 때 ‘쿵쾅쿵쾅’이 잘 어울려요."}, {"question": "버스가 울퉁불퉁한 길을 지나자 차체가 크게 흔들리며 소리가 났어요. 가장 잘 어울리는 말은?", "options": ["덜컹", "쿵", "쿵쾅쿵쾅", "쿵쾅"], "answer": 0, "explanation": "차나 물체가 흔들리거나 단단한 곳에 부딪치며 나는 소리에는 ‘덜컹’이 잘 어울려요."}, {"question": "무거운 상자가 바닥에 한 번 떨어지며 묵직한 소리가 났어요. 가장 잘 어울리는 말은?", "options": ["쿵쾅쿵쾅", "쿵쾅", "덜컹", "쿵"], "answer": 3, "explanation": "무겁고 큰 것이 한 번 부딪치거나 떨어질 때 나는 묵직한 소리에는 ‘쿵’이 잘 어울려요."}, {"question": "큰 공이 벽에 한 번 세게 부딪치며 묵직한 소리를 냈어요. 가장 잘 어울리는 말은?", "options": ["쿵쾅", "쿵쾅쿵쾅", "덜컹", "쿵"], "answer": 3, "explanation": "크고 무거운 것이 한 번 부딪칠 때 나는 소리에는 ‘쿵’이 자연스러워요."}, {"question": "아이가 방에서 뛰다가 가구에 부딪쳐 크고 요란한 소리가 연달아 났어요. 가장 잘 어울리는 말은?", "options": ["쿵쾅", "쿵", "쿵쾅쿵쾅", "덜컹"], "answer": 0, "explanation": "크고 요란한 충격음이 연이어 들리는 느낌에는 ‘쿵쾅’이 잘 어울려요."}, {"question": "준이가 신이 나서 방 안을 뛰어다니자 큰 발소리가 계속 이어졌어요. 가장 잘 어울리는 말은?", "options": ["쿵쾅", "쿵쾅쿵쾅", "쿵", "덜컹"], "answer": 1, "explanation": "묵직한 발소리가 반복해서 계속 들리는 장면에는 ‘쿵쾅쿵쾅’이 자연스러워요."}, {"question": "위층에서 무거운 발소리가 크게 두어 번 연달아 들렸어요. 가장 잘 어울리는 말은?", "options": ["쿵쾅", "쿵", "덜컹", "쿵쾅쿵쾅"], "answer": 0, "explanation": "크고 묵직한 소리가 연달아 이어질 때에는 ‘쿵쾅’이 잘 어울려요."}, {"question": "큰 상자를 옮기다가 바닥과 벽에 연달아 세게 부딪혀 큰 소리가 났어요. 가장 잘 어울리는 말은?", "options": ["덜컹", "쿵", "쿵쾅", "쿵쾅쿵쾅"], "answer": 2, "explanation": "크고 묵직한 충격음이 연달아 들리는 장면에는 ‘쿵쾅’이 자연스러워요."}, {"question": "문이 바람에 흔들리다가 문틀에 부딪치며 소리가 났어요. 가장 잘 어울리는 말은?", "options": ["쿵", "덜컹", "쿵쾅쿵쾅", "쿵쾅"], "answer": 1, "explanation": "단단한 물체가 흔들리거나 부딪쳐 나는 소리에는 ‘덜컹’이 자연스러워요."}, {"question": "준이가 소파에서 뛰어내리자 바닥에서 한 번 묵직한 소리가 났어요. 가장 잘 어울리는 말은?", "options": ["쿵쾅", "쿵쾅쿵쾅", "덜컹", "쿵"], "answer": 3, "explanation": "무거운 것이 한 번 세게 닿으며 나는 묵직한 소리는 ‘쿵’으로 표현할 수 있어요."}];
+
+const quiz=document.getElementById("quiz");
+let score=0, answered=0;
+
+questions.forEach((q,idx)=>{
+  const card=document.createElement("section");
+  card.className="card";
+  card.innerHTML=`
+    <div class="num">문제 ${idx+1}</div>
+    <div class="question">${q.question}</div>
+    <div class="options"></div>
+    <div class="explanation">${q.explanation}</div>
+  `;
+  const options=card.querySelector(".options");
+  const explanation=card.querySelector(".explanation");
+
+  q.options.forEach((opt,oi)=>{
+    const btn=document.createElement("button");
+    btn.className="option";
+    btn.textContent=`${["①","②","③","④"][oi]} ${opt}`;
+    btn.addEventListener("click",()=>{
+      if(card.dataset.answered) return;
+      card.dataset.answered="1";
+      answered++;
+
+      [...options.children].forEach((b,bi)=>{
+        b.disabled=true;
+        if(bi===q.answer) b.classList.add("correct");
+      });
+
+      if(oi===q.answer) score++;
+      else btn.classList.add("wrong");
+
+      explanation.style.display="block";
+
+      if(answered===questions.length){
+        const result=document.getElementById("result");
+        result.style.display="block";
+        result.innerHTML=`<strong>${score} / ${questions.length}</strong><br>끝까지 잘 풀었어요!<br>
+        <button class="reset" onclick="location.reload()">다시 풀기</button>`;
+      }
+    });
+    options.appendChild(btn);
+  });
+  quiz.appendChild(card);
+});
+</script>
+</body>
+</html>
